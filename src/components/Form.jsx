@@ -1,99 +1,202 @@
 import React, { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
+import { useDispatch, useSelector } from "react-redux";
+import { registerCustomer } from "../actions/auth";
+import products from "../reducers/products";
+import { useNavigate } from "react-router-dom";
+import { addProduct, productList } from "../actions/products";
+import * as api from '../api';
 
 function Form() {
-  const [step, setStep] = useState(1);
-  const [isValid, setIsValid] = useState(false);
+
+  let user = JSON.parse(localStorage.getItem("user"));
 
   const initialState = {
-    sponsorUserName: "",
-    sponsorFullName: "",
-    selectProduct: "",
+    sponsererid: user && user?.admin?.adminid || "",
+    adminid: user && user?.admin?.adminid || "",
+    sponserer_username:"",
+    sponserer_name:"",
+    product_id:"",
     acceptTerms: false,
-    firstName: "",
+    first_name: "",
+    last_name:"",
     date: "",
     gender: "",
     email: "",
-    mobile: "",
+    mobileNo: "",
+    aadhar_card_no: "",
+    aadhar_image_link: "",
+    pan_card_no: "",
+    pan_image_link: "",
+    bank_name: "",
+    account_no: "",
+    ifsc_code: "",
+    branch_name: "",
     username: "",
     password: "",
     confirmPassword: "",
+    registration_pin: "",
   };
   const [formData, setFormData] = useState(initialState);
+  const [errors, setErrors] = useState({});
+  const [step, setStep] = useState(1);
+  const [isValid, setIsValid] = useState(false);
+  const dispatch = useDispatch();
+  const customer = useSelector((state)=>state.registerCustomer);
+  console.log(customer);
+
+  const allProducts = useSelector((state)=>state.products.allProducts)
+  console.log(allProducts);
+  useEffect(() => {
+    dispatch(productList());
+  }, [])
 
   const handleChange = (e) => {
-    const { name, value, type } = e.target;
+    e.preventDefault();
+    const { name, value } = e.target;
+    setFormData((prevData) => ({
+      ...prevData,
+      [name]: value,
+    }));
 
-    const validations = {
-        firstName: {
-          isValid: value.length >= 6,
-          errorMessage: "First name must be at least 6 characters long.",
-        },
-        date: {
-          isValid:
-            new Date(value) <=
-            new Date(new Date().setFullYear(new Date().getFullYear() - 18)),
-          errorMessage: "You must be 18 years or older.",
-        },
-        email: {
-          isValid: /\S+@\S+\.\S+/.test(value),
-          errorMessage: "Invalid email address.",
-        },
-        mobile: {
-          isValid: /^\d{10}$/.test(value),
-          errorMessage: "Invalid mobile number. Please enter a 10-digit number.",
-        },
-        password: {
-          isValid: value.length >= 8, // Minimum password length of 8 characters
-          errorMessage: "Password must be at least 8 characters long.",
-        },
-        confirmPassword: {
-          isValid: value === formData.password,
-          errorMessage: "Passwords do not match.",
-        },
-      };
-      
-      
+    // Clear the error for the current field
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: "",
+    }));
+  };
 
-    // Check if it's a select input
-    if (type === "select-one") {
-      // Get the selected option value
-      const selectedOption = e.target.value;
-      // Update the form data state with the selected option value
-      setFormData((prevState) => ({
-        ...prevState,
-        [name]: selectedOption,
-      }));
-    } else {
-      // For regular input fields
+  const validateFirst = () => {
+    const newErrors = {};
+
+    if (!formData.sponserer_username.trim()) {
+      newErrors.sponserer_username = "Sponsor Username is required";
+    }
+    if (!formData.sponserer_name.trim()) {
+      newErrors.sponserer_name = "Sponsor Full Name is required";
+    }
+    // if (!formData.product_id) {
+    //   newErrors.product_id = "Please select a product";
+    // }
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
+  const validateSecond = () => {
+    const newErrors = {};
+
+    if (!formData.first_name.trim()) {
+      newErrors.first_name = "First Name is required";
+     }// else if (formData.first_name.length < 6) {
+    //   newErrors.first_name = "First Name must be at least 6 characters long";
+    // }
+    if (!formData.last_name.trim()) {
+      newErrors.last_name = "Last Name is required";
+     } //else if (formData.last_name.length < 6) {
+    //   newErrors.last_name ="Last Name must be at least 6 characters long";
+    // }
+    if (!formData.date) {
+      newErrors.date = "Date of Birth is required";
+    } else if (
+      new Date(formData.date) >
+      new Date(new Date().setFullYear(new Date().getFullYear() - 18))
+    ) {
+      newErrors.date = "You must be 18 years or older";
+    }
+    if (!formData.gender) {
+      newErrors.gender = "Gender is required";
+    }
+    if (!formData.email.trim()) {
+      newErrors.email = "Email is required";
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+      newErrors.email = "Invalid email address";
+    }
+    if (!formData.mobileNo.trim()) {
+      newErrors.mobileNo = "Mobile number is required";
+    } else if (!/^\d{10}$/.test(formData.mobileNo)) {
+      newErrors.mobileNo =
+        "Invalid mobile number. Please enter a 10-digit number";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
+  const validateThird = () => {
+    const newErrors = {};
+
+    if (!formData.aadhar_card_no.trim()) {
+      newErrors.aadhar_card_no = "Adhar Number is required";
+    } else if (!/^\d{12}$/.test(formData.aadhar_card_no)) {
+      newErrors.aadhar_card_no = "Adhar Number must be 12 digits";
+    }
+    if (!formData.aadhar_image_link) {
+      newErrors.aadhar_image_link = "Adhar Image is required";
+    }
+    if (!formData.pan_card_no.trim()) {
+      newErrors.pan_card_no = "Pan Number is required";
+    } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan_card_no)) {
+      newErrors.pan_card_no = "Invalid Pan Number format";
+    }
+    if (!formData.pan_image_link) {
+      newErrors.pan_image_link = "Pan Image is required";
+    }
+    if (!formData.bank_name.trim()) {
+      newErrors.bank_name = "Bank Name is required";
+    }
+    if (!formData.account_no.trim()) {
+      newErrors.account_no = "Account Number is required";
+    } else if (!/^\d+$/.test(formData.account_no)) {
+      newErrors.account_no = "Invalid Account Number format";
+    }
+    if (!formData.ifsc_code.trim()) {
+      newErrors.ifsc_code = "IFSC Code is required";
+    }
+    if (!formData.branch_name.trim()) {
+      newErrors.branch_name = "Branch Name is required";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
+  const validateFourth = () => {
+    const newErrors = {};
+
+    if (!formData.username.trim()) {
+      newErrors.username = "Username is required";
+    }
+    if (!formData.password.trim()) {
+      newErrors.password = "Password is required";
+    }
+    if (formData.password !== formData.confirmPassword) {
+      newErrors.confirmPassword = "Passwords do not match";
+    }
+    if (!formData.acceptTerms) {
+      newErrors.acceptTerms = "Please accept the terms and conditions";
+    }
+
+    setErrors(newErrors);
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
+  };
+
+  const handleNextClick = async () => {
+    if (step === 1 && validateFirst()) {
+      nextStep();
+    } else if (step === 2 && validateSecond()) {
+      nextStep();
+    } else if (step === 3 && validateThird()) {
+      nextStep();
+      let {data} = await api.getUsername();
+      let userName = data.body.username;
+      console.log("data",userName);
       setFormData((prevData) => ({
         ...prevData,
-        [name]: value,
-        [`${name}Error`]: validations[name].isValid
-          ? null
-          : validations[name].errorMessage,
+        ["username"]: userName,
       }));
+    } else if (step === 4 && validateFourth()) {
+      nextStep();
     }
-  };
-
-  const handleValidation = () => {
-    // Perform validation logic here
-    // For example, check if all required fields are filled
-    const { userName, fullName, newProductId } = formData;
-    if (
-      userName.trim() !== "" &&
-      fullName.trim() !== "" &&
-      newProductId.trim() !== ""
-    ) {
-      setIsValid(true);
-    } else {
-      setIsValid(false);
-    }
-  };
-
-  const handleNextStep = () => {
-    // Perform any additional actions before proceeding to the next step
-    nextStep();
   };
 
   const nextStep = () => {
@@ -110,18 +213,21 @@ function Form() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    // dispatch(addProduct(selectedProduct,navigate));
+    dispatch(registerCustomer(formData))
     console.log(formData);
+    setFormData(initialState);
   };
 
   return (
-    <div className="relative min-h-screen flex  bg-zinc-100 dark:bg-zinc-900">
-      <div className="container max-w-screen-xl mx-auto my-auto relative flex flex-col w-4/5">
+    <div className="relative flex justify-center bg-zinc-100 dark:bg-zinc-900">
+      <div className="container relative flex flex-col w-4/5">
         <div className="text-5xl font-semibold  whitespace-pre-line text-center tracking-tighter rounded-3xl">
           Register New Member
         </div>
         <form
           onSubmit={handleSubmit}
-          className="mt-12 md:w-4/5 mx-auto rounded-3xl"
+          className="mt-8 md:w-4/5 mx-auto rounded-3xl"
           style={{ backgroundColor: "#fff" }}
         >
           {step === 1 && (
@@ -133,69 +239,82 @@ function Form() {
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
             >
-              <div className="text-base font-light text-center  ">Step 1/4</div>
+              <div className="text-base font-light text-center  ">Step 1/5</div>
               <div
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-black rounded-3xl w-1/4"></div>
+                <div className="h-full bg-purple-600 rounded-3xl w-1/5"></div>
               </div>
-              <div className="mt-10 text-2xl  text-center">
+              <div className="mt-4 text-2xl  text-center">
                 Sponsor and Package Information
-              </div>
-
+              </div>  
               <div>
                 <input
                   type="text"
                   placeholder="Sponsor Username"
-                  name="sponsorUserName" // This should match your formData property
+                  name="sponserer_username" // This should match your formData property
                   className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                   // style={{ backgroundColor: "#e0cfc8" }}
-                  value={formData.sponsorUserName} // This correctly points to formData.name
+                  value={formData.sponserer_username} // This correctly points to formData.name
                   onChange={handleChange}
                   required
                 />
+                {errors.sponserer_username && (
+                  <div className="text-red-500 text-sm">
+                    {errors.sponserer_username}
+                  </div>
+                )}
               </div>
-
               <div>
                 <input
                   type="text"
-                  placeholder="Sponsor Full Name"
-                  name="sponsorFullName" // This should match your formData property
+                  placeholder="Sponsor Name"
+                  name="sponserer_name" // This should match your formData property
                   className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                   // style={{ backgroundColor: "#e0cfc8" }}
-                  value={formData.sponsorFullName} // This should point to formData.number
+                  value={formData.sponserer_name} // This should point to formData.number
                   onChange={handleChange}
                   required
                 />
+                {errors.sponserer_name && (
+                  <div className="text-red-500 text-sm">
+                    {errors.sponserer_name}
+                  </div>
+                )}
               </div>
 
               <div>
                 <select
-                  name="selectProduct"
+                  name="product_id"
                   id="NewPackage"
                   className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                   required
-                  value={formData.selectProduct}
+                  value={formData.product_id}
                   onChange={handleChange}
                 >
                   <option value="">Select New Product</option>
-                  <option value="4" data-item="200">
-                    New Membership Pack1 ($ 200)
-                  </option>
-                  <option value="5" data-item="400">
-                    New Membership Pack2 ($ 400)
-                  </option>
-                  <option value="6" data-item="600">
-                    New Membership Pack3 ($ 600)
-                  </option>
+                  {allProducts &&
+                    allProducts.map((product) => (
+                      <option
+                        key={product.id}
+                        value={product.id}
+                      >
+                        {product.name}
+                      </option>
+                    ))}
                 </select>
+                {errors.product_id && (
+                  <div className="text-red-500 text-sm">
+                    {errors.product_id}
+                  </div>
+                )}
               </div>
               <div className="flex justify-end">
                 <button
                   type="button"
-                  onClick={nextStep}
-                  className="mt-4 bg-black text-white font-bold py-2 px-4 rounded"
+                  onClick={handleNextClick}
+                  className="mt-4 bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
                 >
                   Next
                 </button>
@@ -211,12 +330,12 @@ function Form() {
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
             >
-              <div className="text-base font-light text-center  ">Step 2/4</div>
+              <div className="text-base font-light text-center  ">Step 2/5</div>
               <div
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-black rounded-3xl w-2/4"></div>
+                <div className="h-full bg-purple-600 rounded-3xl w-2/5"></div>
               </div>
               <div className="mt-12 text-3xl  text-center">
                 Contact Information
@@ -227,15 +346,27 @@ function Form() {
                     type="text"
                     placeholder="First Name"
                     required
-                    name="firstName"
+                    name="first_name"
                     className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-                    value={formData.firstName}
+                    value={formData.first_name}
                     onChange={handleChange}
                   />
-                  {formData.firstNameError && (
-                    <span className="text-red-500">
-                      {formData.firstNameError}
-                    </span>
+                  {errors.first_name && (
+                    <span className="text-red-500">{errors.first_name}</span>
+                  )}
+                </div>
+                <div>
+                  <input
+                    type="text"
+                    placeholder="Last Name"
+                    required
+                    name="last_name"
+                    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    value={formData.last_name}
+                    onChange={handleChange}
+                  />
+                  {errors.last_name && (
+                    <span className="text-red-500">{errors.last_name}</span>
                   )}
                 </div>
                 <div>
@@ -248,8 +379,8 @@ function Form() {
                     onChange={handleChange}
                     required
                   />
-                  {formData.dateError && (
-                    <span className="text-red-500">{formData.dateError}</span>
+                  {errors.date && (
+                    <span className="text-red-500">{errors.date}</span>
                   )}
                 </div>
                 <div>
@@ -265,8 +396,8 @@ function Form() {
                     <option value="Female">Female</option>
                     <option value="Other">Other</option>
                   </select>
-                  {formData.genderError && (
-                    <span className="text-red-500">{formData.genderError}</span>
+                  {errors.gender && (
+                    <span className="text-red-500">{errors.gender}</span>
                   )}
                 </div>
                 <div>
@@ -279,8 +410,8 @@ function Form() {
                     value={formData.email}
                     onChange={handleChange}
                   />
-                  {formData.emailError && (
-                    <span className="text-red-500">{formData.emailError}</span>
+                  {errors.email && (
+                    <span className="text-red-500">{errors.email}</span>
                   )}
                 </div>
                 <div>
@@ -288,28 +419,28 @@ function Form() {
                     type="tel"
                     placeholder="Mobile"
                     required
-                    name="mobile"
+                    name="mobileNo"
                     className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-                    value={formData.mobile}
+                    value={formData.mobileNo}
                     onChange={handleChange}
                   />
-                  {formData.mobileError && (
-                    <span className="text-red-500">{formData.mobileError}</span>
+                  {errors.mobileNo && (
+                    <span className="text-red-500">{errors.mobileNo}</span>
                   )}
                 </div>
               </div>
-              <div className="flex justify-center mt-12">
+              <div className="flex justify-center mt-10">
                 <button
                   type="button"
                   onClick={prevStep}
-                  className=" mr-4 bg-black text-white font-bold py-2 px-4 rounded"
+                  className=" mr-4 border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white font-bold py-2 px-4 rounded"
                 >
                   Previous
                 </button>
                 <button
                   type="button"
-                  onClick={nextStep}
-                  className=" bg-black text-white font-bold py-2 px-4 rounded"
+                  onClick={handleNextClick}
+                  className="bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
                 >
                   Next
                 </button>
@@ -318,6 +449,213 @@ function Form() {
           )}
           {step === 3 && (
             <motion.div
+              key={step}
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -20 }}
+              transition={{ duration: 0.3 }}
+              className="md:w-3/5 mx-auto py-12"
+            >
+              <div className="text-base font-light text-center  ">Step 3/5</div>
+              <div
+                className="mt-4 w-full h-2"
+                style={{ backgroundColor: "#e0cfc8" }}
+              >
+                <div className="h-full bg-purple-600 rounded-3xl w-3/5"></div>
+              </div>
+              <div className="mt-12 text-3xl  text-center">
+                Personal Information
+              </div>
+              <div>
+                <div>
+                  <label
+                    htmlFor="aadhar_card_no"
+                    className="mt-4 mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Adhar No.
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Adhar Number"
+                    required
+                    name="aadhar_card_no"
+                    className=" w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    value={formData.aadhar_card_no}
+                    onChange={handleChange}
+                  />
+                  {errors.aadhar_card_no && (
+                    <span className="text-red-500">
+                      {errors.aadhar_card_no}
+                    </span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="aadhar_image_link"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Adhar Image
+                  </label>
+                  <input
+                    type="file"
+                    id="aadhar_image_link"
+                    name="aadhar_image_link"
+                    accept="image/*"
+                    className="w-full mt-2 px-3 py-2 border rounded-md"
+                    onChange={(e) => {
+                      setFormData({ ...formData, aadhar_image_link: e.target.files[0] });
+                    }}
+                  />
+                  {errors.aadhar_image_link && (
+                    <span className="text-red-500">{errors.aadhar_image_link}</span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="pan_card_no"
+                    className="mt-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Pan No.
+                  </label>
+                  <input
+                    type="text"
+                    id="pan_card_no"
+                    name="pan_card_no"
+                    className="w-full px-3 py-2 border rounded-md"
+                    placeholder="Enter Pan number"
+                    value={formData.pan_card_no}
+                    onChange={handleChange}
+                  />
+                  {errors.pan_card_no && (
+                    <span className="text-red-500">{errors.pan_card_no}</span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="pan_image_link"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Pan Image
+                  </label>
+                  <input
+                    type="file"
+                    id="pan_image_link"
+                    name="pan_image_link"
+                    accept="image/*"
+                    className="w-full mt-1 px-3 py-2 border rounded-md"
+                    onChange={(e) => {
+                      setFormData({ ...formData, pan_image_link: e.target.files[0] });
+                    }}
+                  />
+                  {errors.pan_image_link && (
+                    <span className="text-red-500">{errors.pan_image_link}</span>
+                  )}
+                </div>
+                <div className="mt-4">
+                  <label
+                    htmlFor="bank_name"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Bank Name
+                  </label>
+                  <input
+                    type="text"
+                    id="bank_name"
+                    name="bank_name"
+                    className="w-full px-3 py-2 border rounded-md mt-1"
+                    placeholder="Enter Bank Name"
+                    value={formData.bank_name}
+                    onChange={handleChange}
+                  />
+                  {errors.bank_name && (
+                    <span className="text-red-500">{errors.bank_name}</span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="account_no"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Account No.
+                  </label>
+                  <input
+                    type="number"
+                    placeholder="Account Number"
+                    required
+                    name="account_no"
+                    className="mt-1 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    value={formData.account_no}
+                    onChange={handleChange}
+                  />
+                  {errors.account_no && (
+                    <span className="text-red-500">{errors.account_no}</span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="ifsc_code"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    IFSC Code.
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="IFSC Code"
+                    required
+                    name="ifsc_code"
+                    className="mt-1 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    value={formData.ifsc_code}
+                    onChange={handleChange}
+                  />
+                  {errors.ifsc_code && (
+                    <span className="text-red-500">{errors.ifsc_code}</span>
+                  )}
+                </div>
+                <div className="mt-2">
+                  <label
+                    htmlFor="branch_name"
+                    className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Branch Name
+                  </label>
+                  <input
+                    type="text"
+                    id="branch_name"
+                    name="branch_name"
+                    className="mt-1 w-full px-3 py-2 border rounded-md"
+                    placeholder="Enter Branch Name"
+                    value={formData.branch_name}
+                    onChange={handleChange}
+                  />
+                  {errors.branch_name && (
+                    <span className="text-red-500">{errors.branch_name}</span>
+                  )}
+                </div>
+              </div>
+              <div className="flex justify-center">
+                {step !== 1 && (
+                  <button
+                    type="button"
+                    onClick={prevStep}
+                    className="mt-10 mr-4 border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Previous
+                  </button>
+                )}
+                {step === 3 && (
+                  <button
+                    type="button"
+                    onClick={handleNextClick}
+                    className="mt-10 bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
+                  >
+                    Next
+                  </button>
+                )}
+              </div>
+            </motion.div>
+          )}
+          {step === 4 && (
+            <motion.div
               key={step} // Add this line
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -325,12 +663,12 @@ function Form() {
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
             >
-              <div className="text-base font-light text-center  ">Step 3/4</div>
+              <div className="text-base font-light text-center  ">Step 4/5</div>
               <div
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-black rounded-3xl w-3/4"></div>
+                <div className="h-full bg-purple-500 rounded-3xl w-4/5"></div>
               </div>
               <div className="mt-4 text-2xl  text-center">
                 Login Information
@@ -340,38 +678,49 @@ function Form() {
                   type="username"
                   placeholder="UserName"
                   required
+                  disabled
                   name="username"
                   className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                   value={formData.username}
                   onChange={handleChange}
                 />
+                {errors.username && (
+                  <span className="text-red-500">{errors.username}</span>
+                )}
               </div>
               <div>
-  <input
-    type="password"
-    placeholder="Password"
-    required
-    name="password"
-    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-    value={formData.password}
-    onChange={handleChange}
-  />
-</div>
-<div>
-  <input
-    type="password"
-    placeholder="Confirm Password"
-    required
-    name="confirmPassword"
-    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-    value={formData.confirmPassword}
-    onChange={handleChange}
-  />
-</div>
-{formData.password !== formData.confirmPassword && (
-  <span className="text-red-500">Passwords do not match. Please enter the same password.</span>
-)}
-
+                <input
+                  type="password"
+                  placeholder="Password"
+                  required
+                  name="password"
+                  className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                  value={formData.password}
+                  onChange={handleChange}
+                />
+                {errors.password && (
+                  <span className="text-red-500">{errors.password}</span>
+                )}
+              </div>
+              <div>
+                <input
+                  type="password"
+                  placeholder="Confirm Password"
+                  required
+                  name="confirmPassword"
+                  className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                  value={formData.confirmPassword}
+                  onChange={handleChange}
+                />
+                {errors.confirmPassword && (
+                  <span className="text-red-500">{errors.confirmPassword}</span>
+                )}
+              </div>
+              {formData.password !== formData.confirmPassword && (
+                <span className="text-red-500">
+                  Passwords do not match. Please enter the same password.
+                </span>
+              )}
 
               <div className="flex items-center mt-5">
                 <input
@@ -391,27 +740,32 @@ function Form() {
                   I accept Terms & Conditions.
                   <span className="text-red-500">*</span>
                 </label>
+                {errors.acceptTerms && (
+                  <span className="text-red-500 ml-2">
+                    {errors.acceptTerms}
+                  </span>
+                )}
               </div>
 
               <div className="flex justify-center mt-12">
                 <button
                   type="button"
                   onClick={prevStep}
-                  className=" mr-4 bg-black text-white font-bold py-2 px-4 rounded"
+                  className="mr-4 border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white font-bold py-2 px-4 rounded"
                 >
                   Previous
                 </button>
                 <button
                   type="button"
-                  onClick={nextStep}
-                  className=" bg-black text-white font-bold py-2 px-4 rounded"
+                  onClick={handleNextClick}
+                  className="bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
                 >
-                  Submit
+                  Next
                 </button>
               </div>
             </motion.div>
           )}
-          {step === 4 && (
+          {step === 5 && (
             <motion.div
               key={step} // Add this line
               initial={{ opacity: 0, y: 20 }}
@@ -420,12 +774,12 @@ function Form() {
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
             >
-               <div className="text-base font-light text-center  ">Step 4/4</div>
+              <div className="text-base font-light text-center  ">Step 5/5</div>
               <div
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-black rounded-3xl w-full"></div>
+                <div className="h-full bg-purple-500 rounded-3xl w-full"></div>
               </div>
               <div className="mt-4 text-2xl text-center">Payment Type</div>
               <div className="mt-4 text-xl text-center">
@@ -444,10 +798,13 @@ function Form() {
                 <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
                   <input
                     type="text"
+                    name="registration_pin"
                     placeholder="Enter E-pin"
                     className="flex-grow p-2 border rounded"
+                    value={formData.registration_pin}
+                    onChange={handleChange}
                   />
-                  <button className="bg-blue-500 text-white p-2 rounded">
+                  <button className="bg-black text-white p-2 rounded">
                     Apply
                   </button>
                 </div>
@@ -456,16 +813,16 @@ function Form() {
                 <button
                   type="button"
                   onClick={prevStep}
-                  className=" mr-4 bg-black text-white font-bold py-2 px-4 rounded"
+                  className=" mr-4 border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white font-bold py-2 px-4 rounded"
                 >
                   Previous
                 </button>
                 <button
-                  type="button"
-                  onClick={redoStep}
-                  className=" bg-black text-white font-bold py-2 px-4 rounded"
+                  type="submit"
+                  // onClick={redoStep}
+                  className=" bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
                 >
-                  Close
+                  Submit
                 </button>
               </div>
             </motion.div>

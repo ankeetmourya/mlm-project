@@ -2,6 +2,21 @@
 @tailwind components;
 @tailwind utilities;
 
+
+@keyframes fillCircle {
+  from {
+    stroke-dasharray: 0, 100;
+  }
+  to {
+    stroke-dasharray: 83, 100;
+  }
+}
+
+.fill-animation {
+  animation: fillCircle 2s ease-out forwards;
+}
+
+
 /* src/App.css */
 ul {
     padding-left: 0;
