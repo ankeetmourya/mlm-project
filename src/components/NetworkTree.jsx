@@ -1,5 +1,5 @@
 import React from 'react'
-import MLMChart from './MLMChart'
+import MLMChart from './TreeNode'
 
 const NetworkTree = () => {
   return (

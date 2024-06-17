@@ -89,7 +89,8 @@ const PinReport = () => {
       <button
         onClick={handleExport}
         className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-      >
+        style={{background:"#3AA6B9"}}
+     >
         Export to Excel
       </button>
     </div>

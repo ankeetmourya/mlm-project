@@ -1,94 +1,46 @@
-// src/components/DataExportComponent.jsx
 import React, { useState } from 'react';
 import { exportToExcel } from '../report/exportToExcel';
 
-const sampleData = [
-  { name: 'John Doe', age: 28, email: 'john.doe@example.com' },
-  { name: 'Jane Smith', age: 34, email: 'jane.smith@example.com' },
-  // Add more sample data here
-];
-
-const DataExportComponent = () => {
-  const [isTableVisible, setIsTableVisible] = useState(false);
+const DataExportComponent = ({ adminReports }) => {
+  // Transform the adminReports data into an array of objects
+  const transformedData = Object.entries(adminReports).map(([key, value]) => ({
+    name: key,
+    ...value,
+  }));
 
   const handleExport = () => {
-    exportToExcel(sampleData, 'sampleData.xlsx');
-  };
-
-  const toggleTableVisibility = () => {
-    setIsTableVisible(!isTableVisible);
+    exportToExcel(transformedData, 'adminReports.xlsx');
   };
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Data Export Example</h1>
-      <button
-        onClick={toggleTableVisibility}
-        className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded mb-4 flex items-center"
-      >
-        {isTableVisible ? (
-          <>
-            <span>IDs</span>
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M5 15l7-7 7 7"
-              ></path>
-            </svg>
-          </>
-        ) : (
-          <>
-            <span>IDs</span>
-            <svg
-              className="w-4 h-4 ml-2"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth="2"
-                d="M19 9l-7 7-7-7"
-              ></path>
-            </svg>
-          </>
-        )}
-      </button>
-      {isTableVisible && (
-        <div className="overflow-x-auto">
-          <table className="min-w-full bg-white shadow-md rounded-lg">
-            <thead>
-              <tr>
-                <th className="py-2 px-4 border-b">Name</th>
-                <th className="py-2 px-4 border-b">Age</th>
-                <th className="py-2 px-4 border-b">Email</th>
+      <h1 className="text-2xl font-bold mb-4">Reports</h1>
+      <div className="overflow-x-auto">
+        <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
+          <thead className="bg-gray-200">
+            <tr>
+              <th className="text-start py-2 px-4 border-b border-gray-300">Category</th>
+              <th className="text-start py-2 px-4 border-b border-gray-300">Daily</th>
+              <th className="text-start py-2 px-4 border-b border-gray-300">Weekly</th>
+              <th className="text-start py-2 px-4 border-b border-gray-300">Monthly</th>
+            </tr>
+          </thead>
+          <tbody>
+            {transformedData.map((item, index) => (
+              <tr key={index} className={index % 2 === 0 ? 'bg-gray-50' : 'bg-white'}>
+                <td className="py-2 px-4 border-b border-gray-300">{item.name}</td>
+                <td className="py-2 px-4 border-b border-gray-300">{item["daily "] || 0}</td>
+                <td className="py-2 px-4 border-b border-gray-300">{item.week || 0}</td>
+                <td className="py-2 px-4 border-b border-gray-300">{item.monthly || 0}</td>
               </tr>
-            </thead>
-            <tbody>
-              {sampleData.map((item, index) => (
-                <tr key={index}>
-                  <td className="py-2 px-4 border-b">{item.name}</td>
-                  <td className="py-2 px-4 border-b">{item.age}</td>
-                  <td className="py-2 px-4 border-b">{item.email}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      )}
+            ))}
+          </tbody>
+        </table>
+      </div>
       <button
         onClick={handleExport}
         className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+        style={{ background: '#3AA6B9' }}
       >
         Export to Excel
       </button>

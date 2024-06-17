@@ -5,29 +5,31 @@ import { registerCustomer } from "../actions/auth";
 import products from "../reducers/products";
 import { useNavigate } from "react-router-dom";
 import { addProduct, productList } from "../actions/products";
-import * as api from '../api';
+import * as api from "../api";
+import "../App.css";
+import "../index.css";
+import { fetchPins } from "../actions/ePin";
+import Loader from "./report/Loader";
 
 function Form() {
-
   let user = JSON.parse(localStorage.getItem("user"));
-
   const initialState = {
-    sponsererid: user && user?.admin?.adminid || "",
-    adminid: user && user?.admin?.adminid || "",
-    sponserer_username:"",
-    sponserer_name:"",
-    product_id:"",
+    sponsererid: (user && user?.admin?.adminid) || "",
+    adminid: (user && user?.admin?.adminid) || "",
+    sponserer_username: "",
+    sponserer_name: "",
+    product_id: "",
     acceptTerms: false,
     first_name: "",
-    last_name:"",
+    last_name: "",
     date: "",
     gender: "",
     email: "",
     mobileNo: "",
     aadhar_card_no: "",
-    aadhar_image_link: "",
+    aadhar_image_link: "HARDCODED",
     pan_card_no: "",
-    pan_image_link: "",
+    pan_image_link: "HARDCODED",
     bank_name: "",
     account_no: "",
     ifsc_code: "",
@@ -42,22 +44,51 @@ function Form() {
   const [step, setStep] = useState(1);
   const [isValid, setIsValid] = useState(false);
   const dispatch = useDispatch();
-  const customer = useSelector((state)=>state.registerCustomer);
+  const navigate = useNavigate();
+  const customer = useSelector((state) => state.registerCustomer);
+  const [isSubmitted, setIsSubmitted] = useState(false);
+
   console.log(customer);
 
-  const allProducts = useSelector((state)=>state.products.allProducts)
+  const allProducts = useSelector((state) => state.products.allProducts);
+  const userRole = useSelector((state) => state.auth.userRole);
+  const ePins = useSelector((state)=> state.epins.epins)
+  const adminId = useSelector((state)=> state.auth.authData.admin?.adminid)
+  const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
+  const { pins, amount_received, expiry_date, status } = ePins;
+
+
+  let sponserUsername = "";
+  if (userRole && userRole === 'admin') {
+    sponserUsername = useSelector((state) => state.auth.authData.admin?.username);
+  } else if (userRole && userRole === 'customer') {
+    sponserUsername = useSelector((state) => state.auth.authData.customer?.username);
+  }
+  useEffect(() => {
+    if(userRole && userRole == 'admin'){
+      //fetch epins for admin
+    }else{
+    dispatch(fetchPins(customerUsername))
+
+    }
+  }, [userRole])
   console.log(allProducts);
   useEffect(() => {
-    dispatch(productList());
-  }, [])
+    dispatch(productList(navigate));
+  }, [dispatch]);
 
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
+   
+    setTimeout(() => {
+      setIsSubmitted(false);
+    }, 4000);
     setFormData((prevData) => ({
       ...prevData,
       [name]: value,
     }));
+
 
     // Clear the error for the current field
     setErrors((prevErrors) => ({
@@ -69,9 +100,6 @@ function Form() {
   const validateFirst = () => {
     const newErrors = {};
 
-    if (!formData.sponserer_username.trim()) {
-      newErrors.sponserer_username = "Sponsor Username is required";
-    }
     if (!formData.sponserer_name.trim()) {
       newErrors.sponserer_name = "Sponsor Full Name is required";
     }
@@ -84,17 +112,18 @@ function Form() {
 
   const validateSecond = () => {
     const newErrors = {};
+    const mobileNoWithoutSpaces = formData.mobileNo.replace(/\s+/g, '');
 
     if (!formData.first_name.trim()) {
       newErrors.first_name = "First Name is required";
-     }// else if (formData.first_name.length < 6) {
-    //   newErrors.first_name = "First Name must be at least 6 characters long";
-    // }
+    } else if (formData.first_name.length < 3) {
+      newErrors.first_name = "First Name must be at least 3 characters long";
+    }
     if (!formData.last_name.trim()) {
       newErrors.last_name = "Last Name is required";
-     } //else if (formData.last_name.length < 6) {
-    //   newErrors.last_name ="Last Name must be at least 6 characters long";
-    // }
+    } else if (formData.last_name.length < 3) {
+      newErrors.last_name = "Last Name must be at least 3 characters long";
+    }
     if (!formData.date) {
       newErrors.date = "Date of Birth is required";
     } else if (
@@ -111,11 +140,10 @@ function Form() {
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       newErrors.email = "Invalid email address";
     }
-    if (!formData.mobileNo.trim()) {
-      newErrors.mobileNo = "Mobile number is required";
-    } else if (!/^\d{10}$/.test(formData.mobileNo)) {
-      newErrors.mobileNo =
-        "Invalid mobile number. Please enter a 10-digit number";
+    if (!mobileNoWithoutSpaces) {
+      newErrors.mobileNo = 'Mobile number is required';
+    } else if (!/^\d{10}$/.test(mobileNoWithoutSpaces)) {
+      newErrors.mobileNo = 'Invalid mobile number. Please enter a 10-digit number';
     }
 
     setErrors(newErrors);
@@ -130,17 +158,17 @@ function Form() {
     } else if (!/^\d{12}$/.test(formData.aadhar_card_no)) {
       newErrors.aadhar_card_no = "Adhar Number must be 12 digits";
     }
-    if (!formData.aadhar_image_link) {
-      newErrors.aadhar_image_link = "Adhar Image is required";
-    }
+    // if (!formData.aadhar_image_link) {
+    //   newErrors.aadhar_image_link = "Adhar Image is required";
+    // }
     if (!formData.pan_card_no.trim()) {
       newErrors.pan_card_no = "Pan Number is required";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan_card_no)) {
       newErrors.pan_card_no = "Invalid Pan Number format";
     }
-    if (!formData.pan_image_link) {
-      newErrors.pan_image_link = "Pan Image is required";
-    }
+    // if (!formData.pan_image_link) {
+    //   newErrors.pan_image_link = "Pan Image is required";
+    // }
     if (!formData.bank_name.trim()) {
       newErrors.bank_name = "Bank Name is required";
     }
@@ -187,9 +215,9 @@ function Form() {
       nextStep();
     } else if (step === 3 && validateThird()) {
       nextStep();
-      let {data} = await api.getUsername();
+      let { data } = await api.getUsername();
       let userName = data.body.username;
-      console.log("data",userName);
+      console.log("data", userName);
       setFormData((prevData) => ({
         ...prevData,
         ["username"]: userName,
@@ -214,13 +242,15 @@ function Form() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // dispatch(addProduct(selectedProduct,navigate));
-    dispatch(registerCustomer(formData))
+    dispatch(registerCustomer(formData, navigate));
     console.log(formData);
-    setFormData(initialState);
+    setIsSubmitted(true);
+    // setFormData(initialState);
+  
   };
 
   return (
-    <div className="relative flex justify-center bg-zinc-100 dark:bg-zinc-900">
+    <div className="relative flex justify-center">
       <div className="container relative flex flex-col w-4/5">
         <div className="text-5xl font-semibold  whitespace-pre-line text-center tracking-tighter rounded-3xl">
           Register New Member
@@ -244,11 +274,14 @@ function Form() {
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-purple-600 rounded-3xl w-1/5"></div>
+                <div
+                  className="h-full rounded-3xl w-1/5"
+                  style={{ backgroundColor: "#3AA6B9" }}
+                ></div>
               </div>
               <div className="mt-4 text-2xl  text-center">
                 Sponsor and Package Information
-              </div>  
+              </div>
               <div>
                 <input
                   type="text"
@@ -256,9 +289,9 @@ function Form() {
                   name="sponserer_username" // This should match your formData property
                   className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                   // style={{ backgroundColor: "#e0cfc8" }}
-                  value={formData.sponserer_username} // This correctly points to formData.name
-                  onChange={handleChange}
-                  required
+                  value={sponserUsername || ""} // This correctly points to formData.name
+                  // onChange={handleChange}
+                  readOnly
                 />
                 {errors.sponserer_username && (
                   <div className="text-red-500 text-sm">
@@ -296,10 +329,7 @@ function Form() {
                   <option value="">Select New Product</option>
                   {allProducts &&
                     allProducts.map((product) => (
-                      <option
-                        key={product.id}
-                        value={product.id}
-                      >
+                      <option key={product.id} value={product.id}>
                         {product.name}
                       </option>
                     ))}
@@ -314,7 +344,8 @@ function Form() {
                 <button
                   type="button"
                   onClick={handleNextClick}
-                  className="mt-4 bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
+                  className="mt-4 bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded button"
+                  style={{ background: "#3AA6B9" }}
                 >
                   Next
                 </button>
@@ -335,7 +366,10 @@ function Form() {
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-purple-600 rounded-3xl w-2/5"></div>
+                <div
+                  className="h-full rounded-3xl w-2/5"
+                  style={{ backgroundColor: "#3AA6B9" }}
+                ></div>
               </div>
               <div className="mt-12 text-3xl  text-center">
                 Contact Information
@@ -441,6 +475,7 @@ function Form() {
                   type="button"
                   onClick={handleNextClick}
                   className="bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
+                  style={{ background: "#3AA6B9" }}
                 >
                   Next
                 </button>
@@ -461,7 +496,10 @@ function Form() {
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-purple-600 rounded-3xl w-3/5"></div>
+                <div
+                  className="h-full  rounded-3xl w-3/5"
+                  style={{ backgroundColor: "#3AA6B9" }}
+                ></div>
               </div>
               <div className="mt-12 text-3xl  text-center">
                 Personal Information
@@ -489,7 +527,7 @@ function Form() {
                     </span>
                   )}
                 </div>
-                <div className="mt-2">
+                {/* <div className="mt-2">
                   <label
                     htmlFor="aadhar_image_link"
                     className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -509,7 +547,7 @@ function Form() {
                   {errors.aadhar_image_link && (
                     <span className="text-red-500">{errors.aadhar_image_link}</span>
                   )}
-                </div>
+                </div> */}
                 <div className="mt-2">
                   <label
                     htmlFor="pan_card_no"
@@ -530,7 +568,7 @@ function Form() {
                     <span className="text-red-500">{errors.pan_card_no}</span>
                   )}
                 </div>
-                <div className="mt-2">
+                {/* <div className="mt-2">
                   <label
                     htmlFor="pan_image_link"
                     className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -550,7 +588,7 @@ function Form() {
                   {errors.pan_image_link && (
                     <span className="text-red-500">{errors.pan_image_link}</span>
                   )}
-                </div>
+                </div> */}
                 <div className="mt-4">
                   <label
                     htmlFor="bank_name"
@@ -647,6 +685,7 @@ function Form() {
                     type="button"
                     onClick={handleNextClick}
                     className="mt-10 bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
+                    style={{ background: "#3AA6B9" }}
                   >
                     Next
                   </button>
@@ -668,7 +707,10 @@ function Form() {
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-purple-500 rounded-3xl w-4/5"></div>
+                <div
+                  className="h-full  rounded-3xl w-4/5"
+                  style={{ backgroundColor: "#3AA6B9" }}
+                ></div>
               </div>
               <div className="mt-4 text-2xl  text-center">
                 Login Information
@@ -759,6 +801,7 @@ function Form() {
                   type="button"
                   onClick={handleNextClick}
                   className="bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
+                  style={{ background: "#3AA6B9" }}
                 >
                   Next
                 </button>
@@ -774,12 +817,15 @@ function Form() {
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
             >
-              <div className="text-base font-light text-center  ">Step 5/5</div>
+              <div className="text-base font-light text-center">Step 5/5</div>
               <div
                 className="mt-4 w-full h-2"
                 style={{ backgroundColor: "#e0cfc8" }}
               >
-                <div className="h-full bg-purple-500 rounded-3xl w-full"></div>
+                <div
+                  className="h-full rounded-3xl w-full"
+                  style={{ backgroundColor: "#3AA6B9" }}
+                ></div>
               </div>
               <div className="mt-4 text-2xl text-center">Payment Type</div>
               <div className="mt-4 text-xl text-center">
@@ -792,23 +838,54 @@ function Form() {
                 E-PIN
               </div>
               <div className="mt-4 max-w-sm mx-auto p-4 border rounded-lg shadow-md">
-                <div className="mb-4 p-2 bg-zinc-200 text-zinc-700 rounded">
-                  No E-Pin applied
-                </div>
-                <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-                  <input
-                    type="text"
-                    name="registration_pin"
-                    placeholder="Enter E-pin"
-                    className="flex-grow p-2 border rounded"
-                    value={formData.registration_pin}
-                    onChange={handleChange}
-                  />
-                  <button className="bg-black text-white p-2 rounded">
-                    Apply
-                  </button>
-                </div>
+              {userRole && userRole === "admin" ? (
+        <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
+          <input
+            type="text"
+            name="registration_pin"
+            placeholder="Enter E-pin"
+            required
+            className="flex-grow p-2 border rounded"
+            value={formData.registration_pin}
+            onChange={handleChange}
+          />
+        </div>
+      ) : userRole && userRole === "customer" ? (
+        Object.keys(ePins).length > 0 ? (
+          <select
+            id="pinSelect"
+            name="pinSelect"
+            value={formData.registration_pin}
+            onChange={(e) =>
+              setFormData({ ...formData, registration_pin: e.target.value })
+            }
+            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+          >
+            {pins.length > 0 ? (
+              <>
+                <option value="" selected>
+                  Select a pin
+                </option>
+                {pins.map((pin, index) => (
+                  <option key={index} value={pin}>
+                    {pin}
+                  </option>
+                ))}
+              </>
+            ) : (
+              <option value="" disabled>
+                No E-pins found
+              </option>
+            )}
+          </select>
+        ) : (
+          <p>Please purchase e-pins for registration.</p>
+        )
+      ) : (
+        <Loader />
+      )}
               </div>
+              
               <div className="flex justify-center mt-12">
                 <button
                   type="button"
@@ -819,8 +896,10 @@ function Form() {
                 </button>
                 <button
                   type="submit"
+
                   // onClick={redoStep}
-                  className=" bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded"
+                  className={`${formData.registration_pin ? '' : 'disabled-btn'} bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
+                  style={{ backgroundColor: "#3AA6B9" }}
                 >
                   Submit
                 </button>
@@ -828,6 +907,19 @@ function Form() {
             </motion.div>
           )}
         </form>
+        {/* {isSubmitted && (
+          <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+            <div className="bg-white text-black p-6 rounded shadow-lg">
+              <p>Submitted Successfully</p>
+              <button
+                onClick={() => setIsSubmitted(false)}
+                className="mt-4 bg-red-500 text-white py-2 px-4 rounded"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        )} */}
       </div>
     </div>
   );

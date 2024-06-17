@@ -25,9 +25,9 @@ const MyBarChart = () => {
   };
 
   return (
-    <div className="sm:w-96 h-96 mx-auto p-4 bg-white shadow-md rounded-lg flex justify-start" style={{height:"35vh"}}>
-    <Bar data={data} options={options} />
-  </div>
+    <div className="w-full md:w-96 mx-auto p-4 bg-white shadow-md rounded-lg" style={{ maxWidth: '100%', height: '35vh' }}>
+      <Bar data={data} options={options} />
+    </div>
   );
 };
 

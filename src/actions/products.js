@@ -1,6 +1,7 @@
 import * as api from '../api';
+import {  signout, signupAction } from './auth';
 
-export const addProduct = (selectedProduct) => async (dispatch) => {
+export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
     try {
         const cmLevelsArray = [
             selectedProduct.cmlevel1,
@@ -23,20 +24,41 @@ export const addProduct = (selectedProduct) => async (dispatch) => {
           console.log(productData);
       let reqBody = {productData:productData}
       const { data } = await api.addProduct(reqBody); //API CALL
-      //dispatch({ type: 'REGISTERCUSTOMER', data: data});
-      console.log(data)
+      
+      if( data?.response?.data?.message == 'Invalid token'){
+        dispatch({ type: 'SIGNOUT'});
+
+      }else{
+        dispatch({ type: 'ADD_PRODUCT', data: data.body["prodcutdetails: "]});
+
+      }
     } catch (error) {
+      if( error?.response?.data?.message == 'Invalid token'){
+        dispatch({ type: 'SIGNOUT'});
+
+      }
       console.log(error);
     }
   };
 
-export const productList = () => async (dispatch) =>{
+export const productList = (navigate) => async (dispatch) =>{
      try{
         // let reqBody = {productData:productData}
         const { data } = await api.getProduct(); //API CALL
-        dispatch({ type: 'ALL_PRODUCTS', data: data.body.productslist});
-        
+        console.log('prodts', data);
+        if( data?.response?.data?.message == 'Invalid token'){
+          dispatch({ type: 'SIGNOUT'});
+          
+        }else{
+        dispatch({ type: 'ALL_PRODUCTS', data: data?.body?.productslist});
+        console.log('vt',data.body.productslist);
+
+        }
      }catch(error){
         console.log(error);
+        if( error?.response?.data?.message == 'Invalid token'){
+          dispatch({ type: 'SIGNOUT'});
+        }
      }
-} 
+}
+ 

@@ -4,6 +4,7 @@ import { addProduct, productList } from "../actions/products";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ProductTable from "./ProductTable";
+import Loader from "./report/Loader";
 
 const Product = () => {
   const initialState = {
@@ -15,50 +16,87 @@ const Product = () => {
     commission: [],
     repurchase_commission: [],
     description: "",
-    inventory: "",
+    available_quantity: "",
     product_image_link: "",
-    cmlevel1:"",
-    cmlevel2:"",
-    cmlevel3:"",
-    cmlevel4:"",
-    cmlevel5:"",
-    cmlevel6:"",
-    rclevel1:"",
-    rclevel2:"",
-    rclevel3:"",
-    rclevel4:"",
-    rclevel5:"",
-    rclevel6:""
+    cmlevel1: "",
+    cmlevel2: "",
+    cmlevel3: "",
+    cmlevel4: "",
+    cmlevel5: "",
+    cmlevel6: "",
+    rclevel1: "",
+    rclevel2: "",
+    rclevel3: "",
+    rclevel4: "",
+    rclevel5: "",
+    rclevel6: "",
   };
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
- const dispatch =  useDispatch();
- const navigate = useNavigate();
-
-  const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
-  const editModal = () => setIsEditModalOpen(true);
-  const editCloseModal = () => setIsEditModalOpen(false);
-  const [selectedProduct, setSelectedProduct] = useState(initialState);
-  const [errors, setErrors] = useState({});
-  const [editProduct, setEditProduct] = useState({
-    id: "",
+  const editInitialState = {
+    adminid: "",
     name: "",
     price: "",
     validity_in_months: "",
     repurchasedDays: "",
-    commission: "level1",
-    repurchase_commission: "level1",
+    commission: [],
+    repurchase_commission: [],
     description: "",
-    inventory: "",
-  });
+    available_quantity: "",
+    product_image_link: "",
+    cmlevel1: "",
+    cmlevel2: "",
+    cmlevel3: "",
+    cmlevel4: "",
+    cmlevel5: "",
+    cmlevel6: "",
+    rclevel1: "",
+    rclevel2: "",
+    rclevel3: "",
+    rclevel4: "",
+    rclevel5: "",
+    rclevel6: "",
+  };
 
-  const allProducts = useSelector((state)=>state.products.allProducts)
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+  const editModal = (pid) => {
+    setIsEditModalOpen(true);
+    let product = allProducts.find(({ id }) => id == pid);
+    console.log("1 prod", product);
+    let [cmlevel1, cmlevel2, cmlevel3, cmlevel4, cmlevel5, cmlevel6] =
+      product.commission;
+    let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6] =
+      product.repurchase_commission;
+    setEditProduct({
+      ...editProduct,
+      ...product,
+      cmlevel1,
+      cmlevel2,
+      cmlevel3,
+      cmlevel4,
+      cmlevel5,
+      cmlevel6,
+      rclevel1,
+      rclevel2,
+      rclevel3,
+      rclevel4,
+      rclevel5,
+      rclevel6,
+    });
+  };
+  const editCloseModal = () => setIsEditModalOpen(false);
+  const [selectedProduct, setSelectedProduct] = useState(initialState);
+  const [errors, setErrors] = useState({});
+  const [editProduct, setEditProduct] = useState(editInitialState);
+
+  const allProducts = useSelector((state) => state.products.allProducts);
   useEffect(() => {
-    dispatch(productList());
-  }, [])
-  
+    dispatch(productList(navigate));
+  }, [dispatch]);
 
   const handleChange1 = (e) => {
     const { name, value, type, files } = e.target;
@@ -86,7 +124,7 @@ const Product = () => {
       commission: "level1",
       repurchase_commission: "level1",
       description: "",
-      inventory: "",
+      available_quantity: "",
     });
   };
 
@@ -118,9 +156,9 @@ const Product = () => {
         if (!value) error = "Repurchased days are required";
         else if (isNaN(value)) error = "Repurchased days must be a number";
         break;
-      case "inventory":
-        if (!value) error = "Inventory is required";
-        else if (isNaN(value)) error = "Inventory must be a number";
+      case "available_quantity":
+        if (!value) error = "available_quantity is required";
+        else if (isNaN(value)) error = "available_quantity must be a number";
         break;
       case "description":
         if (!value) error = "Description is required";
@@ -133,10 +171,28 @@ const Product = () => {
     }
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+
+    if (file) {
+      const reader = new FileReader();
+
+      reader.onloadend = () => {
+        const base64String = reader.result.split(',')[1]; // Removing the 'data:image/jpeg;base64,' part if needed
+        console.log('not passing base64String');
+        setSelectedProduct((prevProduct) => ({
+          ...prevProduct,
+          // Below line should be ----  product_image_link: base64String,
+          product_image_link: "base64String",
+        }));
+      };
+
+      reader.readAsDataURL(file);
+    }
+  };
 
   const handleSave = (e) => {
     e.preventDefault();
-
 
     const newErrors = {};
     Object.keys(selectedProduct).forEach((key) => {
@@ -149,7 +205,7 @@ const Product = () => {
       return;
     }
 
-    dispatch(addProduct(selectedProduct,navigate));
+    dispatch(addProduct(selectedProduct, navigate));
 
     // Proceed with form submission if no errors
     console.log("Form Submitted", selectedProduct);
@@ -157,20 +213,25 @@ const Product = () => {
     setIsModalOpen(false);
     // Add your form submission logic here
   };
-
+  const userRole = useSelector((state) => state.auth.userRole);
   return (
     <div className="p-4">
-      <div className="flex justify-end items-center mb-4">
+      {userRole && userRole == 'admin' && <div className="flex justify-end items-center mb-4">
         <button
           className="bg-purple-500 text-white px-4 py-2 rounded flex items-center hover:bg-purple-800"
           onClick={openModal}
+          style={{ background: "#3AA6B9" }}
         >
           <span className="mr-2">+</span> Add Product
         </button>
-      </div>
-      {allProducts &&  allProducts.length>0 ? <ProductTable products={allProducts} editModal={editModal}/> 
-     : <div>No Products found</div>
-     }
+      </div>}
+      
+      {allProducts && allProducts.length > 0 ? (
+        <ProductTable products={allProducts} editModal={editModal} />
+      ) : (
+        // <Loader/>
+        <h3>No Products Available</h3>
+      )}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 dark:bg-zinc-900 dark:bg-opacity-75 transition-opacity"></div>
@@ -251,7 +312,9 @@ const Product = () => {
                         value={selectedProduct.validity_in_months}
                         onChange={handleChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
-                          errors.validity_in_months ? "border-red-500" : "border-zinc-300"
+                          errors.validity_in_months
+                            ? "border-red-500"
+                            : "border-zinc-300"
                         } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                       />
                       {errors.validity_in_months && (
@@ -260,31 +323,6 @@ const Product = () => {
                         </p>
                       )}
                     </div>
-                    {/* <div className="mt-1">
-                      <label
-                        htmlFor="repurchasedDays"
-                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                      >
-                        Necessary Repurchased (in days)
-                      </label>
-                      <input
-                        type="text"
-                        id="repurchasedDays"
-                        name="repurchasedDays"
-                        value={selectedProduct.repurchasedDays}
-                        onChange={handleChange}
-                        className={`mt-1 block w-full px-3 py-2 border ${
-                          errors.repurchasedDays
-                            ? "border-red-500"
-                            : "border-zinc-300"
-                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
-                      />
-                      {errors.repurchasedDays && (
-                        <p className="text-red-500 text-xs mt-1">
-                          {errors.repurchasedDays}
-                        </p>
-                      )}
-                    </div> */}
                     <div className="mt-1">
                       <label
                         htmlFor="commission"
@@ -292,27 +330,13 @@ const Product = () => {
                       >
                         Purchase Commission
                       </label>
-                      {/* <select
-                        id="commission"
-                        name="commission"
-                        value={selectedProduct.commission}
-                        onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      >
-                        <option value="level1">Level 1</option>
-                        <option value="level2">Level 2</option>
-                        <option value="level3">Level 3</option>
-                        <option value="level4">Level 4</option>
-                        <option value="level5">Level 5</option>
-                        <option value="level6">Level 6</option>
-                      </select> */}
                       <input
                         type="text"
                         id="cmlevel1"
                         name="cmlevel1"
                         placeholder="Level 1"
                         value={selectedProduct.cmlevel1}
-                        onChange={(handleChange)}
+                        onChange={handleChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -368,20 +392,6 @@ const Product = () => {
                       >
                         Repurchase Commission
                       </label>
-                      {/* <select
-                        id="repurchase_commission"
-                        name="repurchase_commission"
-                        value={selectedProduct.repurchase_commission}
-                        onChange={handleChange}
-                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      >
-                        <option value="level1">Level 1</option>
-                        <option value="level2">Level 2</option>
-                        <option value="level3">Level 3</option>
-                        <option value="level4">Level 4</option>
-                        <option value="level5">Level 5</option>
-                        <option value="level6">Level 6</option>
-                      </select> */}
                       <input
                         type="text"
                         id="rclevel1"
@@ -436,7 +446,6 @@ const Product = () => {
                         onChange={handleChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
-                      
                     </div>
                     <div className="mt-1">
                       <label
@@ -450,9 +459,11 @@ const Product = () => {
                         id="product_image_link"
                         name="product_image_link"
                         accept="image/*"
-                        onChange={(e)=>{setSelectedProduct({...selectedProduct,product_image_link:e.target.files[0]})}}
+                        onChange={handleFileChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
-                          errors.product_image_link ? "border-red-500" : "border-zinc-300"
+                          errors.product_image_link
+                            ? "border-red-500"
+                            : "border-zinc-300"
                         } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                       />
                       {errors.product_image_link && (
@@ -488,26 +499,26 @@ const Product = () => {
                     </div>
                     <div className="mt-1">
                       <label
-                        htmlFor="inventory"
+                        htmlFor="available_quantity"
                         className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                       >
                         Inventory
                       </label>
                       <input
                         type="text"
-                        id="inventory"
-                        name="inventory"
-                        value={selectedProduct.inventory}
+                        id="available_quantity"
+                        name="available_quantity"
+                        value={selectedProduct.available_quantity}
                         onChange={handleChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
-                          errors.inventory
+                          errors.available_quantity
                             ? "border-red-500"
                             : "border-zinc-300"
                         } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
                       />
-                      {errors.inventory && (
+                      {errors.available_quantity && (
                         <p className="text-red-500 text-xs mt-1">
-                          {errors.inventory}
+                          {errors.available_quantity}
                         </p>
                       )}
                     </div>
@@ -519,6 +530,7 @@ const Product = () => {
               <button
                 type="submit"
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                style={{ background: "#3AA6B9" }}
               >
                 Save
               </button>
@@ -535,193 +547,317 @@ const Product = () => {
       )}
 
       {isEditModalOpen && (
-        <form onSubmit={handleSave1}>
-          <div className="fixed inset-0 flex items-center justify-center z-50">
-            <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 dark:bg-zinc-900 dark:bg-opacity-75 transition-opacity"></div>
-            <div
-              className="inline-block align-bottom bg-white dark:bg-zinc-700 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-md lg:max-w-sm w-full max-w-xs mx-4"
-              role="dialog"
-              aria-modal="true"
-              aria-labelledby="modal-title"
-            >
-              <div className="bg-white dark:bg-zinc-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[80vh]">
-                <h3
-                  className="text-lg leading-6 font-medium text-zinc-900 dark:text-zinc-200 w-full"
-                  id="modal-title"
-                >
-                  Edit Product
-                </h3>
-                <div className="mt-4">
-                  <div>
-                    <label
-                      htmlFor="pname"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Name
-                    </label>
-                    <input
-                      type="text"
-                      id="pname"
-                      name="name"
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={editProduct.name}
-                      onChange={handleChange1}
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="price"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Price
-                    </label>
-                    <input
-                      type="number"
-                      id="price"
-                      name="price"
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={editProduct.price}
-                      onChange={handleChange1}
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="image"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Image
-                    </label>
-                    <input
-                      type="file"
-                      id="image"
-                      name="image"
-                      accept="image/*"
-                      onChange={handleChange1}
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="validity_in_months"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Validity (in months)
-                    </label>
-                    <input
-                      type="text"
-                      id="validity_in_months"
-                      name="validity_in_months"
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={editProduct.validity_in_months}
-                      onChange={handleChange1}
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="repurchasedDays"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Necessary Repurchased (in days)
-                    </label>
-                    <input
-                      type="text"
-                      id="repurchasedDays"
-                      name="repurchasedDays"
-                      value={editProduct.repurchasedDays}
-                      onChange={handleChange1}
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="commission"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Purchase Commission
-                    </label>
-                    <select
-                      id="commission"
-                      name="commission"
-                      value={editProduct.commission}
-                      onChange={handleChange1}
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                      <option value="level1">Level 1</option>
-                      <option value="level2">Level 2</option>
-                      <option value="level3">Level 3</option>
-                    </select>
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="repurchase_commission"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Purchase Commission
-                    </label>
-                    <select
-                      id="repurchase_commission"
-                      name="repurchase_commission"
-                      value={editProduct.repurchase_commission}
-                      onChange={handleChange1}
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    >
-                      <option value="level1">Level 1</option>
-                      <option value="level2">Level 2</option>
-                      <option value="level3">Level 3</option>
-                    </select>
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="description"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Description
-                    </label>
-                    <textarea
-                      id="description"
-                      name="description"
-                      rows="3"
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                      value={editProduct.description}
-                      onChange={handleChange1}
-                    ></textarea>
-                  </div>
-                  <div className="mt-1">
-                    <label
-                      htmlFor="product_inventory"
-                      className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                    >
-                      Inventory
-                    </label>
-                    <input
-                      type="text"
-                      id="inventory"
-                      name="inventory"
-                      value={editProduct.inventory}
-                      onChange={handleChange1}
-                      className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                    />
+        <div className="fixed inset-0 flex items-center justify-center z-50">
+          <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 dark:bg-zinc-900 dark:bg-opacity-75 transition-opacity"></div>
+          <form
+            onSubmit={handleSave}
+            className="inline-block align-bottom bg-white dark:bg-zinc-700 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-md lg:max-w-sm w-full max-w-xs mx-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
+            <div className="bg-white dark:bg-zinc-800 px-4 pt-5 pb-4 sm:p-6 sm:pb-4 overflow-y-auto max-h-[80vh]">
+              <div className="sm:flex sm:items-start">
+                <div className="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
+                  <h3
+                    className="text-lg leading-6 font-medium text-zinc-900 dark:text-zinc-200"
+                    id="modal-title"
+                  >
+                    Edit Product
+                  </h3>
+                  <div className="mt-2">
+                    <div>
+                      <label
+                        htmlFor="name"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Name
+                      </label>
+                      <input
+                        type="text"
+                        id="name"
+                        name="name"
+                        value={editProduct.name}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full px-3 py-2 border ${
+                          errors.name ? "border-red-500" : "border-zinc-300"
+                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                      {errors.name && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.name}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="price"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Price
+                      </label>
+                      <input
+                        type="text"
+                        id="price"
+                        name="price"
+                        value={editProduct.price}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full px-3 py-2 border ${
+                          errors.price ? "border-red-500" : "border-zinc-300"
+                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                      {errors.price && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.price}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="validity_in_months"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Validity (in months)
+                      </label>
+                      <input
+                        type="text"
+                        id="validity_in_months"
+                        name="validity_in_months"
+                        value={editProduct.validity_in_months}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full px-3 py-2 border ${
+                          errors.validity_in_months
+                            ? "border-red-500"
+                            : "border-zinc-300"
+                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                      {errors.validity_in_months && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.validity_in_months}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="commission"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Purchase Commission
+                      </label>
+                      <input
+                        type="text"
+                        id="cmlevel1"
+                        name="cmlevel1"
+                        placeholder="Level 1"
+                        value={editProduct.cmlevel1}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="cmlevel2"
+                        name="cmlevel2"
+                        placeholder="Level 2"
+                        value={editProduct.cmlevel2}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="cmlevel3"
+                        name="cmlevel3"
+                        placeholder="Level 3"
+                        value={editProduct.cmlevel3}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="cmlevel4"
+                        name="cmlevel4"
+                        placeholder="Level 4"
+                        value={editProduct.cmlevel4}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="cmlevel5"
+                        name="cmlevel5"
+                        placeholder="Level 5"
+                        value={editProduct.cmlevel5}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="cmlevel6"
+                        name="cmlevel6"
+                        placeholder="Level 6"
+                        value={editProduct.cmlevel6}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="repurchase_commission"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Repurchase Commission
+                      </label>
+                      <input
+                        type="text"
+                        id="rclevel1"
+                        name="rclevel1"
+                        placeholder="Level 1"
+                        value={editProduct.rclevel1}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel2"
+                        name="rclevel2"
+                        placeholder="Level 2"
+                        value={editProduct.rclevel2}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel3"
+                        name="rclevel3"
+                        placeholder="Level 3"
+                        value={editProduct.rclevel3}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel4"
+                        name="rclevel4"
+                        placeholder="Level 4"
+                        value={editProduct.rclevel4}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel5"
+                        name="rclevel5"
+                        placeholder="Level 5"
+                        value={editProduct.rclevel5}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel6"
+                        name="rclevel6"
+                        placeholder="Level 6"
+                        value={editProduct.rclevel6}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="image"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Image
+                      </label>
+                      <input
+                        type="file"
+                        id="product_image_link"
+                        name="product_image_link"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                        className={`mt-1 block w-full px-3 py-2 border ${
+                          errors.product_image_link
+                            ? "border-red-500"
+                            : "border-zinc-300"
+                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                      {errors.product_image_link && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.product_image_link}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="description"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Description
+                      </label>
+                      <textarea
+                        id="description"
+                        name="description"
+                        rows="3"
+                        value={editProduct.description}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full px-3 py-2 border ${
+                          errors.description
+                            ? "border-red-500"
+                            : "border-zinc-300"
+                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      ></textarea>
+                      {errors.description && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.description}
+                        </p>
+                      )}
+                    </div>
+                    <div className="mt-1">
+                      <label
+                        htmlFor="available_quantity"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Inventory
+                      </label>
+                      <input
+                        type="text"
+                        id="available_quantity"
+                        name="available_quantity"
+                        value={editProduct.available_quantity}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full px-3 py-2 border ${
+                          errors.available_quantity
+                            ? "border-red-500"
+                            : "border-zinc-300"
+                        } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                      {errors.available_quantity && (
+                        <p className="text-red-500 text-xs mt-1">
+                          {errors.available_quantity}
+                        </p>
+                      )}
+                    </div>
                   </div>
                 </div>
               </div>
-              <div className="bg-zinc-50 dark:bg-zinc-600 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
-                <button
-                  type="submit"
-                  className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
-                >
-                  Save
-                </button>
-                <button
-                  type="button"
-                  className="mt-3 w-full inline-flex justify-center rounded-md border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
-                  onClick={editCloseModal}
-                >
-                  Cancel
-                </button>
-              </div>
             </div>
-          </div>
-        </form>
+            <div className="bg-zinc-50 dark:bg-zinc-600 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse">
+              <button
+                type="submit"
+                className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
+                style={{ background: "#3AA6B9" }}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                className="mt-3 w-full inline-flex justify-center rounded-md border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:mt-0 sm:w-auto sm:text-sm"
+                onClick={editCloseModal}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        </div>
       )}
     </div>
   );

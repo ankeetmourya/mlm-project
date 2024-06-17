@@ -18,30 +18,59 @@ export const signin = (userData,role, navigate) => async (dispatch) => {
     const { data } = await api.signin(reqBody,role); //API CALL
     dispatch({ type: 'AUTH', data: data.body});
     console.log(data.body)
+    navigate('/dashboard');
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const syncUser = (userData) => async (dispatch) => {
+  try {
+    dispatch({ type: 'SYNC_USER', data: userData});
+  } catch (error) {
+    if( error.response.data.message == 'Invalid token'){
+      signout(navigate)
+    }
+    console.log(error);
+  }
+};
+
+
+export const signout = (navigate) =>  (dispatch) => {
+  try {
+    dispatch({ type: 'SIGNOUT'});
     navigate('/');
   } catch (error) {
     console.log(error);
   }
 };
 
-export const signout = (navigate) => async (dispatch) => {
+export const setRole = (role) =>  (dispatch) => {
   try {
-    
-    dispatch({ type: 'SIGNOUT'});
-    navigate('/login');
+    dispatch({ type: 'SET_ROLE', data: role});
   } catch (error) {
     console.log(error);
   }
 };
 
 
-export const registerCustomer = (userData) => async (dispatch) => {
+export const registerCustomer = (userData, navigate) => async (dispatch) => {
   try {
     let reqBody = {customer:userData}
     const { data } = await api.registerCustomer(reqBody); //API CALL
-    dispatch({ type: 'REGISTERCUSTOMER', data: data});
+    if( data?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
+
+    }else{
+      dispatch({ type: 'REGISTERCUSTOMER', data: data});
+
+    }
     console.log(data)
   } catch (error) {
+    if( error?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
+
+    }
     console.log(error);
   }
 };

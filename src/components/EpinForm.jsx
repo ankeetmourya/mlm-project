@@ -1,101 +1,134 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from "react";
+import { addEPins, fetchPins } from "../actions/ePin";
+import { useDispatch, useSelector } from "react-redux";
+import { signin } from "../actions/auth";
+import { useNavigate } from "react-router-dom";
+import Loader from "./report/Loader";
 
 const EpinForm = () => {
+  const adminUsername = useSelector((state)=> state?.auth?.authData?.admin?.username || "")
+  const userRole = useSelector((state) => state.auth.userRole);
+  const epinAdded = useSelector((state) => state.epins.epin_added);
+  const [submitStatus, setSubmitStatus] = useState(null); // State to track submission status
+
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [formData, setFormData] = useState({
-    username: '',
-    amount: '',
-    epinCount: '',
-    discount: '',
-    expiryDate: '',
-    employeeCode: ''
+    username: "",
+    amount_received: "",
+    count_of_pins: "",
+    discount: "",
+    validity_months: "",
+    customer_id: "",
+    admin_username: adminUsername
   });
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
 
   const openModal = () => setIsModalOpen(true);
-  const closeModal = () => setIsModalOpen(false);
+  const closeModal = () => {
+    setIsModalOpen(false);
+    setSubmitStatus(null); // Reset submit status when modal closes
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData({
       ...formData,
-      [name]: value
+      [name]: value,
     });
   };
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(formData); // Print form data to console
-    setFormData({  // Reset form fields
-      username: '',
-      amount: '',
-      epinCount: '',
-      discount: '',
-      expiryDate: '',
-      employeeCode: ''
-    });
-  }
-  const handleCheckboxChange = (e) => {
-    setIsPopupVisible(e.target.checked);
+    try {
+       let a = dispatch(addEPins(formData, navigate));
+       console.log('dis res', a);
+      //  dispatch(signin(formData, role, navigate));
+      setFormData({
+        // Reset form fields
+        username: "",
+        amount_received: "",
+        count_of_pins: "",
+        discount: "",
+        validity_months: "",
+        customer_id: "",
+        admin_username:adminUsername
+      });
+      setTimeout(()=>{
+        dispatch({ type: 'CLEAR_EPINS_SUCCESS'})
+      },6000)
+    } catch (error) {
+      console.error("Error adding ePin:", error);
+      setSubmitStatus("failure");
+    }
   };
+
+
+  const adminId = useSelector((state)=> state.auth.authData.admin?.adminid)
+  const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
+  const ePins = useSelector((state)=> state.epins.epins)
+  console.log('epins',ePins);
+  const { pins, amount_received, expiry_date, status } = ePins;
+  useEffect(() => {
+    if(userRole && userRole == 'admin'){
+      //fetch epins for admin
+    }else{
+    dispatch(fetchPins(customerUsername)) //customerId
+
+    }
+  }, [userRole])
+  
+
+  // const handleCheckboxChange = (e) => {
+  //   setIsPopupVisible(e.target.checked);
+  // };
 
   return (
     <div className="p-4 bg-zinc-50 dark:bg-zinc-800">
+      
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-semibold">E-PIN</h1>
-        <button
-          className="bg-purple-500 hover:bg-purple-800 text-white py-2 px-4 rounded-lg "
+        {userRole && userRole == 'admin' &&<button
+          className="bg-purple-500 hover:bg-purple-800 text-white py-2 px-4 rounded-lg"
           onClick={openModal}
+          style={{ background: "#3AA6B9" }}
         >
           + Add E-pin
-        </button>
+        </button>}
       </div>
+      {Object.keys(ePins).length> 0 ?
       <div className="overflow-x-auto">
-        <table className="min-w-full bg-white dark:bg-zinc-700 rounded-lg shadow">
-          <thead>
-            <tr className="bg-zinc-100 dark:bg-zinc-600">
-              <th className="p-4 text-left">Member</th>
-              <th className="p-4 text-left">E-pin</th>
-              <th className="p-4 text-left">Amount</th>
-              <th className="p-4 text-left">Expiry Date</th>
-              <th className="p-4 text-left">Status</th>
+      <table className="min-w-full bg-white dark:bg-zinc-700 rounded-lg shadow">
+        <thead>
+          <tr className="bg-zinc-100 dark:bg-zinc-600">
+            <th className="p-4 text-left">E-pin</th>
+            <th className="p-4 text-left">Amount</th>
+            <th className="p-4 text-left">Expiry Date</th>
+            <th className="p-4 text-left">Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          {pins.map((pin, index) => (
+            <tr key={index} className="border-b border-zinc-200 dark:border-zinc-600">
+              <td className="p-4 text-sm">{pin}</td>
+              <td className="p-4 text-blue-600 text-sm">$ {amount_received}</td>
+              <td className="p-4 text-sm">{new Date(expiry_date).toLocaleDateString()}</td>
+              <td className="p-4 text-blue-600 text-sm">{status}</td>
             </tr>
-          </thead>
-          <tbody>
-            <tr className="border-b border-zinc-200 dark:border-zinc-600">
-              <td className="p-4 flex items-center">
-                <input type="checkbox" className="mr-2"  onChange={handleCheckboxChange} />
-                <img src="https://placehold.co/40x40" alt="User" className="rounded-full mr-2" />
-                <div>
-                  <p className="font-semibold">No</p>
-                  <p className="text-zinc-500 dark:text-zinc-300">INF00123</p>
-                </div>
-              </td>
-              <td className="p-4 text-sm">PT97SED8Z7</td>
-              <td className="p-4 text-blue-600 text-sm">$ 10</td>
-              <td className="p-4 text-sm">December 1, 2024</td>
-              <td className="p-4 text-blue-600 text-sm">active</td>
-            </tr>
-            <tr className="border-b border-zinc-200 dark:border-zinc-600">
-              <td className="p-4 flex items-center">
-                <input type="checkbox" className="mr-2" onChange={handleCheckboxChange}/>
-                <img src="https://placehold.co/40x40" alt="User" className="rounded-full mr-2" />
-                <div>
-                  <p className="font-semibold">No</p>
-                  <p className="text-zinc-500 dark:text-zinc-300">INF00123</p>
-                </div>
-              </td>
-              <td className="p-4 text-sm">PT97SED8Z7</td>
-              <td className="p-4 text-blue-600 text-sm">$ 10</td>
-              <td className="p-4 text-sm">December 1, 2024</td>
-              <td className="p-4 text-blue-600 text-sm">active</td>
-            </tr>
-          </tbody>
-        </table>
-      </div>
-
+          ))}
+        </tbody>
+      </table>
+      </div>:
+      // <Loader/>
+      <h3>No Epins Available</h3>
+    }
       {isModalOpen && (
-        <div id="epinModal" className="fixed inset-0 bg-zinc-600 bg-opacity-50 flex items-center justify-center">
+        <div
+          id="epinModal"
+          className="fixed inset-0 bg-zinc-600 bg-opacity-50 flex items-center justify-center"
+        >
           <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-lg max-w-md w-full md:max-w-sm">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-bold">Add New E-Pin</h2>
@@ -108,8 +141,13 @@ const EpinForm = () => {
               </button>
             </div>
             <form className="text-sm" onSubmit={handleSubmit}>
-              <div className="mb-4">
-                <label htmlFor="username" className="block text-sm font-medium text-zinc-700 dark:text-zinc-300">Username <span className="text-red-500">*</span></label>
+              <div className="mb-2">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Username <span className="text-red-500">*</span>
+                </label>
                 <div className="relative mt-1">
                   <input
                     type="text"
@@ -124,45 +162,48 @@ const EpinForm = () => {
                 </div>
               </div>
               <div className="mb-2">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-1" htmlFor="amount">
-                  Amount <span className="text-red-500">*</span>
-                </label>
-                <select
-                  className="w-full p-1 border border-zinc-300 rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
-                  id="amount"
-                  name="amount"
-                  required
-                  value={formData.amount}
-                  onChange={handleChange}
+                <label
+                  className="block text-zinc-700 dark:text-zinc-300 mb-1"
+                  htmlFor="count_of_pins"
                 >
-                  <option>Select Amount</option>
-                  <option value="1">1</option>
-                  <option value="5">5</option>
-                  <option value="10">10</option>
-                  <option value="20">20</option>
-                  <option value="50">50</option>
-                  <option value="100">100</option>
-                  <option value="500">500</option>
-                  <option value="1000">1000</option>
-                </select>
-              </div>
-              <div className="mb-2">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-1" htmlFor="epinCount">
                   E-Pin Count <span className="text-red-500">*</span>
                 </label>
                 <input
-                  className="w-full p-1 border border-zinc-300 rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-z inc-300"
+                  className="w-full p-1 border border-zinc-300 rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
                   type="text"
-                  id="epinCount"
-                  name="epinCount"
+                  id="count_of_pins"
+                  name="count_of_pins"
                   placeholder="E-Pin Count"
                   required
-                  value={formData.epinCount}
+                  value={formData.count_of_pins}
                   onChange={handleChange}
                 />
               </div>
               <div className="mb-2">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-1" htmlFor="discount">
+                <label
+                  className="block text-zinc-700 dark:text-zinc-300 mb-1"
+                  htmlFor="amount_received"
+                >
+                  Amount <span className="text-red-500">*</span>
+                </label>
+                <div className="relative mt-1">
+                  <input
+                    type="text"
+                    id="amount_received"
+                    name="amount_received"
+                    placeholder="Amount"
+                    className="block w-full p-2 border border-zinc-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white"
+                    required
+                    value={formData.amount_received}
+                    onChange={handleChange}
+                  />
+                </div>
+              </div>
+              <div className="mb-2">
+                <label
+                  className="block text-zinc-700 dark:text-zinc-300 mb-1"
+                  htmlFor="discount"
+                >
                   Discount <span className="text-red-500">*</span>
                 </label>
                 <input
@@ -177,54 +218,77 @@ const EpinForm = () => {
                 />
               </div>
               <div className="mb-2">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-1" htmlFor="expiryDate">
-                  Expiry Date <span className="text-red-500">*</span>
+                <label
+                  className="block text-zinc-700 dark:text-zinc-300 mb-1"
+                  htmlFor="validity_months"
+                >
+                  Validity (in months) <span className="text-red-500">*</span>
                 </label>
                 <input
                   className="w-full p-1 border border-zinc-300 rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
-                  type="date"
-                  id="expiryDate"
-                  name="expiryDate"
+                  type="number"
+                  id="validity_months"
+                  name="validity_months"
                   required
-                  value={formData.expiryDate}
+                  value={formData.validity_months}
                   onChange={handleChange}
                 />
               </div>
               <div className="mb-2">
-                <label className="block text-zinc-700 dark:text-zinc-300 mb-1" htmlFor="employeeCode">
+                <label
+                  className="block text-zinc-700 dark:text-zinc-300 mb-1"
+                  htmlFor="customer_id"
+                >
                   Employee Code <span className="text-red-500">*</span>
                 </label>
                 <input
                   className="w-full p-1 border border-zinc-300 rounded-lg dark:bg-zinc-700 dark:border-zinc-600 dark:text-zinc-300"
                   type="text"
-                  id="employeeCode"
-                  name="employeeCode"
+                  id="customer_id"
+                  name="customer_id"
                   placeholder="Employee Code"
                   required
-                  value={formData.employeeCode}
+                  value={formData.customer_id}
                   onChange={handleChange}
                 />
               </div>
-              <button className="mt-4 bg-purple-600 text-white p-2 rounded-lg w-full" type="submit">Save</button>
+              <button
+                className="mt-4 bg-purple-600 text-white p-2 rounded-lg w-full"
+                style={{ background: "#3AA6B9" }}
+                type="submit"
+              >
+                Save
+              </button>
+              {/* Display success or failure message */}
+              {epinAdded && Object.keys(epinAdded).length > 0 && (
+                <span className="text-green-500 block mt-2">
+                  Epin added successfully
+                </span>
+              )}
+              {submitStatus === "failure" && (
+                <span className="text-red-500 block mt-2">Cannot add Epin</span>
+              )}
             </form>
           </div>
         </div>
       )}
+      {/* Popup for multiple selection */}
       {isPopupVisible && (
-      <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-zinc-800 text-white rounded-lg p-4 flex items-center space-x-4 shadow-lg">
-      <div>1 item selected</div>
-      <div>
-        <button className="bg-black text-white px-4 py-2 rounded-md mr-2">
-          Block
-        </button>
-        <button className="bg-red-500 text-white px-4 py-2 rounded-md">
-          Delete
-        </button>
-      </div>
-    </div>
+        <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-zinc-800 text-white rounded-lg p-4 flex items-center space-x-4 shadow-lg">
+          <div>1 item selected</div>
+          <div>
+            <button className="bg-black text-white px-4 py-2 rounded-md mr-2">
+              Block
+            </button>
+            <button className="bg-red-500 text-white px-4 py-2 rounded-md">
+              Delete
+            </button>
+          </div>
+        </div>
       )}
     </div>
   );
 };
 
 export default EpinForm;
+
