@@ -1,5 +1,5 @@
 import React, { useRef,useState } from "react";
-import designerImage from "E:\\MLM Software\\mlm_software\\public\\assets\\img1.jpg"; // Import the image
+import designerImage from '../../public/assets/img1.jpg';
 import { IoAlarmSharp,IoSettings,IoBagHandle  } from "react-icons/io5";
 import { FaArrowsAlt ,FaUndo } from "react-icons/fa";
 import { FiSlack } from "react-icons/fi";
@@ -13,30 +13,29 @@ const LandingPage = () => {
     address:"",
     city:"",
     state:"",
-    mobile:"",
+    phone:"",
     email:""
   }
 
-  const [isSubmitted, setIsSubmitted] = useState(false);
+  // const [isSubmitted, setIsSubmitted] = useState(false);
   const [formData, setFormData] = useState(data)
   
-  const handleChange = (e) => {
-    e.preventDefault();
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
+  // const handleChange = (e) => {
+  //   e.preventDefault();
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  // };
 
-  const handleSubmit = (e) => {
-    event.preventDefault();
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-    console.log(formData);
-    setIsSubmitted(true);
+  // const handleSubmit = (e) => {
+  //   event.preventDefault();
+  //   setFormData({ ...formData, [e.target.name]: e.target.value });
+  //   console.log()
+  //   setIsSubmitted(true);
 
-    // Hide the dialog box after 3 seconds
-    setTimeout(() => {
-      setIsSubmitted(false);
-    }, 4000);
-    setFormData(data);
-  };
+  //   // Hide the dialog box after 3 seconds
+  //   setTimeout(() => {
+  //     setIsSubmitted(false);
+  //   }, 4000);
+  // };
 
 
   const sectionStyle = {
@@ -61,12 +60,12 @@ const LandingPage = () => {
           <span className="text-black">Business Opportunity</span>
         </div>
         <div className="text-sm">
-          <span>(+91) 845-345-6789 | </span>
+          <span>(800) 345-6789 | </span>
           <span>info@s1shoppy.com | </span>
            <NavLink
               to="/login"
             >
-              <span>Login</span>
+              <span className="mt-6 bg-red-500 text-white py-2 px-4 rounded">Login</span>
             </NavLink>
         </div>
       </header>
@@ -98,7 +97,7 @@ const LandingPage = () => {
             <div className="text-6xl mb-4">
               <FiSlack />
             </div>
-            <h3 className="text-xl font-bold">NO TECHNICAL HASSLE</h3>
+            <h3 className="text-xl font-bold">NO LIMITATIONS</h3>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt.
@@ -118,7 +117,7 @@ const LandingPage = () => {
             <div className="text-6xl mb-4">
               <FaArrowsAlt />
             </div>
-            <h3 className="text-xl font-bold">STAY FOCUSED</h3>
+            <h3 className="text-xl font-bold">NO LIMITATIONS</h3>
             <p>
               Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
               eiusmod tempor incididunt.
@@ -280,7 +279,7 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section
+      {/* <section
       ref={scrollToSectionRef}
       className="bg-red-500 text-white py-12 text-center"
     >
@@ -364,7 +363,7 @@ const LandingPage = () => {
           </div>
         )}
       </div>
-    </section>
+    </section> */}
 
       <footer className="bg-zinc-800 text-white py-4 text-center">
         <p>&copy; Copyright 2024-2025. All Rights Reserved</p>
