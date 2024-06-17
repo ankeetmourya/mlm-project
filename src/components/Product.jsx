@@ -7,6 +7,8 @@ import ProductTable from "./ProductTable";
 import Loader from "./report/Loader";
 
 const Product = () => {
+
+  
   const initialState = {
     adminid: "",
     name: "",
@@ -263,6 +265,7 @@ const Product = () => {
                         type="text"
                         id="name"
                         name="name"
+                        required
                         value={selectedProduct.name}
                         onChange={handleChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
@@ -286,6 +289,7 @@ const Product = () => {
                         type="text"
                         id="price"
                         name="price"
+                        required
                         value={selectedProduct.price}
                         onChange={handleChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
@@ -311,6 +315,7 @@ const Product = () => {
                         name="validity_in_months"
                         value={selectedProduct.validity_in_months}
                         onChange={handleChange}
+                        required
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.validity_in_months
                             ? "border-red-500"
@@ -508,6 +513,7 @@ const Product = () => {
                         type="text"
                         id="available_quantity"
                         name="available_quantity"
+                        required
                         value={selectedProduct.available_quantity}
                         onChange={handleChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
