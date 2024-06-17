@@ -73,7 +73,9 @@ const App = () => {
             ) : (
               ""
             )}
-            <Route path="*" element={<ErrorPage />}></Route>
+            {/* <Route path="*" element={<ErrorPage />}></Route> */}
+            <Route path="/login" element={<Login />}></Route>
+            <Route path="/logincustomer" element={<LoginCustomer />} />
 
           </>
         ) : (
