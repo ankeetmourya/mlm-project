@@ -35,6 +35,7 @@ export const signin = (userData,role) => {
 }
 export const registerCustomer = (userData) => API.post(`/addcustomer`, userData);
 export const addProduct = (productData) => API.post(`/addproducts`,productData);
+export const editProduct = (productData) => API.put(`/products`,productData);
 export const getProduct = () => API.get(`/products`);
 export const getUsername = () => API.get(`/getusername`);
 export const getAdminReports = (id) => API.get(`/admin/report/${id}`);

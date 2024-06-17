@@ -49,7 +49,7 @@ const LoginAdmin = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="flex items-center justify-between mt-1 mb-1 bg-white dark:bg-zinc-800 p-2 md:p-4 shadow-md">
+      <div className="flex absolute w-full items-center justify-between mb-1 bg-white dark:bg-zinc-800 p-2 md:p-4 shadow-md">
         <div className="flex items-center">
           <img
             src="./assets/Designer.jpeg"
@@ -60,14 +60,14 @@ const LoginAdmin = () => {
             S1 Shoppy
           </span>
         </div>
-        <div className="flex items-center space-x-4">
+        {/* <div className="flex items-center space-x-4">
           <NavLink
             to="/logincustomer"
             className="flex text-sm items-center justify-center px-3 py-2 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50flex text-sm items-center justify-center px-3 py-2 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50"
           >
             <span>Customer Login</span>
           </NavLink>
-        </div>
+        </div> */}
       </div>
       <div
         className="flex items-center justify-center h-screen bg-zinc-100 dark:bg-zinc-800 px-4 overflow-hidden"

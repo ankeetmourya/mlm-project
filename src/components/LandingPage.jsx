@@ -1,25 +1,24 @@
-import React, { useRef,useState } from "react";
-import designerImage from '../../public/assets/img1.jpg';
-import { IoAlarmSharp,IoSettings,IoBagHandle  } from "react-icons/io5";
-import { FaArrowsAlt ,FaUndo } from "react-icons/fa";
+import React, { useRef, useState } from "react";
+import designerImage from "../../public/assets/img1.jpg";
+import { IoAlarmSharp, IoSettings, IoBagHandle } from "react-icons/io5";
+import { FaArrowsAlt, FaUndo } from "react-icons/fa";
 import { FiSlack } from "react-icons/fi";
 import { MdPayment } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 
 const LandingPage = () => {
-
   const data = {
-    name:"",
-    address:"",
-    city:"",
-    state:"",
-    phone:"",
-    email:""
-  }
+    name: "",
+    address: "",
+    city: "",
+    state: "",
+    phone: "",
+    email: "",
+  };
 
   // const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState(data)
-  
+  const [formData, setFormData] = useState(data);
+
   // const handleChange = (e) => {
   //   e.preventDefault();
   //   setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -37,7 +36,6 @@ const LandingPage = () => {
   //   }, 4000);
   // };
 
-
   const sectionStyle = {
     backgroundImage: `url(${designerImage})`,
     backgroundSize: "cover",
@@ -53,21 +51,21 @@ const LandingPage = () => {
   return (
     <div className="bg-zinc-100 text-zinc-900 dark:bg-zinc-900 dark:text-zinc-100">
       <header
-        className="bg-zinc-800 text-white p-4 flex justify-between items-center"
+        className="bg-zinc-800 text-white p-4 flex flex-col sm:flex-row justify-between items-center"
         style={{ backgroundColor: "#3AA6B9" }}
       >
-        <div className="text-2xl font-bold">
-          <span className="text-black">Business Opportunity</span>
+        <div className="text-2xl font-bold mb-2 sm:mb-0">
+          <span className="text-black">SAMARTH DAILYNEED MULTITRADE</span>
         </div>
-        <div className="text-sm">
-          <span>(800) 345-6789 | </span>
-          <span>info@s1shoppy.com | </span>
-           <NavLink
-              to="/login"
-            >
-              <span className="mt-6 bg-red-500 text-white py-2 px-4 rounded">Login</span>
-            </NavLink>
-        </div>
+        <div className="text-sm flex flex-col sm:flex-row justify-center items-center">
+  <span className="mb-2 sm:mb-0">(+91) 940-345-6789 | </span>
+  <span className="mb-2 sm:mb-0">info@s1shoppy.com | </span>
+  <NavLink to="/logincustomer" className="mt-2 sm:mt-0 sm:ml-4">
+    <span className="bg-red-500 text-white py-2 px-4 rounded inline-block">Login</span>
+  </NavLink>
+</div>
+
+
       </header>
 
       <section
@@ -78,9 +76,13 @@ const LandingPage = () => {
         <div className="relative z-10 text-center text-white p-8">
           <h1 className="text-4xl font-bold">START YOUR NEW BUSINESS TODAY</h1>
           <p className="mt-4">
-            Sed ut perspiciatis unde omnis iste natus error sit voluptatem
-            accusantium doloremque laudantium, totam rem aperiam, quis eaque
-            ipsa quae ab illo inventore veritatis.
+            Take charge of your future by starting your own business today. Turn
+            your passion into a profession and make an impact in your community.
+            Don't wait—seize the opportunity to build your dreams and achieve
+            financial independence. Whether it's unique products, innovative
+            services, or creative solutions, now is the time to begin your
+            entrepreneurial journey. Let your ambition guide you and start your
+            business today.
           </p>
           <button
             className="mt-6 bg-red-500 text-white py-2 px-4 rounded"
@@ -97,10 +99,10 @@ const LandingPage = () => {
             <div className="text-6xl mb-4">
               <FiSlack />
             </div>
-            <h3 className="text-xl font-bold">NO LIMITATIONS</h3>
+            <h3 className="text-xl font-bold">NO TECHNICAL HASSLE</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt.
+              Enjoy effortless functionality and peace of mind with our no
+              technical hassle solutions.
             </p>
           </div>
           <div className="w-1/3 p-4 flex flex-col items-center">
@@ -109,18 +111,18 @@ const LandingPage = () => {
             </div>
             <h3 className="text-xl font-bold">NO LIMITATIONS</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt.
+              Embrace boundless opportunities and unlimited potential—there are
+              no limitations.
             </p>
           </div>
           <div className="w-1/3 p-4 flex flex-col items-center">
             <div className="text-6xl mb-4">
               <FaArrowsAlt />
             </div>
-            <h3 className="text-xl font-bold">NO LIMITATIONS</h3>
+            <h3 className="text-xl font-bold">STAY FOCUSED</h3>
             <p>
-              Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-              eiusmod tempor incididunt.
+              Stay focused on your goals by minimizing distractions and managing
+              your time effectively.
             </p>
           </div>
         </div>
@@ -131,17 +133,18 @@ const LandingPage = () => {
           <div className="w-full md:w-1/2 p-4">
             <h2 className="text-3xl font-bold">CREATE YOUR BUSINESS</h2>
             <p className="mt-4">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-              cupidatat non proident, sunt in culpa qui officia deserunt mollit
-              anim id est laborum.
+              Embark on the journey of entrepreneurship and turn your vision
+              into reality. Launching your own business allows you to build
+              something meaningful, shape your own future, and make a difference
+              in the world. From crafting innovative products to offering
+              essential services, starting a business empowers you to follow
+              your passions and contribute to your community.
             </p>
             <p className="mt-4">
-              Quis autem vel eum iure reprehenderit qui in ea voluptate velit
-              esse quam nihil molestiae consequatur, vel illum qui dolorem eum
-              fugiat quo voluptas nulla pariatur. Neque porro quisquam est, qui
-              dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-              sed quia.
+              Take the first step today and bring your ideas to life, fueled by
+              determination and a drive for success. With dedication and
+              creativity, your business can thrive, creating opportunities for
+              growth and leaving a lasting impact.
             </p>
             <button className="mt-6 bg-red-500 text-white py-2 px-4 rounded">
               GET STARTED
@@ -167,33 +170,35 @@ const LandingPage = () => {
               </div>
               <h3 className="text-xl font-bold">AUTOMATION</h3>
               <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt.
+                Automate repetitive tasks and streamline processes using tools
+                like Zapier, reducing manual effort and enhancing efficiency
+                across operations.
               </p>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/4 p-4 items-center">
               <div className="text-6xl mb-4 flex items-center justify-center">
-              <MdPayment />
+                <MdPayment />
               </div>
               <h3 className="text-xl font-bold">RECURRING PAYMENTS</h3>
               <p className="text-sm mt-2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                Facilitate recurring payments seamlessly with automated
+                scheduling, ensuring timely transactions and convenience for
+                users.
               </p>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/4 p-4 items-center">
               <div className="text-6xl mb-4 flex items-center justify-center">
-              <FaUndo />
+                <FaUndo />
               </div>
               <h3 className="text-xl font-bold">INTUITIVE</h3>
               <p className="text-sm mt-2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+                The intuitive interface ensures ease of use, allowing users to
+                navigate effortlessly and achieve their tasks efficiently.
               </p>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/4 p-4 items-center">
               <div className="text-6xl mb-4 flex items-center justify-center">
-              <IoBagHandle />
+                <IoBagHandle />
               </div>
               <h3 className="text-xl font-bold">EXTENSIBLE</h3>
               <p className="text-sm mt-2">
@@ -208,25 +213,22 @@ const LandingPage = () => {
       <section className="bg-zinc-800 text-white py-12">
         <div className="container mx-auto flex flex-wrap items-center">
           <div className="w-full md:w-1/2 p-4">
-            <img
-              src="./assets/img3.jpg"
-              alt="100% Online & Secure"
-            />
+            <img src="./assets/img4.jpg" alt="100% Online & Secure" />
           </div>
           <div className="w-full md:w-1/2 p-4">
             <h2 className="text-3xl font-bold">100% ONLINE & SECURE</h2>
             <p className="mt-4">
-              Duis aute irure dolor in reprehenderit in voluptate velit esse
-              cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat
-              cupidatat non proident, sunt in culpa qui officia deserunt mollit
-              anim id est laborum.
+              Experience the convenience and peace of mind of our fully online
+              and secure platform. Whether you're managing transactions,
+              accessing data, or collaborating remotely, our robust digital
+              infrastructure ensures seamless operations and protects your
+              information with state-of-the-art security measures.
             </p>
             <p className="mt-4">
-              Quis autem vel eum iure reprehenderit qui in ea voluptate velit
-              esse quam nihil molestiae consequatur, vel illum qui dolorem eum
-              fugiat quo voluptas nulla pariatur. Neque porro quisquam est, qui
-              dolorem ipsum quia dolor sit amet, consectetur, adipisci velit,
-              sed quia.
+              Enjoy the flexibility to conduct business from anywhere, knowing
+              that your privacy and data integrity are safeguarded at all times.
+              Embrace the future of digital empowerment with confidence, knowing
+              that our commitment to online security is unwavering.
             </p>
             <button className="mt-6 bg-red-500 text-white py-2 px-4 rounded">
               GET STARTED
@@ -235,45 +237,43 @@ const LandingPage = () => {
         </div>
       </section>
 
-      <section className="py-12 text-center">
+      <section className="py-8 md:py-12 text-center">
         <div className="container mx-auto">
           <h2 className="text-3xl font-bold">TESTIMONIALS</h2>
           <div className="flex flex-wrap justify-center mt-8">
             <div className="w-full sm:w-1/2 md:w-1/4 p-4">
               <p className="italic">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+                "Using this platform has been a game-changer for my business.
+                The tools are intuitive, and customer support is top-notch. I've
+                seen a significant increase in productivity and customer
+                satisfaction since I started."
               </p>
-              <p className="mt-4 font-bold">JOHN SMITH</p>
+              <p className="mt-4 font-bold">ANUJ KUMAR</p>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/4 p-4">
               <p className="italic">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+                "As a freelancer, managing payments has never been easier. The
+                recurring payment feature saves me time, and the interface is
+                straightforward. I highly recommend it!"
               </p>
-              <p className="mt-4 font-bold">KIMBERLY CARTER</p>
+              <p className="mt-4 font-bold">DEEPAK BHOSALE</p>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/4 p-4">
               <p className="italic">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+                "I rely on this service for its reliability and automation. It
+                seamlessly handles our recurring payments, freeing up valuable
+                time that we can now focus on growing our business."
               </p>
-              <p className="mt-4 font-bold">DANIEL SCOTT</p>
+              <p className="mt-4 font-bold">MANOJ PATIL</p>
             </div>
             <div className="w-full sm:w-1/2 md:w-1/4 p-4">
               <p className="italic">
-                "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut
-                enim ad minim veniam quis nostrud exercitation ullamco laboris
-                nisi ut aliquip ex ea commodo consequat."
+                "The intuitive design of the platform makes it easy for me to
+                manage client engagements. It's user-friendly and ensures that
+                my clients receive prompt and accurate invoices. I couldn't ask
+                for more!"
               </p>
-              <p className="mt-4 font-bold">LINDA HILL</p>
+              <p className="mt-4 font-bold">SHRETA THAKUR</p>
             </div>
           </div>
         </div>

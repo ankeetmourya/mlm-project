@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, productList } from "../actions/products";
+import { addProduct, editProductAction, productList } from "../actions/products";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ProductTable from "./ProductTable";
@@ -34,7 +34,6 @@ const Product = () => {
     rclevel6: "",
   };
   const editInitialState = {
-    adminid: "",
     name: "",
     price: "",
     validity_in_months: "",
@@ -108,27 +107,7 @@ const Product = () => {
     }));
   };
 
-  const handleSave1 = (e) => {
-    e.preventDefault();
-    console.log(editProduct);
-    // Add your logic here to insert the form data
-    // For example, you can make an API call to save the data
-    // After inserting the data, you can close the modal and reset the form
-    editCloseModal(); // Close the modal
-    setEditProduct({
-      // Reset the form fields
-      id: "",
-      name: "",
-      price: "",
-      img: "",
-      validity_in_months: "",
-      repurchasedDays: "",
-      commission: "level1",
-      repurchase_commission: "level1",
-      description: "",
-      available_quantity: "",
-    });
-  };
+ 
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -138,6 +117,15 @@ const Product = () => {
     }));
 
     validateInput(name, value);
+  };
+
+  const handleEditChange = (e) => {
+    const { name, value, files } = e.target;
+    setEditProduct((prevProduct) => ({
+      ...prevProduct,
+      [name]: files ? files[0] : value,
+    }));
+
   };
 
   const validateInput = (name, value) => {
@@ -192,6 +180,14 @@ const Product = () => {
       reader.readAsDataURL(file);
     }
   };
+
+  const handleEditProduct = (e)=>{
+    e.preventDefault();
+    dispatch(editProductAction(editProduct, navigate));
+
+    console.log("Form Submitted", editProduct);
+    setEditProduct(initialState);
+  }
 
   const handleSave = (e) => {
     e.preventDefault();
@@ -556,7 +552,7 @@ const Product = () => {
         <div className="fixed inset-0 flex items-center justify-center z-50">
           <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 dark:bg-zinc-900 dark:bg-opacity-75 transition-opacity"></div>
           <form
-            onSubmit={handleSave}
+            onSubmit={handleEditProduct}
             className="inline-block align-bottom bg-white dark:bg-zinc-700 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-md lg:max-w-sm w-full max-w-xs mx-4"
             role="dialog"
             aria-modal="true"
@@ -584,7 +580,7 @@ const Product = () => {
                         id="name"
                         name="name"
                         value={editProduct.name}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.name ? "border-red-500" : "border-zinc-300"
                         } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
@@ -607,7 +603,7 @@ const Product = () => {
                         id="price"
                         name="price"
                         value={editProduct.price}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.price ? "border-red-500" : "border-zinc-300"
                         } dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
@@ -630,7 +626,7 @@ const Product = () => {
                         id="validity_in_months"
                         name="validity_in_months"
                         value={editProduct.validity_in_months}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.validity_in_months
                             ? "border-red-500"
@@ -656,7 +652,7 @@ const Product = () => {
                         name="cmlevel1"
                         placeholder="Level 1"
                         value={editProduct.cmlevel1}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -665,7 +661,7 @@ const Product = () => {
                         name="cmlevel2"
                         placeholder="Level 2"
                         value={editProduct.cmlevel2}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -674,7 +670,7 @@ const Product = () => {
                         name="cmlevel3"
                         placeholder="Level 3"
                         value={editProduct.cmlevel3}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -683,7 +679,7 @@ const Product = () => {
                         name="cmlevel4"
                         placeholder="Level 4"
                         value={editProduct.cmlevel4}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -692,7 +688,7 @@ const Product = () => {
                         name="cmlevel5"
                         placeholder="Level 5"
                         value={editProduct.cmlevel5}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -701,7 +697,7 @@ const Product = () => {
                         name="cmlevel6"
                         placeholder="Level 6"
                         value={editProduct.cmlevel6}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -718,7 +714,7 @@ const Product = () => {
                         name="rclevel1"
                         placeholder="Level 1"
                         value={editProduct.rclevel1}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -727,7 +723,7 @@ const Product = () => {
                         name="rclevel2"
                         placeholder="Level 2"
                         value={editProduct.rclevel2}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -736,7 +732,7 @@ const Product = () => {
                         name="rclevel3"
                         placeholder="Level 3"
                         value={editProduct.rclevel3}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -745,7 +741,7 @@ const Product = () => {
                         name="rclevel4"
                         placeholder="Level 4"
                         value={editProduct.rclevel4}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -754,7 +750,7 @@ const Product = () => {
                         name="rclevel5"
                         placeholder="Level 5"
                         value={editProduct.rclevel5}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                       <input
@@ -763,7 +759,7 @@ const Product = () => {
                         name="rclevel6"
                         placeholder="Level 6"
                         value={editProduct.rclevel6}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
                     </div>
@@ -779,7 +775,7 @@ const Product = () => {
                         id="product_image_link"
                         name="product_image_link"
                         accept="image/*"
-                        onChange={handleFileChange}
+                        onChange={handleEditChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.product_image_link
                             ? "border-red-500"
@@ -804,7 +800,7 @@ const Product = () => {
                         name="description"
                         rows="3"
                         value={editProduct.description}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.description
                             ? "border-red-500"
@@ -829,7 +825,7 @@ const Product = () => {
                         id="available_quantity"
                         name="available_quantity"
                         value={editProduct.available_quantity}
-                        onChange={handleChange}
+                        onChange={handleEditChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.available_quantity
                             ? "border-red-500"

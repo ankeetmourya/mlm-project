@@ -41,6 +41,47 @@ export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
     }
   };
 
+  
+  
+  export const editProductAction = (product, navigate) => async (dispatch) => {
+    try {
+        const cmLevelsArray = [
+          product.cmlevel1,
+          product.cmlevel2,
+          product.cmlevel3,
+          product.cmlevel4,
+          product.cmlevel5,
+          product.cmlevel6,
+          ];
+      
+          const rcLevelsArray = [
+            product.rclevel1,
+            product.rclevel2,
+            product.rclevel3,
+            product.rclevel4,
+            product.rclevel5,
+            product.rclevel6,
+          ];
+          let productData = {...product,'commission':cmLevelsArray,'repurchase_commission':rcLevelsArray}
+          console.log(productData);
+      let reqBody = {product:productData}
+      const { data } = await api.editProduct(reqBody); //API CALL
+      console.log('res edit', data);
+      if( data?.response?.data?.message == 'Invalid token'){
+        dispatch({ type: 'SIGNOUT'});
+
+      }else{
+        dispatch({ type: 'ADD_PRODUCT', data: data.body["prodcutdetails: "]});
+
+      }
+    } catch (error) {
+      if( error?.response?.data?.message == 'Invalid token'){
+        dispatch({ type: 'SIGNOUT'});
+
+      }
+      console.log(error);
+    }
+  };
 export const productList = (navigate) => async (dispatch) =>{
      try{
         // let reqBody = {productData:productData}

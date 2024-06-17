@@ -74,13 +74,13 @@ const App = () => {
               ""
             )}
             {/* <Route path="*" element={<ErrorPage />}></Route> */}
-            <Route path="/login" element={<Login />}></Route>
+            <Route path="/admin" element={<Login />}></Route>
             <Route path="/logincustomer" element={<LoginCustomer />} />
 
           </>
         ) : (
           <>
-            <Route path="/login" element={<Login />}></Route>
+            <Route path="/admin" element={<Login />}></Route>
             <Route path="/logincustomer" element={<LoginCustomer />} />
             <Route path="/" element={<LandingPage />}></Route>
             <Route path="*" element={<LandingPage />}></Route>
