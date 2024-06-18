@@ -71,7 +71,7 @@ export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
         dispatch({ type: 'SIGNOUT'});
 
       }else{
-        dispatch({ type: 'ADD_PRODUCT', data: data.body["prodcutdetails: "]});
+        dispatch({ type: 'ADD_PRODUCT', data: data.body["productdetails"]});
 
       }
     } catch (error) {

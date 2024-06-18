@@ -53,10 +53,10 @@ const ProductTable = ({ products, editModal,deleteModal }) => {
                     {product.validity_in_months}
                   </td>
                   <td className="py-2 px-2 sm:px-4 whitespace-nowrap">
-                    {product.commission.map((item) => item || 0).join(", ")}
+                    {product?.commission.map((item) => item || 0).join(", ")}
                   </td>
                   <td className="py-2 px-2 sm:px-4 whitespace-nowrap">
-                    {product.repurchase_commission
+                    {product?.repurchase_commission
                       .map((item) => item || 0)
                       .join(", ")}
                   </td>

@@ -209,6 +209,7 @@ const Product = () => {
 
     console.log("Form Submitted", editProduct);
     setEditProduct(initialState);
+    setIsEditModalOpen(false);
   }
 
   const handleSave = (e) => {
