@@ -13,11 +13,39 @@ import Loader from "./report/Loader";
 
 function Form() {
   let user = JSON.parse(localStorage.getItem("user"));
+  const userRole = useSelector((state) => state.auth.userRole);
+  let id = "";
+  let sponserUsername = "";
+  let sponserName = "";
+  if (userRole && userRole === "admin") {
+    id = useSelector((state) => state.auth.authData.admin?.adminid);
+    sponserUsername = useSelector(
+      (state) => state.auth.authData.admin?.username
+    );
+    sponserName = useSelector(
+      (state) =>
+        state.auth.authData.admin?.first_name +
+        " " +
+        state.auth.authData.admin?.last_name
+    );
+  } else if (userRole && userRole === "customer") {
+    id = useSelector((state) => state.auth.authData.customer?.id);
+    sponserUsername = useSelector(
+      (state) => state.auth.authData.customer?.username
+    );
+    sponserName = useSelector(
+      (state) =>
+        state.auth.authData.customer?.first_name +
+        " " +
+        state.auth.authData.customer?.last_name
+    );
+  }
+
   const initialState = {
-    sponsererid: (user && user?.admin?.adminid) || "",
-    adminid: (user && user?.admin?.adminid) || "",
-    sponserer_username: "",
-    sponserer_name: "",
+    sponsererid: (user && id) || "",
+    adminid: (userRole == "admin" ? id : user?.customer?.adminid) || "",
+    sponserer_username: (user && sponserUsername) || "",
+    sponserer_name: (user && sponserName) || "",
     product_id: "",
     acceptTerms: false,
     first_name: "",
@@ -38,6 +66,7 @@ function Form() {
     password: "",
     confirmPassword: "",
     registration_pin: "",
+    pins_for_refferal: [1],
   };
   const [formData, setFormData] = useState(initialState);
   const [errors, setErrors] = useState({});
@@ -47,32 +76,22 @@ function Form() {
   const navigate = useNavigate();
   const customer = useSelector((state) => state.registerCustomer);
   const [isSubmitted, setIsSubmitted] = useState(false);
+  const [successMsg, setSuccessMsg] = useState("");
+  const [failedMsg, setFailedMsg] = useState("");
 
-  console.log(customer);
 
   const allProducts = useSelector((state) => state.products.allProducts);
-  const userRole = useSelector((state) => state.auth.userRole);
-  const ePins = useSelector((state)=> state.epins.epins)
-  const adminId = useSelector((state)=> state.auth.authData.admin?.adminid)
-  const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
+  const ePins = useSelector((state) => state.epins.epins);
+  const adminId = useSelector((state) => state.auth.authData.admin?.adminid);
+  const customerUsername = useSelector(
+    (state) => state.auth.authData.customer?.username
+  );
   const { pins, amount_received, expiry_date, status } = ePins;
 
-
-  let sponserUsername = "";
-  if (userRole && userRole === 'admin') {
-    sponserUsername = useSelector((state) => state.auth.authData.admin?.username);
-  } else if (userRole && userRole === 'customer') {
-    sponserUsername = useSelector((state) => state.auth.authData.customer?.username);
-  }
   useEffect(() => {
-    if(userRole && userRole == 'admin'){
-      //fetch epins for admin
-    }else{
-    dispatch(fetchPins(customerUsername))
+    dispatch(fetchPins(sponserUsername));
+  }, [userRole]);
 
-    }
-  }, [userRole])
-  console.log(allProducts);
   useEffect(() => {
     dispatch(productList(navigate));
   }, [dispatch]);
@@ -80,7 +99,7 @@ function Form() {
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
-   
+
     setTimeout(() => {
       setIsSubmitted(false);
     }, 4000);
@@ -88,7 +107,6 @@ function Form() {
       ...prevData,
       [name]: value,
     }));
-
 
     // Clear the error for the current field
     setErrors((prevErrors) => ({
@@ -112,7 +130,7 @@ function Form() {
 
   const validateSecond = () => {
     const newErrors = {};
-    const mobileNoWithoutSpaces = formData.mobileNo.replace(/\s+/g, '');
+    const mobileNoWithoutSpaces = formData.mobileNo.replace(/\s+/g, "");
 
     if (!formData.first_name.trim()) {
       newErrors.first_name = "First Name is required";
@@ -141,9 +159,10 @@ function Form() {
       newErrors.email = "Invalid email address";
     }
     if (!mobileNoWithoutSpaces) {
-      newErrors.mobileNo = 'Mobile number is required';
+      newErrors.mobileNo = "Mobile number is required";
     } else if (!/^\d{10}$/.test(mobileNoWithoutSpaces)) {
-      newErrors.mobileNo = 'Invalid mobile number. Please enter a 10-digit number';
+      newErrors.mobileNo =
+        "Invalid mobile number. Please enter a 10-digit number";
     }
 
     setErrors(newErrors);
@@ -217,7 +236,7 @@ function Form() {
       nextStep();
       let { data } = await api.getUsername();
       let userName = data.body.username;
-      console.log("data", userName);
+      
       setFormData((prevData) => ({
         ...prevData,
         ["username"]: userName,
@@ -242,11 +261,22 @@ function Form() {
   const handleSubmit = (e) => {
     e.preventDefault();
     // dispatch(addProduct(selectedProduct,navigate));
-    dispatch(registerCustomer(formData, navigate));
-    console.log(formData);
+    dispatch(registerCustomer(formData, navigate)).then((data) => {
+      if(data && data.status == 200){
+        setSuccessMsg("Customer Registered Successfully...");
+      }else{
+        setFailedMsg("Registration Failed: please try again in some time...");
+      }
+      console.log("dataaa", data);
+      setStep(6);
+      setTimeout(() => {
+        setSuccessMsg("");
+        setFailedMsg("");
+        setStep(1);
+      }, 3000);
+    });
     setIsSubmitted(true);
     // setFormData(initialState);
-  
   };
 
   return (
@@ -289,8 +319,8 @@ function Form() {
                   name="sponserer_username" // This should match your formData property
                   className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                   // style={{ backgroundColor: "#e0cfc8" }}
-                  value={sponserUsername || ""} // This correctly points to formData.name
-                  // onChange={handleChange}
+                  value={formData.sponserer_username} // This correctly points to formData.name
+                  onChange={handleChange}
                   readOnly
                 />
                 {errors.sponserer_username && (
@@ -308,7 +338,7 @@ function Form() {
                   // style={{ backgroundColor: "#e0cfc8" }}
                   value={formData.sponserer_name} // This should point to formData.number
                   onChange={handleChange}
-                  required
+                  readOnly
                 />
                 {errors.sponserer_name && (
                   <div className="text-red-500 text-sm">
@@ -828,9 +858,6 @@ function Form() {
                 ></div>
               </div>
               <div className="mt-4 text-2xl text-center">Payment Type</div>
-              <div className="mt-4 text-xl text-center">
-                Total Amount : $ 128.67
-              </div>
               <div
                 className="mt-5 text-center"
                 style={{ fontSize: "2.5rem", fontWeight: "bold" }}
@@ -838,54 +865,39 @@ function Form() {
                 E-PIN
               </div>
               <div className="mt-4 max-w-sm mx-auto p-4 border rounded-lg shadow-md">
-              {userRole && userRole === "admin" ? (
-        <div className="flex flex-col space-y-2 md:flex-row md:space-y-0 md:space-x-2">
-          <input
-            type="text"
-            name="registration_pin"
-            placeholder="Enter E-pin"
-            required
-            className="flex-grow p-2 border rounded"
-            value={formData.registration_pin}
-            onChange={handleChange}
-          />
-        </div>
-      ) : userRole && userRole === "customer" ? (
-        Object.keys(ePins).length > 0 ? (
-          <select
-            id="pinSelect"
-            name="pinSelect"
-            value={formData.registration_pin}
-            onChange={(e) =>
-              setFormData({ ...formData, registration_pin: e.target.value })
-            }
-            className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-          >
-            {pins.length > 0 ? (
-              <>
-                <option value="" selected>
-                  Select a pin
-                </option>
-                {pins.map((pin, index) => (
-                  <option key={index} value={pin}>
-                    {pin}
-                  </option>
-                ))}
-              </>
-            ) : (
-              <option value="" disabled>
-                No E-pins found
-              </option>
-            )}
-          </select>
-        ) : (
-          <p>Please purchase e-pins for registration.</p>
-        )
-      ) : (
-        <Loader />
-      )}
+                {ePins && Object.keys(ePins).length > 0 && (
+                  <select
+                    id="pinSelect"
+                    name="pinSelect"
+                    value={formData.registration_pin}
+                    onChange={(e) =>
+                      setFormData({
+                        ...formData,
+                        registration_pin: e.target.value,
+                      })
+                    }
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                  >
+                    {pins.length > 0 ? (
+                      <>
+                        <option value="">
+                          Select a pin
+                        </option>
+                        {pins.map((pin, index) => (
+                          <option key={index} value={pin}>
+                            {pin}
+                          </option>
+                        ))}
+                      </>
+                    ) : (
+                      <option value="" disabled>
+                        No E-pins found
+                      </option>
+                    )}
+                  </select>
+                )}
               </div>
-              
+
               <div className="flex justify-center mt-12">
                 <button
                   type="button"
@@ -896,9 +908,10 @@ function Form() {
                 </button>
                 <button
                   type="submit"
-
                   // onClick={redoStep}
-                  className={`${formData.registration_pin ? '' : 'disabled-btn'} bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
+                  className={`${
+                    formData.registration_pin ? "" : "disabled-btn"
+                  } bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
                   style={{ backgroundColor: "#3AA6B9" }}
                 >
                   Submit
@@ -906,6 +919,16 @@ function Form() {
               </div>
             </motion.div>
           )}
+          {step === 6 &&
+            (successMsg ? (
+              <div className="p-10 text-center border border-green-600 flex text-green-600 flex justify-center items-center">
+                <h3>{successMsg} </h3>{" "}
+              </div>
+            ) : (
+              <div className="p-10 text-center border border-red-600 flex text-red-600 flex justify-center items-center">
+              <h3>{failedMsg}</h3>
+              </div>
+            ))}
         </form>
         {/* {isSubmitted && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

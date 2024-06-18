@@ -70,15 +70,11 @@ const EpinForm = () => {
   const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
   const ePins = useSelector((state)=> state.epins.epins)
   console.log('epins',ePins);
-  const { pins, amount_received, expiry_date, status } = ePins;
+  const { pins, amount_received, expiry_date, status,used_pins } = ePins;
   useEffect(() => {
-    if(userRole && userRole == 'admin'){
-      //fetch epins for admin
-    }else{
-    dispatch(fetchPins(customerUsername)) //customerId
-
-    }
-  }, [userRole])
+    let userName = userRole && userRole == "admin" && adminUsername || customerUsername
+    dispatch(fetchPins(userName)) //customerId
+  }, [dispatch])
   
 
   // const handleCheckboxChange = (e) => {
@@ -98,8 +94,8 @@ const EpinForm = () => {
           + Add E-pin
         </button>}
       </div>
-      {Object.keys(ePins).length> 0 ?
-      <div className="overflow-x-auto">
+      {Object.keys(ePins).length> 0 ? 
+      <div className="overflow-x-auto max-h-[450px]">
       <table className="min-w-full bg-white dark:bg-zinc-700 rounded-lg shadow">
         <thead>
           <tr className="bg-zinc-100 dark:bg-zinc-600">
@@ -110,6 +106,14 @@ const EpinForm = () => {
           </tr>
         </thead>
         <tbody>
+          {used_pins.map((pin,index)=>(
+            <tr key={pin} className="border-b border-zinc-200 dark:border-zinc-600">
+            <td className="p-4 text-sm">{pin}</td>
+            <td className="p-4 text-blue-600 text-sm">$ {amount_received}</td>
+            <td className="p-4 text-sm">{new Date(expiry_date).toLocaleDateString()}</td>
+            <td className="p-4 text-red-600 text-sm">Used</td>
+          </tr>
+          ))}
           {pins.map((pin, index) => (
             <tr key={index} className="border-b border-zinc-200 dark:border-zinc-600">
               <td className="p-4 text-sm">{pin}</td>

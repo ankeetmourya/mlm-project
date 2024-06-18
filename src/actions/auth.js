@@ -57,15 +57,16 @@ export const setRole = (role) =>  (dispatch) => {
 export const registerCustomer = (userData, navigate) => async (dispatch) => {
   try {
     let reqBody = {customer:userData}
-    const { data } = await api.registerCustomer(reqBody); //API CALL
+    const  data  = await api.registerCustomer(reqBody); //API CALL
     if( data?.response?.data?.message == 'Invalid token'){
       dispatch({ type: 'SIGNOUT'});
 
     }else{
-      dispatch({ type: 'REGISTERCUSTOMER', data: data});
-
+      dispatch({ type: 'REGISTERCUSTOMER', data: data.data});
     }
-    console.log(data)
+    console.log("hiii ", data)
+    return data;
+    
   } catch (error) {
     if( error?.response?.data?.message == 'Invalid token'){
       dispatch({ type: 'SIGNOUT'});

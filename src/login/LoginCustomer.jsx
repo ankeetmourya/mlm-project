@@ -26,8 +26,6 @@ const LoginCustomer = () => {
     }
     if (!formData.password) {
       errors.password = "Password is required";
-    } else if (formData.password.length < 6) {
-      errors.password = "Password must be at least 6 characters";
     }
     setErrors(errors);
     return Object.keys(errors).length === 0;

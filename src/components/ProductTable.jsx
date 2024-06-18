@@ -1,14 +1,14 @@
 import React from "react";
 import { useSelector } from "react-redux";
 
-const ProductTable = ({ products, editModal }) => {
+const ProductTable = ({ products, editModal,deleteModal }) => {
   console.log(products);
 
   const userRole = useSelector((state) => state.auth.userRole);
 
   return (
     <div className="p-4">
-      <div className="overflow-x-auto">
+      <div className="overflow-x-auto max-h-[420px]">
         <table className="min-w-full bg-white border border-gray-200">
           <thead className="bg-gray-100 border-b">
             <tr>
@@ -24,7 +24,7 @@ const ProductTable = ({ products, editModal }) => {
               <th className="py-2 px-2 sm:px-4 text-left">
                 Repurchase Commission
               </th>
-              <th className="py-2 px-2 sm:px-4 text-left">Image Link</th>
+              {/* <th className="py-2 px-2 sm:px-4 text-left">Image Link</th> */}
               {userRole && userRole == "admin" && (
                 <th className="py-2 px-2 sm:px-4 text-left">Action</th>
               )}
@@ -60,16 +60,18 @@ const ProductTable = ({ products, editModal }) => {
                       .map((item) => item || 0)
                       .join(", ")}
                   </td>
-                  <td className="py-2 px-2 sm:px-4 whitespace-nowrap">
+                  {/* <td className="py-2 px-2 sm:px-4 whitespace-nowrap">
                     {product.product_image_link}
-                  </td>
+                  </td> */}
                   {userRole && userRole == "admin" && (
                     <td className="py-2 px-2 sm:px-4 text-sm flex space-x-2">
                       <i
                         className="fas fa-edit text-blue-500 cursor-pointer"
                         onClick={() => editModal(product.id)}
-                      ></i>
-                      <i className="fas fa-trash text-red-500 cursor-pointer"></i>
+                      ></i>                      
+                      <i className="fas fa-trash text-red-500 cursor-pointer" onClick={()=>(
+                        deleteModal(product.id)
+                      )}></i>
                     </td>
                   )}
                 </tr>

@@ -5,6 +5,9 @@ export default (state = { allProducts: [] }, action) => {
         case "ADD_PRODUCT":
           console.log("ADD_PRODUCT", action?.data);
           return { ...state, allProducts: [...state.allProducts,  action?.data] };
+          case "DELETE_PRODUCT":
+            let products = state.allProducts.filter(({id})=>id!=action.data)
+            return {...state,allProducts: [...products]}
       default:
         return state;
     }

@@ -103,3 +103,24 @@ export const productList = (navigate) => async (dispatch) =>{
      }
 }
  
+ 
+export const deleteProductAction = (product, navigate) => async (dispatch) => {
+  try {
+        let productData = {...product}
+        console.log("data product", productData);
+    let reqBody = {product:productData}
+    const { data } = await api.editProduct(reqBody); //API CALL
+    console.log('delete data', data);
+    if( data?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
+    }else{
+      dispatch({ type: 'DELETE_PRODUCT', data: data?.body?.productdetails?.id});
+    }
+  } catch (error) {
+    if( error?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
+
+    }
+    console.log(error);
+  }
+};

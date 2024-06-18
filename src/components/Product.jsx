@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addProduct, editProductAction, productList } from "../actions/products";
+import { addProduct, deleteProductAction, editProductAction, productList } from "../actions/products";
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ProductTable from "./ProductTable";
@@ -59,6 +59,7 @@ const Product = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -89,7 +90,28 @@ const Product = () => {
       rclevel6,
     });
   };
+
+  const deleteModal = (pid) => {
+    setDeleteModalOpen(true);
+    let product = allProducts.find(({ id }) => id == pid);
+    console.log("1 prod", product);
+    let [cmlevel1, cmlevel2, cmlevel3, cmlevel4, cmlevel5, cmlevel6] =
+      product.commission;
+    let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6] =
+      product.repurchase_commission;
+    setEditProduct({
+      ...product,
+      deleted_at: new Date().toISOString()
+    });
+  };
+
+  const deleteProduct= ()=>{
+    dispatch(deleteProductAction(editProduct, navigate)); 
+    deleteCloseModal();
+  }
+
   const editCloseModal = () => setIsEditModalOpen(false);
+  const deleteCloseModal = () => setDeleteModalOpen(false);
   const [selectedProduct, setSelectedProduct] = useState(initialState);
   const [errors, setErrors] = useState({});
   const [editProduct, setEditProduct] = useState(editInitialState);
@@ -225,7 +247,7 @@ const Product = () => {
       </div>}
       
       {allProducts && allProducts.length > 0 ? (
-        <ProductTable products={allProducts} editModal={editModal} />
+        <ProductTable products={allProducts} editModal={editModal} deleteModal={deleteModal}/>
       ) : (
         // <Loader/>
         <h3>No Products Available</h3>
@@ -860,6 +882,32 @@ const Product = () => {
             </div>
           </form>
         </div>
+      )}
+
+      {deleteModalOpen && (
+         <div className="fixed inset-0 flex items-center justify-center z-50">
+         <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 dark:bg-zinc-900 dark:bg-opacity-75 transition-opacity"></div>
+         
+         <form
+            // onSubmit={handleEditProduct}
+            className="inline-block align-bottom bg-white dark:bg-zinc-700 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full md:max-w-md lg:max-w-sm w-full max-w-xs mx-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="modal-title"
+          >
+            <div className="p-8 text-center ">
+            <div className="text-lg">
+              Are you sure to delete this product
+            </div>
+            <div className="flex justify-evenly py-3">
+              <button onClick={deleteCloseModal} className="text-white px-4 py-2 rounded flex items-center" style={{ background: "#3AA6B9" }}>Cancel</button>
+              <button onClick={(e)=>{e.preventDefault()
+                 deleteProduct()}} className="bg-red-500 text-white px-4 py-2 rounded flex items-center hover:bg-red-600">Delete</button>
+            </div>
+            </div>
+            
+            </form>
+       </div>
       )}
     </div>
   );

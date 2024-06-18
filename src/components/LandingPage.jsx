@@ -58,8 +58,8 @@ const LandingPage = () => {
           <span className="text-black">SAMARTH DAILYNEED MULTITRADE</span>
         </div>
         <div className="text-sm flex flex-col sm:flex-row justify-center items-center">
-  <span className="mb-2 sm:mb-0">(+91) 940-345-6789 | </span>
-  <span className="mb-2 sm:mb-0">info@s1shoppy.com | </span>
+  <span className="mb-2 sm:mb-0">(+91) 940-345-6789</span>
+  <span className="mb-2 sm:mb-0">| info@s1shoppy.com | </span>
   <NavLink to="/logincustomer" className="mt-2 sm:mt-0 sm:ml-4">
     <span className="bg-red-500 text-white py-2 px-4 rounded inline-block">Login</span>
   </NavLink>
