@@ -103,15 +103,27 @@ function Navbar({ component }) {
               <span>E-Pin</span>
             </NavLink>
 
-            <NavLink
-              to="/products"
-              className={`flex items-center p-2 rounded-md ${getNavLinkClass(
-                "/products"
-              )}`}
-              onClick={handleNavLinkClick}
-            >
-              <span>Products</span>
-            </NavLink>
+            {userRole && userRole == "customer" ? (
+              <NavLink
+                to="/orderhistory"
+                className={`flex items-center p-2 rounded-md ${getNavLinkClass(
+                  "/orderhistory"
+                )}`}
+                onClick={handleNavLinkClick}
+              >
+                <span>Purchase History</span>
+              </NavLink>
+            ) : (
+              <NavLink
+                to="/products"
+                className={`flex items-center p-2 rounded-md ${getNavLinkClass(
+                  "/products"
+                )}`}
+                onClick={handleNavLinkClick}
+              >
+                <span>Products</span>
+              </NavLink>
+            )}
 
             {userRole && userRole != "customer" ? (
               <>

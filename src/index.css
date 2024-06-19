@@ -8,3 +8,12 @@ body {
   pointer-events: none;
   opacity: 0.5;
 }
+.rd3t-tree-container{
+height: 88% !important;
+}
+.mobileTree{
+ height: 625px;
+}
+.desktopTree{
+height: 500px;
+}

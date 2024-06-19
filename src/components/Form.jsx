@@ -67,6 +67,7 @@ function Form() {
     confirmPassword: "",
     registration_pin: "",
     pins_for_refferal: [1],
+    address:""
   };
   const [formData, setFormData] = useState(initialState);
   const [errors, setErrors] = useState({});
@@ -121,9 +122,9 @@ function Form() {
     if (!formData.sponserer_name.trim()) {
       newErrors.sponserer_name = "Sponsor Full Name is required";
     }
-    // if (!formData.product_id) {
-    //   newErrors.product_id = "Please select a product";
-    // }
+    if (!formData.product_id) {
+      newErrors.product_id = "Please select a product";
+    }
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0; // Returns true if no errors
   };
@@ -163,6 +164,9 @@ function Form() {
     } else if (!/^\d{10}$/.test(mobileNoWithoutSpaces)) {
       newErrors.mobileNo =
         "Invalid mobile number. Please enter a 10-digit number";
+    }
+    if (!formData.address.trim()) {
+      newErrors.address = "Address is required";
     }
 
     setErrors(newErrors);
@@ -287,7 +291,7 @@ function Form() {
         </div>
         <form
           onSubmit={handleSubmit}
-          className="mt-8 md:w-4/5 mx-auto rounded-3xl"
+          className="md:w-4/5 mx-auto rounded-3xl"
           style={{ backgroundColor: "#fff" }}
         >
           {step === 1 && (
@@ -401,17 +405,23 @@ function Form() {
                   style={{ backgroundColor: "#3AA6B9" }}
                 ></div>
               </div>
-              <div className="mt-12 text-3xl  text-center">
+              <div className="mt-10 text-3xl  text-center">
                 Contact Information
               </div>
               <div>
                 <div>
+                <label
+                    htmlFor="first_name"
+                    className="mt-4 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    First Name
+                  </label>
                   <input
                     type="text"
                     placeholder="First Name"
                     required
                     name="first_name"
-                    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    className="mt-2 w-full border border-gray-300 rounded p-2 focus:outline-none"
                     value={formData.first_name}
                     onChange={handleChange}
                   />
@@ -420,12 +430,18 @@ function Form() {
                   )}
                 </div>
                 <div>
+                <label
+                    htmlFor="last_name"
+                    className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Last Name
+                  </label>
                   <input
                     type="text"
                     placeholder="Last Name"
                     required
                     name="last_name"
-                    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    className="mt-2 w-full border border-gray-300 rounded p-2 focus:outline-none"
                     value={formData.last_name}
                     onChange={handleChange}
                   />
@@ -434,11 +450,17 @@ function Form() {
                   )}
                 </div>
                 <div>
+                <label
+                    htmlFor="date"
+                    className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Date of Birth
+                  </label>
                   <input
                     type="date"
                     name="date"
                     placeholder="Date of Birth"
-                    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    className="mt-2 w-full border border-gray-300 rounded p-2 focus:outline-none"
                     value={formData.date}
                     onChange={handleChange}
                     required
@@ -448,10 +470,16 @@ function Form() {
                   )}
                 </div>
                 <div>
+                <label
+                    htmlFor="gender"
+                    className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Gender
+                  </label>
                   <select
                     name="gender"
                     required
-                    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    className="mt-2 w-full border border-gray-300 rounded p-2 focus:outline-none"
                     value={formData.gender}
                     onChange={handleChange}
                   >
@@ -465,6 +493,12 @@ function Form() {
                   )}
                 </div>
                 <div>
+                <label
+                    htmlFor="email"
+                    className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Email
+                  </label>
                   <input
                     type="email"
                     placeholder="Email"
@@ -479,17 +513,43 @@ function Form() {
                   )}
                 </div>
                 <div>
+                <label
+                    htmlFor="mobileNo"
+                    className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Mobile
+                  </label>
                   <input
                     type="tel"
                     placeholder="Mobile"
                     required
                     name="mobileNo"
-                    className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    className="mt-2 w-full border border-gray-300 rounded p-2 focus:outline-none"
                     value={formData.mobileNo}
                     onChange={handleChange}
                   />
                   {errors.mobileNo && (
                     <span className="text-red-500">{errors.mobileNo}</span>
+                  )}
+                </div>
+                <div>
+                <label
+                    htmlFor="address"
+                    className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                  >
+                    Address
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Address"
+                    required
+                    name="address"
+                    className="mt-2 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                    value={formData.address}
+                    onChange={handleChange}
+                  />
+                  {errors.address && (
+                    <span className="text-red-500">{errors.address}</span>
                   )}
                 </div>
               </div>

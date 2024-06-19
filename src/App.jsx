@@ -54,10 +54,11 @@ const App = () => {
               element={<Navbar component={"register"} />}
             ></Route>
             <Route path="/epin" element={<Navbar component={"epin"} />}></Route>
+            
             <Route
-              path="/products"
-              element={<Navbar component={"products"} />}
-            ></Route>
+                  path="/orderhistory"
+                  element={<Navbar component={"orderhistory"} />}
+                ></Route>
             
             {userRole && userRole != "customer" ? (
               <>
@@ -66,9 +67,9 @@ const App = () => {
               element={<Navbar component={"reports"} />}
             ></Route>
                 <Route
-                  path="/orderhistory"
-                  element={<Navbar component={"orderhistory"} />}
-                ></Route>
+              path="/products"
+              element={<Navbar component={"products"} />}
+            ></Route>
               </>
             ) : (
               ""

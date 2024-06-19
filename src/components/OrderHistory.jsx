@@ -6,55 +6,56 @@ import { orderHistory } from "../actions/orderHistory";
 const OrderHistory = () => {
 const dispatch = useDispatch();
 
-const oHisory = useSelector((state) => state.ProdcutPurchase);
+const orders = useSelector((state) => state.orderHistory);
 useEffect(() => {
   dispatch(orderHistory());
 }, [dispatch]);
 
-  const orders = [
-    {
-      sr: 1,
-      username: 'John Doe',
-      userId: 'U123',
-      address: '123 Main St, City',
-      mobileNo: '123-456-7890',
-      productName: 'Product A',
-      orderType: 'Purchased',
-      amount: '$100',
-      orderDate: '2024-01-01',
-      action: 'Pending',
-    },
-    {
-      sr: 2,
-      username: 'Jane Smith',
-      userId: 'U124',
-      address: '456 Elm St, Town',
-      mobileNo: '987-654-3210',
-      productName: 'Product B',
-      orderType: 'Repurchased',
-      amount: '$200',
-      orderDate: '2024-01-02',
-      action: 'Delivered',
-    },
-    // Add more orders as needed
-  ];
-
+  // const orders = [
+  //   {
+  //     sr: 1,
+  //     username: 'John Doe',
+  //     userId: 'U123',
+  //     address: '123 Main St, City',
+  //     mobileNo: '123-456-7890',
+  //     productName: 'Product A',
+  //     orderType: 'Purchased',
+  //     amount: '$100',
+  //     orderDate: '2024-01-01',
+  //     action: 'Pending',
+  //   },
+  //   {
+  //     sr: 2,
+  //     username: 'Jane Smith',
+  //     userId: 'U124',
+  //     address: '456 Elm St, Town',
+  //     mobileNo: '987-654-3210',
+  //     productName: 'Product B',
+  //     orderType: 'Repurchased',
+  //     amount: '$200',
+  //     orderDate: '2024-01-02',
+  //     action: 'Delivered',
+  //   },
+  //   // Add more orders as needed
+  // ];
+  console.log("ooooooo ", orders);
   return (
     <div className="p-4 w-full">
       <h1 className="text-xl font-semibold mb-4">Order History</h1>
       <div className="w-full">
-      <div className="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg">
+     
+      <div className="shadow overflow-x-auto border-b border-gray-200 sm:rounded-lg max-h-[450px]">
           <table className="min-w-full divide-y divide-gray-200">
             <thead className="bg-gray-50">
-              <tr>
-                <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+               <tr>
+              {/*  <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Sr.
+                </th> */}
+                <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
+                  Customer Id
                 </th>
                 <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
                   Username
-                </th>
-                <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider">
-                  User Id
                 </th>
                 <th scope="col" className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider hidden sm:table-cell">
                   Address
@@ -80,37 +81,38 @@ useEffect(() => {
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
-              {orders.map((order) => (
-                <tr key={order.sr} className="text-xs sm:text-sm">
+              {orders.length>0 && orders.map((order) => (
+              
+                <tr key={order.customer_id} className="text-xs sm:text-sm">
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.sr}
+                    {order.customer_id}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.username}
+                    {order.customer_username}
                   </td>
-                  <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
+                  {/* <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
                     {order.userId}
-                  </td>
+                  </td> */}
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500 hidden sm:table-cell">
                     {order.address}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500 hidden sm:table-cell">
-                    {order.mobileNo}
+                    {order.mobileno}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.productName}
+                    {order.productname}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.orderType}
+                    {order.order_type}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.amount}
+                    {order.purchase_price}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.orderDate}
+                    {order.purchase_date}
                   </td>
                   <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-                    {order.action}
+                    {order.deliver_status}
                   </td>
                 </tr>
               ))}

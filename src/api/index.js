@@ -42,4 +42,6 @@ export const getAdminReports = (id) => API.get(`/admin/report/${id}`);
 export const fetchRegistrationPins = (username) => API.get(`/fetchregistrationpins/${username}`);
 export const addEPins = (body) => API.post(`/provideregistrationpins`, body);
 export const orderHistory = () => API.get(`/productpurchase/all`);
+export const networkTree = (username) => API.get(`/customer/network/${username}`);
+
 
