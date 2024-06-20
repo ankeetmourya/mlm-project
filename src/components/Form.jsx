@@ -65,8 +65,11 @@ function Form() {
     username: "",
     password: "",
     confirmPassword: "",
-    registration_pin: "",
-    pins_for_refferal: [1],
+    pindetails: {
+      id: "",
+      registrationpin:""
+    },
+    // pins_for_refferal: [1],
     address:""
   };
   const [formData, setFormData] = useState(initialState);
@@ -87,11 +90,15 @@ function Form() {
   const customerUsername = useSelector(
     (state) => state.auth.authData.customer?.username
   );
-  const { pins, amount_received, expiry_date, status } = ePins;
+  const {pins, amount_received, expiry_date, status } = ePins;
+  // const [pinId, setPinId] = useState("");
+  let pinId = ePins.id
+  // setPinId(ePins.id);
+
 
   useEffect(() => {
     dispatch(fetchPins(sponserUsername));
-  }, [userRole]);
+  }, [dispatch]);
 
   useEffect(() => {
     dispatch(productList(navigate));
@@ -929,11 +936,11 @@ function Form() {
                   <select
                     id="pinSelect"
                     name="pinSelect"
-                    value={formData.registration_pin}
+                    value={formData.pindetails.registrationpin}
                     onChange={(e) =>
                       setFormData({
                         ...formData,
-                        registration_pin: e.target.value,
+                        pindetails: {id:pinId,registrationpin:e.target.value},
                       })
                     }
                     className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
@@ -970,7 +977,7 @@ function Form() {
                   type="submit"
                   // onClick={redoStep}
                   className={`${
-                    formData.registration_pin ? "" : "disabled-btn"
+                    formData.pindetails.registrationpin ? "" : "disabled-btn"
                   } bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
                   style={{ backgroundColor: "#3AA6B9" }}
                 >

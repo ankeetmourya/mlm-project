@@ -125,8 +125,8 @@ const EpinForm = () => {
         </tbody>
       </table>
       </div>:
-      // <Loader/>
-      <h3>No Epins Available</h3>
+      <Loader/>
+      // <h3>No Epins Available</h3>
     }
       {isModalOpen && (
         <div

@@ -15,12 +15,13 @@ const Dashboard = () => {
       <MyBarChart />
       <MyBarChart />
     </div>
-    <div className="flex flex-wrap justify-center gap-4 p-4">
+    <div className="flex flex-wrap justify-center gap-8 p-6">
       <TopPerformer />
+      <MemberChart />
     </div>
     <div className="flex flex-wrap justify-center gap-4 p-4">
       <PayoutChart />
-      <MemberChart />
+      
     </div>
     </>
   )

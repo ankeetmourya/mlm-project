@@ -246,12 +246,12 @@ const Product = () => {
           <span className="mr-2">+</span> Add Product
         </button>
       </div>}
-      
+    
       {allProducts && allProducts.length > 0 ? (
         <ProductTable products={allProducts} editModal={editModal} deleteModal={deleteModal}/>
       ) : (
-        // <Loader/>
-        <h3>No Products Available</h3>
+        <Loader/>
+        // <h3>No Products Available</h3>
       )}
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center z-50">
