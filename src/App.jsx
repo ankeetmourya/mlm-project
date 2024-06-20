@@ -70,6 +70,10 @@ const App = () => {
               path="/products"
               element={<Navbar component={"products"} />}
             ></Route>
+            <Route
+              path="/customertransaction"
+              element={<Navbar component={"customertransaction"} />}
+            ></Route>
               </>
             ) : (
               ""
