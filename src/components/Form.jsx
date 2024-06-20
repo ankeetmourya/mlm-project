@@ -67,10 +67,10 @@ function Form() {
     confirmPassword: "",
     pindetails: {
       id: "",
-      registrationpin:""
+      registrationpin: "",
     },
     // pins_for_refferal: [1],
-    address:""
+    address: "",
   };
   const [formData, setFormData] = useState(initialState);
   const [errors, setErrors] = useState({});
@@ -82,6 +82,7 @@ function Form() {
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [successMsg, setSuccessMsg] = useState("");
   const [failedMsg, setFailedMsg] = useState("");
+  const [loading, setLoading] = useState(false);
 
 
   const allProducts = useSelector((state) => state.products.allProducts);
@@ -90,11 +91,19 @@ function Form() {
   const customerUsername = useSelector(
     (state) => state.auth.authData.customer?.username
   );
-  const {pins, amount_received, expiry_date, status } = ePins;
+  const { pins, amount_received, expiry_date, status } = ePins;
   // const [pinId, setPinId] = useState("");
-  let pinId = ePins.id
+  let pinId = ePins[0]?.id;
+  console.log("pinnnnn",pinId);
   // setPinId(ePins.id);
 
+  const [selectedOptionKey, setSelectedOptionKey] = useState('');
+
+  const handleSelectChange = (event) => {
+    const selectedOption = event.target.options[event.target.selectedIndex];
+    const keyAttribute = selectedOption.getAttribute('data-key');
+    setSelectedOptionKey(keyAttribute);
+  };
 
   useEffect(() => {
     dispatch(fetchPins(sponserUsername));
@@ -247,7 +256,7 @@ function Form() {
       nextStep();
       let { data } = await api.getUsername();
       let userName = data.body.username;
-      
+
       setFormData((prevData) => ({
         ...prevData,
         ["username"]: userName,
@@ -271,11 +280,15 @@ function Form() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    setLoading(true);
     // dispatch(addProduct(selectedProduct,navigate));
+
+    formData.pindetails.id = Number(selectedOptionKey);
     dispatch(registerCustomer(formData, navigate)).then((data) => {
-      if(data && data.status == 200){
+      setLoading(false);
+      if (data && data.status == 200) {
         setSuccessMsg("Customer Registered Successfully...");
-      }else{
+      } else {
         setFailedMsg("Registration Failed: please try again in some time...");
       }
       console.log("dataaa", data);
@@ -417,7 +430,7 @@ function Form() {
               </div>
               <div>
                 <div>
-                <label
+                  <label
                     htmlFor="first_name"
                     className="mt-4 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -437,7 +450,7 @@ function Form() {
                   )}
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="last_name"
                     className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -457,7 +470,7 @@ function Form() {
                   )}
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="date"
                     className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -477,7 +490,7 @@ function Form() {
                   )}
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="gender"
                     className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -500,7 +513,7 @@ function Form() {
                   )}
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="email"
                     className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -520,7 +533,7 @@ function Form() {
                   )}
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="mobileNo"
                     className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -540,7 +553,7 @@ function Form() {
                   )}
                 </div>
                 <div>
-                <label
+                  <label
                     htmlFor="address"
                     className="mt-2 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
@@ -913,7 +926,10 @@ function Form() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
-            >
+            > {
+              loading ? <Loader /> : <>
+              
+             
               <div className="text-base font-light text-center">Step 5/5</div>
               <div
                 className="mt-4 w-full h-2"
@@ -932,35 +948,44 @@ function Form() {
                 E-PIN
               </div>
               <div className="mt-4 max-w-sm mx-auto p-4 border rounded-lg shadow-md">
-                {ePins && Object.keys(ePins).length > 0 && (
+                {ePins && ePins.length > 0 && (
                   <select
                     id="pinSelect"
                     name="pinSelect"
                     value={formData.pindetails.registrationpin}
-                    onChange={(e) =>
+                    onChange={(e) => {
                       setFormData({
                         ...formData,
-                        pindetails: {id:pinId,registrationpin:e.target.value},
+                        pindetails: {
+                          id: pinId,
+                          registrationpin: e.target.value,
+                        },
                       })
-                    }
+                      handleSelectChange(e)
+                    }} 
+                      
                     className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                   >
-                    {pins.length > 0 ? (
-                      <>
-                        <option value="">
-                          Select a pin
+                    <option value="">Select a pin</option>
+                    {ePins.map((detail, index) => 
+                      detail.pins.map((pin, pinIndex) => (
+                        <option key={`${index}-${pinIndex}`} data-key={detail.id} value={pin}>
+                          {pin}
                         </option>
-                        {pins.map((pin, index) => (
-                          <option key={index} value={pin}>
-                            {pin}
-                          </option>
-                        ))}
-                      </>
-                    ) : (
-                      <option value="" disabled>
-                        No E-pins found
-                      </option>
+                      ))
                     )}
+                  </select>
+                )}
+                {!ePins.length && (
+                  <select
+                    id="pinSelect"
+                    name="pinSelect"
+                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                    disabled
+                  >
+                    <option value="" disabled>
+                      No E-pins found
+                    </option>
                   </select>
                 )}
               </div>
@@ -984,6 +1009,8 @@ function Form() {
                   Submit
                 </button>
               </div>
+              </>
+            }
             </motion.div>
           )}
           {step === 6 &&
@@ -993,7 +1020,7 @@ function Form() {
               </div>
             ) : (
               <div className="p-10 text-center border border-red-600 flex text-red-600 flex justify-center items-center">
-              <h3>{failedMsg}</h3>
+                <h3>{failedMsg}</h3>
               </div>
             ))}
         </form>

@@ -96,32 +96,50 @@ const EpinForm = () => {
       </div>
       {Object.keys(ePins).length> 0 ? 
       <div className="overflow-x-auto max-h-[450px]">
-      <table className="min-w-full bg-white dark:bg-zinc-700 rounded-lg shadow">
-        <thead>
-          <tr className="bg-zinc-100 dark:bg-zinc-600">
-            <th className="p-4 text-left">E-pin</th>
-            <th className="p-4 text-left">Amount</th>
-            <th className="p-4 text-left">Expiry Date</th>
-            <th className="p-4 text-left">Status</th>
+        <table className="min-w-full divide-y divide-gray-200">
+        <thead className="bg-gray-50">
+          <tr>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Pin
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Expiry Date
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Used Pin
+            </th>
           </tr>
         </thead>
-        <tbody>
-          {used_pins.map((pin,index)=>(
-            <tr key={pin} className="border-b border-zinc-200 dark:border-zinc-600">
-            <td className="p-4 text-sm">{pin}</td>
-            <td className="p-4 text-blue-600 text-sm">$ {amount_received}</td>
-            <td className="p-4 text-sm">{new Date(expiry_date).toLocaleDateString()}</td>
-            <td className="p-4 text-red-600 text-sm">Used</td>
-          </tr>
-          ))}
-          {pins.map((pin, index) => (
-            <tr key={index} className="border-b border-zinc-200 dark:border-zinc-600">
-              <td className="p-4 text-sm">{pin}</td>
-              <td className="p-4 text-blue-600 text-sm">$ {amount_received}</td>
-              <td className="p-4 text-sm">{new Date(expiry_date).toLocaleDateString()}</td>
-              <td className="p-4 text-blue-600 text-sm">{status}</td>
+        <tbody className="bg-white divide-y divide-gray-200">
+          {ePins && ePins.length > 0 ? (
+            ePins.map((detail, index) => {
+              const maxLength = Math.max(detail.pins.length, detail.used_pins.length);
+              return (
+                Array.from({ length: maxLength }).map((_, rowIndex) => (
+                  <tr key={`row-${index}-${rowIndex}`} className="border-b border-zinc-200 dark:border-zinc-600">
+                    <td className="px-6 py-4 text-sm">{detail.pins[rowIndex] !== undefined ? detail.pins[rowIndex] : ''}</td>
+                    <td className="px-6 py-4 text-sm">{new Date(detail.expiry_date).toLocaleDateString()}</td>
+                    <td className="px-6 py-4 text-sm text-red-500">{detail.used_pins[rowIndex] !== undefined ? detail.used_pins[rowIndex] : ''}</td>
+                  </tr>
+                ))
+              );
+            })
+          ) : (
+            <tr>
+              <td colSpan="3" className="px-6 py-4 text-center text-sm text-gray-500">
+                No E-pins found
+              </td>
             </tr>
-          ))}
+          )}
         </tbody>
       </table>
       </div>:
