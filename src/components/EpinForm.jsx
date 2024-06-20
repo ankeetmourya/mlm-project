@@ -4,15 +4,19 @@ import { useDispatch, useSelector } from "react-redux";
 import { signin } from "../actions/auth";
 import { useNavigate } from "react-router-dom";
 import Loader from "./report/Loader";
+import { getAllCustomers } from "../actions/allCustomers";
 
 const EpinForm = () => {
   const adminUsername = useSelector((state)=> state?.auth?.authData?.admin?.username || "")
   const userRole = useSelector((state) => state.auth.userRole);
   const epinAdded = useSelector((state) => state.epins.epin_added);
-  const [submitStatus, setSubmitStatus] = useState(null); // State to track submission status
-
+  const [submitStatus, setSubmitStatus] = useState(null);
+  const usernameData = useSelector((state)=> state.allCustomers);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isPopupVisible, setIsPopupVisible] = useState(false);
+  const [filteredUsernames, setFilteredUsernames] = useState(usernameData);
+  const [showDropdown, setShowDropdown] = useState(false);
+
   const [formData, setFormData] = useState({
     username: "",
     amount_received: "",
@@ -31,6 +35,27 @@ const EpinForm = () => {
     setIsModalOpen(false);
     setSubmitStatus(null); // Reset submit status when modal closes
   };
+
+  const handleInputChange = (e) => {
+    const value = e.target.value;
+    setFormData({...formData, username: value });
+
+    if (value.length > 0) {
+      const filtered = usernameData.filter((user) =>
+        user.username.toLowerCase().includes(value.toLowerCase())
+      );
+      setFilteredUsernames(filtered);
+      setShowDropdown(true);
+    } else {
+      setShowDropdown(false);
+    }
+  };
+
+  const handleSelect = (username) => {
+    setFormData({...formData, username });
+    setShowDropdown(false);
+  };
+
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -69,17 +94,20 @@ const EpinForm = () => {
   const adminId = useSelector((state)=> state.auth.authData.admin?.adminid)
   const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
   const ePins = useSelector((state)=> state.epins.epins)
+
   console.log('epins',ePins);
   const { pins, amount_received, expiry_date, status,used_pins } = ePins;
   useEffect(() => {
     let userName = userRole && userRole == "admin" && adminUsername || customerUsername
-    dispatch(fetchPins(userName)) //customerId
+    dispatch(fetchPins(userName)); //customerId
+    dispatch(getAllCustomers());
   }, [dispatch])
   
 
   // const handleCheckboxChange = (e) => {
   //   setIsPopupVisible(e.target.checked);
   // };
+
 
   return (
     <div className="p-4 bg-zinc-50 dark:bg-zinc-800">
@@ -163,26 +191,43 @@ const EpinForm = () => {
               </button>
             </div>
             <form className="text-sm" onSubmit={handleSubmit}>
-              <div className="mb-2">
-                <label
-                  htmlFor="username"
-                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-                >
-                  Username <span className="text-red-500">*</span>
-                </label>
-                <div className="relative mt-1">
-                  <input
-                    type="text"
-                    id="username"
-                    name="username"
-                    placeholder="Username"
-                    className="block w-full p-2 border border-zinc-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white"
-                    required
-                    value={formData.username}
-                    onChange={handleChange}
-                  />
-                </div>
-              </div>
+            <div className="mb-2">
+      <label
+        htmlFor="username"
+        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+      >
+        Username <span className="text-red-500">*</span>
+      </label>
+      <div className="relative mt-1">
+        <input
+          type="text"
+          id="username"
+          name="username"
+          placeholder="Username"
+          className="block w-full p-2 border border-zinc-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white"
+          required
+          value={formData.username}
+          onChange={handleInputChange}
+          onFocus={() => setShowDropdown(true)}
+        />
+        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+          {/* <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" /> */}
+        </div>
+        {showDropdown && filteredUsernames.length > 0 && (
+          <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none sm:text-sm">
+            {filteredUsernames.map((user) => (
+              <li
+                key={user.id}
+                className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white"
+                onClick={() => handleSelect(user.username)}
+              >
+                {user.username}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </div>
               <div className="mb-2">
                 <label
                   className="block text-zinc-700 dark:text-zinc-300 mb-1"

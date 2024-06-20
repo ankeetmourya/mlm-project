@@ -9,6 +9,7 @@ import Report from "./report/Report";
 import Header from "./Header";
 import OrderHistory from "./OrderHistory";
 import { useSelector } from "react-redux";
+import CustomerTransaction from "./CustomerTransaction";
 
 function Navbar({ component }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -31,6 +32,8 @@ function Navbar({ component }) {
         return <Report />;
       case "orderhistory":
         return <OrderHistory />;
+        case "customertransaction":
+        return <CustomerTransaction />;
       default:
         return <Dashboard />;
     }
@@ -145,6 +148,15 @@ function Navbar({ component }) {
                   onClick={handleNavLinkClick}
                 >
                   <span>Reports</span>
+                </NavLink>
+                <NavLink
+                  to="/customertransaction"
+                  className={`flex items-center p-2 rounded-md ${getNavLinkClass(
+                    "/customertransaction"
+                  )}`}
+                  onClick={handleNavLinkClick}
+                >
+                  <span>Customer Transaction</span>
                 </NavLink>
               </>
             ) : (

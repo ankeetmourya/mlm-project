@@ -7,5 +7,6 @@ import orderHistory from './orderHistory';
 import networkTree from './networkTree';
 import newMembers from './newMembers';
 import highPerformingCustomer from './highPerformingCustomer';
+import allCustomers from './allCustomers';
 
-export default combineReducers({ auth,products, reports, epins, orderHistory, networkTree ,newMembers, highPerformingCustomer});
+export default combineReducers({ auth,products, reports, epins, orderHistory, networkTree ,newMembers, highPerformingCustomer, allCustomers});

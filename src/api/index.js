@@ -45,6 +45,7 @@ export const orderHistory = () => API.get(`/productpurchase/all`);
 export const networkTree = (username) => API.get(`/customer/network/${username}`);
 export const highPerformingCustomer = (username) => API.get(`highPerformingCustomer/${username}`);
 export const getNewJoinedMembers = () => API.get(`/getnewjoinedcustomer`);
+export const getAllCustomers = () => API.get(`/allcustomers`);
 
 
 

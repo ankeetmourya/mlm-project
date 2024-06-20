@@ -84,7 +84,6 @@ function Form() {
   const [failedMsg, setFailedMsg] = useState("");
   const [loading, setLoading] = useState(false);
 
-
   const allProducts = useSelector((state) => state.products.allProducts);
   const ePins = useSelector((state) => state.epins.epins);
   const adminId = useSelector((state) => state.auth.authData.admin?.adminid);
@@ -94,14 +93,14 @@ function Form() {
   const { pins, amount_received, expiry_date, status } = ePins;
   // const [pinId, setPinId] = useState("");
   let pinId = ePins[0]?.id;
-  console.log("pinnnnn",pinId);
+  console.log("pinnnnn", pinId);
   // setPinId(ePins.id);
 
-  const [selectedOptionKey, setSelectedOptionKey] = useState('');
+  const [selectedOptionKey, setSelectedOptionKey] = useState("");
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.options[event.target.selectedIndex];
-    const keyAttribute = selectedOption.getAttribute('data-key');
+    const keyAttribute = selectedOption.getAttribute("data-key");
     setSelectedOptionKey(keyAttribute);
   };
 
@@ -300,7 +299,7 @@ function Form() {
       }, 3000);
     });
     setIsSubmitted(true);
-    // setFormData(initialState);
+    setFormData(initialState);
   };
 
   return (
@@ -926,91 +925,121 @@ function Form() {
               exit={{ opacity: 0, y: -20 }}
               transition={{ duration: 0.3 }}
               className="md:w-3/5 mx-auto py-12"
-            > {
-              loading ? <Loader /> : <>
-              
-             
-              <div className="text-base font-light text-center">Step 5/5</div>
-              <div
-                className="mt-4 w-full h-2"
-                style={{ backgroundColor: "#e0cfc8" }}
-              >
-                <div
-                  className="h-full rounded-3xl w-full"
-                  style={{ backgroundColor: "#3AA6B9" }}
-                ></div>
-              </div>
-              <div className="mt-4 text-2xl text-center">Payment Type</div>
-              <div
-                className="mt-5 text-center"
-                style={{ fontSize: "2.5rem", fontWeight: "bold" }}
-              >
-                E-PIN
-              </div>
-              <div className="mt-4 max-w-sm mx-auto p-4 border rounded-lg shadow-md">
-                {ePins && ePins.length > 0 && (
-                  <select
-                    id="pinSelect"
-                    name="pinSelect"
-                    value={formData.pindetails.registrationpin}
-                    onChange={(e) => {
-                      setFormData({
-                        ...formData,
-                        pindetails: {
-                          id: pinId,
-                          registrationpin: e.target.value,
-                        },
-                      })
-                      handleSelectChange(e)
-                    }} 
-                      
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+            >
+              {" "}
+              {loading ? (
+                <Loader />
+              ) : (
+                <>
+                  <div className="text-base font-light text-center">
+                    Step 5/5
+                  </div>
+                  <div
+                    className="mt-4 w-full h-2"
+                    style={{ backgroundColor: "#e0cfc8" }}
                   >
-                    <option value="">Select a pin</option>
-                    {ePins.map((detail, index) => 
-                      detail.pins.map((pin, pinIndex) => (
-                        <option key={`${index}-${pinIndex}`} data-key={detail.id} value={pin}>
-                          {pin}
-                        </option>
-                      ))
+                    <div
+                      className="h-full rounded-3xl w-full"
+                      style={{ backgroundColor: "#3AA6B9" }}
+                    ></div>
+                  </div>
+                  <div className="mt-4 text-2xl text-center">Payment Type</div>
+                  <div
+                    className="mt-5 text-center"
+                    style={{ fontSize: "2.5rem", fontWeight: "bold" }}
+                  >
+                    E-PIN
+                  </div>
+                  <div className="mt-4 max-w-sm mx-auto p-4 border rounded-lg shadow-md">
+                    {ePins && ePins.length > 0 && (
+                      <select
+                        id="pinSelect"
+                        name="pinSelect"
+                        value={formData.pindetails.registrationpin}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            pindetails: {
+                              registrationpin: e.target.value,
+                            },
+                          });
+                          handleSelectChange(e);
+                        }}
+                        className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                      >
+                        <option value="">Select a pin</option>
+                        {ePins.map((detail, index) =>
+                          detail.pins.map((pin, pinIndex) => (
+                            <option
+                              key={`${index}-${pinIndex}`}
+                              data-key={detail.id}
+                              value={pin}
+                            >
+                              {pin}
+                            </option>
+                          ))
+                        )}
+                      </select>
                     )}
-                  </select>
-                )}
-                {!ePins.length && (
-                  <select
-                    id="pinSelect"
-                    name="pinSelect"
-                    className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                    disabled
-                  >
-                    <option value="" disabled>
-                      No E-pins found
-                    </option>
-                  </select>
-                )}
-              </div>
-
-              <div className="flex justify-center mt-12">
-                <button
-                  type="button"
-                  onClick={prevStep}
-                  className=" mr-4 border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white font-bold py-2 px-4 rounded"
-                >
-                  Previous
-                </button>
-                <button
-                  type="submit"
-                  // onClick={redoStep}
-                  className={`${
-                    formData.pindetails.registrationpin ? "" : "disabled-btn"
-                  } bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
-                  style={{ backgroundColor: "#3AA6B9" }}
-                >
-                  Submit
-                </button>
-              </div>
-              </>
-            }
+                    {!ePins.length && (
+                      <select
+                        id="pinSelect"
+                        name="pinSelect"
+                        className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                        disabled
+                      >
+                        <option value="" disabled>
+                          No E-pins found
+                        </option>
+                      </select>
+                    )}
+                  </div>
+                  {/* {userRole == "customer" && (
+                    <div>
+                      <input
+                        type="E-Pin"
+                        placeholder="E-Pin"
+                        required
+                        name="E-Pin"
+                        className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                        value={formData.pindetails.registrationpin}
+                        onChange={(e) => {
+                          setFormData({
+                            ...formData,
+                            pindetails: {
+                              registrationpin: e.target.value,
+                            },
+                          });
+                        }}
+                      />
+                      {/* {errors.username && (
+                        <span className="text-red-500">{errors.username}</span>
+                      )} }
+                    </div>
+                  )} */}
+                  <div className="flex justify-center mt-12">
+                    <button
+                      type="button"
+                      onClick={prevStep}
+                      className=" mr-4 border border-zinc-300 dark:border-zinc-600 shadow-sm px-4 py-2 bg-white dark:bg-zinc-700 text-base font-medium text-zinc-700 dark:text-zinc-300 hover:bg-zinc-50 dark:hover:bg-zinc-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 text-white font-bold py-2 px-4 rounded"
+                    >
+                      Previous
+                    </button>
+                    <button
+                      type="submit"
+                      // onClick={redoStep}
+                      className={`${
+                        formData.pindetails.registrationpin
+                          ? ""
+                          : "disabled-btn"
+                      } bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
+                      style={{ backgroundColor: "#3AA6B9" }}
+                    >
+                      Submit
+                    </button>
+                  </div>
+                </>
+              )}
             </motion.div>
           )}
           {step === 6 &&

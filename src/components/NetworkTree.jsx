@@ -7,11 +7,18 @@ const NetworkTree = () => {
   
  const dispatch = useDispatch();
  const userRole = useSelector((state) => state.auth.userRole);
+//  const userName = "";
 
-  const userName = userRole == 'admin' ?  useSelector(
-    (state) => state?.auth?.authData?.admin?.username ) : useSelector(
-      (state) => state?.auth?.authData?.customer?.username
-  );
+ const userName = useSelector((state) => {
+  if (userRole === 'admin') {
+    return state?.auth?.authData?.admin?.username;
+  } else if (userRole === 'customer') {
+    return state?.auth?.authData?.customer?.username;
+  } else {
+    return null; // or handle other roles if needed
+  }
+});
+
   console.log("network", userName);
   const network = useSelector((state) => state.networkTree);
   console.log("netwwww", network);
