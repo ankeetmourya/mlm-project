@@ -7,34 +7,7 @@ import { MdPayment } from "react-icons/md";
 import { NavLink } from "react-router-dom";
 
 const LandingPage = () => {
-  const data = {
-    name: "",
-    address: "",
-    city: "",
-    state: "",
-    phone: "",
-    email: "",
-  };
 
-  // const [isSubmitted, setIsSubmitted] = useState(false);
-  const [formData, setFormData] = useState(data);
-
-  // const handleChange = (e) => {
-  //   e.preventDefault();
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  // };
-
-  // const handleSubmit = (e) => {
-  //   event.preventDefault();
-  //   setFormData({ ...formData, [e.target.name]: e.target.value });
-  //   console.log()
-  //   setIsSubmitted(true);
-
-  //   // Hide the dialog box after 3 seconds
-  //   setTimeout(() => {
-  //     setIsSubmitted(false);
-  //   }, 4000);
-  // };
 
   const sectionStyle = {
     backgroundImage: `url(${designerImage})`,
@@ -43,7 +16,6 @@ const LandingPage = () => {
   };
 
   const scrollToSectionRef = useRef(null);
-  // Function to handle button click and scroll to section
   const handleButtonClick = () => {
     scrollToSectionRef.current.scrollIntoView({ behavior: "smooth" });
   };

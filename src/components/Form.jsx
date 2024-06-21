@@ -188,13 +188,23 @@ function Form() {
     return Object.keys(newErrors).length === 0; // Returns true if no errors
   };
 
-  const validateThird = () => {
+  const validateThird = async() => {
     const newErrors = {};
+    const payloadAadhar = {type:"aadhar_card_no",value:formData.aadhar_card_no}
+    const payloadPan = {type:"pan_card_no",value:formData.pan_card_no}
+    const dataAadhar  = await api.validate(payloadAadhar); 
+    const dataPan  = await api.validate(payloadPan); 
+
+    console.log("Adhar Pan data:", dataAadhar,dataPan);
+
+
 
     if (!formData.aadhar_card_no.trim()) {
-      newErrors.aadhar_card_no = "Adhar Number is required";
+      newErrors.aadhar_card_no = "Aadhar Number is required";
     } else if (!/^\d{12}$/.test(formData.aadhar_card_no)) {
-      newErrors.aadhar_card_no = "Adhar Number must be 12 digits";
+      newErrors.aadhar_card_no = "Aadhar Number must be 12 digits";
+    }else if(dataAadhar?.message !== 'aadhar_card_no number is unique.'){
+      newErrors.aadhar_card_no = 'Aadhar already registered'
     }
     // if (!formData.aadhar_image_link) {
     //   newErrors.aadhar_image_link = "Adhar Image is required";
@@ -203,6 +213,8 @@ function Form() {
       newErrors.pan_card_no = "Pan Number is required";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan_card_no)) {
       newErrors.pan_card_no = "Invalid Pan Number format";
+    }else if(dataPan?.message !== "pan_card_no number is unique."){
+      newErrors.pan_card_no = "Pan already registered "
     }
     // if (!formData.pan_image_link) {
     //   newErrors.pan_image_link = "Pan Image is required";
@@ -223,7 +235,7 @@ function Form() {
     }
 
     setErrors(newErrors);
-    return Object.keys(newErrors).length === 0; // Returns true if no errors
+    return  Object.keys(newErrors).length === 0; // Returns true if no errors
   };
 
   const validateFourth = () => {
@@ -251,7 +263,7 @@ function Form() {
       nextStep();
     } else if (step === 2 && validateSecond()) {
       nextStep();
-    } else if (step === 3 && validateThird()) {
+    } else if (step === 3 && await validateThird()) {
       nextStep();
       let { data } = await api.getUsername();
       let userName = data.body.username;
@@ -619,7 +631,7 @@ function Form() {
                     htmlFor="aadhar_card_no"
                     className="mt-4 mb-1 block text-sm font-medium text-zinc-700 dark:text-zinc-300"
                   >
-                    Adhar No.
+                    Aadhar No.
                   </label>
                   <input
                     type="number"

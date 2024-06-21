@@ -7,9 +7,15 @@ import Loader from "./report/Loader";
 import { getAllCustomers } from "../actions/allCustomers";
 
 const EpinForm = () => {
+
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
   const adminUsername = useSelector((state)=> state?.auth?.authData?.admin?.username || "")
   const userRole = useSelector((state) => state.auth.userRole);
   const epinAdded = useSelector((state) => state.epins.epin_added);
+  const adminId = useSelector((state)=> state.auth.authData.admin?.adminid)
+  const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
+  const ePins = useSelector((state)=> state.epins.epins)
   const [submitStatus, setSubmitStatus] = useState(null);
   const usernameData = useSelector((state)=> state.allCustomers);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -26,9 +32,6 @@ const EpinForm = () => {
     customer_id: "",
     admin_username: adminUsername
   });
-  const dispatch = useDispatch();
-  const navigate = useNavigate();
-
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => {
@@ -90,12 +93,6 @@ const EpinForm = () => {
     }
   };
 
-
-  const adminId = useSelector((state)=> state.auth.authData.admin?.adminid)
-  const customerUsername = useSelector((state)=> state.auth.authData.customer?.username)
-  const ePins = useSelector((state)=> state.epins.epins)
-
-  console.log('epins',ePins);
   const { pins, amount_received, expiry_date, status,used_pins } = ePins;
   useEffect(() => {
     let userName = userRole && userRole == "admin" && adminUsername || customerUsername
@@ -103,11 +100,6 @@ const EpinForm = () => {
     dispatch(getAllCustomers());
   }, [dispatch])
   
-
-  // const handleCheckboxChange = (e) => {
-  //   setIsPopupVisible(e.target.checked);
-  // };
-
 
   return (
     <div className="p-4 bg-zinc-50 dark:bg-zinc-800">
@@ -127,11 +119,29 @@ const EpinForm = () => {
         <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
+          <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Username
+            </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
+              E-Pin Count
+            </th>
+            {/* <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
               Pin
+            </th> */}
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Amount
             </th>
             <th
               scope="col"
@@ -143,24 +153,21 @@ const EpinForm = () => {
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Used Pin
+              Status
             </th>
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {ePins && ePins.length > 0 ? (
-            ePins.map((detail, index) => {
-              const maxLength = Math.max(detail.pins.length, detail.used_pins.length);
-              return (
-                Array.from({ length: maxLength }).map((_, rowIndex) => (
-                  <tr key={`row-${index}-${rowIndex}`} className="border-b border-zinc-200 dark:border-zinc-600">
-                    <td className="px-6 py-4 text-sm">{detail.pins[rowIndex] !== undefined ? detail.pins[rowIndex] : ''}</td>
-                    <td className="px-6 py-4 text-sm">{new Date(detail.expiry_date).toLocaleDateString()}</td>
-                    <td className="px-6 py-4 text-sm text-red-500">{detail.used_pins[rowIndex] !== undefined ? detail.used_pins[rowIndex] : ''}</td>
-                  </tr>
-                ))
-              );
-            })
+             ePins.map((detail, index) => (
+              <tr key={`row-${index}`} className="border-b border-zinc-200 dark:border-zinc-600">
+                <td className="px-6 py-4 text-sm">{detail.username}</td>
+                <td className="px-6 py-4 text-sm">{detail.count_of_pins}</td>
+                <td className="px-6 py-4 text-sm">{detail.amount_received}</td>
+                <td className="px-6 py-4 text-sm">{new Date(detail.expiry_date).toLocaleDateString()}</td>
+                <td className="px-6 py-4 text-sm">{detail.Status}</td>
+              </tr>
+            ))
           ) : (
             <tr>
               <td colSpan="3" className="px-6 py-4 text-center text-sm text-gray-500">

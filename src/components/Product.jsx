@@ -62,9 +62,14 @@ const Product = () => {
   const [deleteModalOpen, setDeleteModalOpen] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+  const allProducts = useSelector((state) => state.products.allProducts);
+  const userRole = useSelector((state) => state.auth.userRole);
+  useEffect(() => {
+    dispatch(productList(navigate));
+  }, [dispatch]);
+ 
   const editModal = (pid) => {
     setIsEditModalOpen(true);
     let product = allProducts.find(({ id }) => id == pid);
@@ -115,21 +120,6 @@ const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState(initialState);
   const [errors, setErrors] = useState({});
   const [editProduct, setEditProduct] = useState(editInitialState);
-
-  const allProducts = useSelector((state) => state.products.allProducts);
-  useEffect(() => {
-    dispatch(productList(navigate));
-  }, [dispatch]);
-
-  const handleChange1 = (e) => {
-    const { name, value, type, files } = e.target;
-    setEditProduct((prevEditProduct) => ({
-      ...prevEditProduct,
-      [name]: type === "file" ? files[0] : value,
-    }));
-  };
-
- 
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -234,7 +224,7 @@ const Product = () => {
     setIsModalOpen(false);
     // Add your form submission logic here
   };
-  const userRole = useSelector((state) => state.auth.userRole);
+  
   return (
     <div className="p-4">
       {userRole && userRole == 'admin' && <div className="flex justify-end items-center mb-4">
