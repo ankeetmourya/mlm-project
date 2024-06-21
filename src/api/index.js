@@ -65,3 +65,5 @@ export const validate = async(payload) => {
     }
   }
 };
+
+export const updateOrderHistory = (payload) => API.put('/productpurchase/update',payload);

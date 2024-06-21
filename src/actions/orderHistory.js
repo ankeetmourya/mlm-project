@@ -19,3 +19,30 @@ export const orderHistory = () => async (dispatch) =>{
        }
     }
 }
+
+export const updateOrderHistory = (id,customer_id) => async(dispatch) =>{
+  try{
+    const payload = {
+         "updateproductpurchase": {
+          "purchase_id": id,
+          "customer_id": customer_id,
+          "deliver_status": "delivered"
+      }
+  }
+
+
+    const { data } = await api.updateOrderHistory(payload); //API CALL
+    console.log('updateHistory', data);
+    if( data?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'}); 
+    }else{
+    dispatch({ type: 'ORDER_UPDATE_HISTORY', data});
+    console.log('orderHistoryyy',data);
+    }
+ }catch(error){
+    console.log(error);
+    if( error?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
+    }
+ }
+}
