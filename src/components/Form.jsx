@@ -67,9 +67,9 @@ function Form() {
     confirmPassword: "",
     pindetails: {
       id: "",
+      username: "",
       registrationpin: "",
     },
-    // pins_for_refferal: [1],
     address: "",
   };
   const [formData, setFormData] = useState(initialState);
@@ -97,12 +97,25 @@ function Form() {
   // setPinId(ePins.id);
 
   const [selectedOptionKey, setSelectedOptionKey] = useState("");
+  // const [selectedUsernameKey, setSelectedUsernameKey] = useState("");
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.options[event.target.selectedIndex];
     const keyAttribute = selectedOption.getAttribute("data-key");
-    setSelectedOptionKey(keyAttribute);
+    const keyUsername = selectedOption.getAttribute("data-username");
+    const value = event.target.value;
+
+    setFormData((prevFormData) => ({
+      ...prevFormData,
+      pindetails: {
+        ...prevFormData.pindetails,
+        id: keyAttribute,
+        registrationpin: value,
+        username: keyUsername,
+      },
+    }));
   };
+  
 
   useEffect(() => {
     dispatch(fetchPins(sponserUsername));
@@ -115,14 +128,26 @@ function Form() {
   const handleChange = (e) => {
     e.preventDefault();
     const { name, value } = e.target;
+    const [section, key] = name.split('.');
 
     setTimeout(() => {
       setIsSubmitted(false);
     }, 4000);
-    setFormData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
+
+    if (section && key) {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [section]: {
+          ...prevFormData[section],
+          [key]: value,
+        },
+      }));
+    } else {
+      setFormData((prevFormData) => ({
+        ...prevFormData,
+        [name]: value,
+      }));
+    }
 
     // Clear the error for the current field
     setErrors((prevErrors) => ({
@@ -130,6 +155,7 @@ function Form() {
       [name]: "",
     }));
   };
+
 
   const validateFirst = () => {
     const newErrors = {};
@@ -294,7 +320,8 @@ function Form() {
     setLoading(true);
     // dispatch(addProduct(selectedProduct,navigate));
 
-    formData.pindetails.id = Number(selectedOptionKey);
+    // formData.pindetails.id = Number(selectedOptionKey);
+    // formData.pindetails.username = 
     dispatch(registerCustomer(formData, navigate)).then((data) => {
       setLoading(false);
       if (data && data.status == 200) {
@@ -968,15 +995,7 @@ function Form() {
                         id="pinSelect"
                         name="pinSelect"
                         value={formData.pindetails.registrationpin}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            pindetails: {
-                              registrationpin: e.target.value,
-                            },
-                          });
-                          handleSelectChange(e);
-                        }}
+                        onChange={handleSelectChange}
                         className="mt-1 block w-full py-2 px-3 border border-gray-300 bg-white rounded-md shadow-sm focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                       >
                         <option value="">Select a pin</option>
@@ -985,9 +1004,10 @@ function Form() {
                             <option
                               key={`${index}-${pinIndex}`}
                               data-key={detail.id}
+                              data-username={detail.username}
                               value={pin}
                             >
-                              {pin}
+                              {`${detail.id} ${pin} (${detail.username})`}
                             </option>
                           ))
                         )}
@@ -1006,29 +1026,53 @@ function Form() {
                       </select>
                     )}
                   </div>
-                  {/* {userRole == "customer" && (
+
+                  {userRole == "customer" && (
+                    <>
                     <div>
                       <input
                         type="E-Pin"
-                        placeholder="E-Pin"
-                        required
-                        name="E-Pin"
+                        placeholder="Epin Id"
+                        // required
+                        name="pindetails.id"
+                        className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                        value={formData.pindetails.id}
+                        onChange={handleChange}
+                      />
+                       {/* {errors.username && (
+                        <span className="text-red-500">{errors.username}</span>
+                      )}  */}
+                    </div>
+                    <div>
+                      <input
+                        type="E-Pin"
+                        placeholder="Epin"
+                        // required
+                        name="pindetails.registrationpin"
                         className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
                         value={formData.pindetails.registrationpin}
-                        onChange={(e) => {
-                          setFormData({
-                            ...formData,
-                            pindetails: {
-                              registrationpin: e.target.value,
-                            },
-                          });
-                        }}
+                        onChange={handleChange}
                       />
-                      {/* {errors.username && (
+                       {/* {errors.username && (
                         <span className="text-red-500">{errors.username}</span>
-                      )} }
+                      )}  */}
                     </div>
-                  )} */}
+                    <div>
+                      <input
+                        type="E-Pin"
+                        placeholder="Epin Username"
+                        // required
+                        name="pindetails.username"
+                        className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                        value={formData.pindetails.username}
+                        onChange={handleChange}
+                      />
+                       {/* {errors.username && (
+                        <span className="text-red-500">{errors.username}</span>
+                      )}  */}
+                    </div>
+                    </>
+                  )}
                   <div className="flex justify-center mt-12">
                     <button
                       type="button"
@@ -1041,7 +1085,7 @@ function Form() {
                       type="submit"
                       // onClick={redoStep}
                       className={`${
-                        formData.pindetails.registrationpin
+                        formData.pindetails.username
                           ? ""
                           : "disabled-btn"
                       } bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
