@@ -1007,7 +1007,7 @@ function Form() {
                               data-username={detail.username}
                               value={pin}
                             >
-                              {`${detail.id} ${pin} (${detail.username})`}
+                              {` ${pin}`}
                             </option>
                           ))
                         )}
