@@ -4,20 +4,20 @@ import { orderHistory, updateOrderHistory } from "../actions/orderHistory";
 import Loader from "./report/Loader";
 import { MdFileDownloadDone } from "react-icons/md";
 
-
 const OrderHistory = () => {
   const dispatch = useDispatch();
 
   const orders = useSelector((state) => state.orderHistory);
   const updateOrder = useSelector((state) => state.updateOrderHistory);
   const [orderStatus, setOrderStatus] = useState(orders);
+  const userRole = useSelector((state) => state.auth.userRole);
   useEffect(() => {
     dispatch(orderHistory());
   }, [dispatch]);
 
-  const handleStatusChange = (orderId,customer_id) => {
+  const handleStatusChange = (orderId, customer_id) => {
     // Logic to change the status, e.g., open a modal or directly update status
-     dispatch(updateOrderHistory(orderId,customer_id));
+    dispatch(updateOrderHistory(orderId, customer_id));
     console.log(`Change status for order ID: ${orderId}`);
   };
 
@@ -83,12 +83,14 @@ const OrderHistory = () => {
                 >
                   Status
                 </th>
-                <th
-                  scope="col"
-                  className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider"
-                >
-                  Mark as Delivered
-                </th>
+                {userRole == "admin" && (
+                  <th
+                    scope="col"
+                    className="px-3 sm:px-6 py-3 text-left text-xs sm:text-sm font-medium text-gray-500 uppercase tracking-wider"
+                  >
+                    Mark as Delivered
+                  </th>
+                )}
               </tr>
             </thead>
             <tbody className="bg-white divide-y divide-gray-200">
@@ -120,17 +122,23 @@ const OrderHistory = () => {
                       {order.purchase_date}
                     </td>
                     <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500">
-              {order.deliver_status}
-            </td>
-            <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500 text-center">
-              <button
-                onClick={() => handleStatusChange(order.purchase_id,order.customer_id)}
-                className="text-blue-500 hover:text-blue-700 focus:outline-none"
-              >
-               <MdFileDownloadDone  className="text-2xl"/>
-
-              </button>
-            </td>
+                      {order.deliver_status}
+                    </td>
+                    {userRole == "admin" && (
+                      <td className="px-3 sm:px-6 py-3 whitespace-nowrap text-gray-500 text-center">
+                        <button
+                          onClick={() =>
+                            handleStatusChange(
+                              order.purchase_id,
+                              order.customer_id
+                            )
+                          }
+                          className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                        >
+                          <MdFileDownloadDone className="text-2xl" />
+                        </button>
+                      </td>
+                    )}
                   </tr>
                 ))
               ) : (

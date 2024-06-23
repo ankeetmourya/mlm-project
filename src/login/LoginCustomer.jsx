@@ -46,7 +46,7 @@ const LoginCustomer = () => {
 
   return (
     <div className="flex flex-col h-screen">
-      <div className="absolute w-full flex items-center justify-between mb-1 bg-white dark:bg-zinc-800 p-2 md:p-4 shadow-md">
+      <div className="absolute w-full flex items-center justify-between mb-1 bg-white dark:bg-white p-2 md:p-4 shadow-md">
         <div className="flex items-center">
           <img
             src="./assets/Designer.jpeg"
@@ -67,8 +67,8 @@ const LoginCustomer = () => {
         </div> */}
       </div>
       
-      <div className="flex items-center justify-center h-screen bg-zinc-100 dark:bg-zinc-800 px-4 overflow-hidden">
-        <div className="flex flex-col items-center w-full max-w-md p-6 bg-white dark:bg-zinc-700 shadow-md rounded">
+      <div className="flex items-center justify-center h-screen bg-zinc-100 dark:bg-white px-4 overflow-hidden">
+        <div className="flex flex-col items-center w-full max-w-md p-6 bg-white dark:bg-white shadow-md rounded">
           <form className="w-full" onSubmit={handleSubmit}>
             <div className="mb-4">
               <label

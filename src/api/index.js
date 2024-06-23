@@ -17,11 +17,11 @@ API.interceptors.request.use((req) => {
   return req;
 });
 
-export const fetchPosts = () => API.get("/posts");
-export const createPost = (newPost) => API.post("/posts", newPost);
-export const updatePost = (id, post) => API.patch(`/posts/${id}`, post);
-export const deletePost = (id) => API.delete(`/posts/${id}`);
-export const likePost = (id) => API.patch(`/posts/likePost/${id}`);
+// export const fetchPosts = () => API.get("/posts");
+// export const createPost = (newPost) => API.post("/posts", newPost);
+// export const updatePost = (id, post) => API.patch(`/posts/${id}`, post);
+// export const deletePost = (id) => API.delete(`/posts/${id}`);
+// export const likePost = (id) => API.patch(`/posts/likePost/${id}`);
 
 export const signup = (userData) => API.post(`/registeradmin`, userData); //signup call
 export const signin = (userData, role) => {
@@ -32,29 +32,24 @@ export const signin = (userData, role) => {
     return API.post(`/logincustomer`, userData);
   }
 };
-export const registerCustomer = (userData) =>
-  API.post(`/addcustomer`, userData);
-export const addProduct = (productData) =>
-  API.post(`/addproducts`, productData);
+export const registerCustomer = (userData) => API.post(`/addcustomer`, userData);
+export const addProduct = (productData) => API.post(`/addproducts`, productData);
 export const editProduct = (productData) => API.put(`/products`, productData);
 export const getProduct = () => API.get(`/products`);
 export const getUsername = () => API.get(`/getusername`);
 export const getAdminReports = (id) => API.get(`/admin/report/${id}`);
-export const fetchRegistrationPins = (username) =>
-  API.get(`/fetchregistrationpins/${username}`);
+export const fetchRegistrationPins = (username) => API.get(`/fetchregistrationpins/${username}`);
 export const addEPins = (body) => API.post(`/provideregistrationpins`, body);
 export const orderHistory = () => API.get(`/productpurchase/all`);
-export const networkTree = (username) =>
-  API.get(`/customer/network/${username}`);
-export const highPerformingCustomer = (username) =>
-  API.get(`highPerformingCustomer/${username}`);
+export const networkTree = (username) => API.get(`/customer/network/${username}`);
+export const highPerformingCustomer = (username) => API.get(`highPerformingCustomer/${username}`);
 export const getNewJoinedMembers = () => API.get(`/getnewjoinedcustomer`);
 export const getAllCustomers = () => API.get(`/allcustomers`);
 
 export const validate = async(payload) => {
   try {
     const response = await API.post(`/check-unique-identifier`, payload);
-    return response.data; // Assuming the response data is what you need
+    return response.data; 
   } catch (error) {
     if (error.response && error.response.status === 409) {
       console.error('Conflict error: The identifier is not unique.', error.response.data);
