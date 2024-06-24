@@ -174,8 +174,8 @@ const LandingPage = () => {
               </div>
               <h3 className="text-xl font-bold">EXTENSIBLE</h3>
               <p className="text-sm mt-2">
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-                eiusmod tempor incididunt ut labore et dolore magna aliqua.
+              Designed to be easily extended or enhanced, allowing for future growth and adaptability. 
+              This ensures your system can evolve with changing requirements without significant overhauls.
               </p>
             </div>
           </div>
