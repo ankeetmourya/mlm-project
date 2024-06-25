@@ -318,10 +318,6 @@ function Form() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
-    // dispatch(addProduct(selectedProduct,navigate));
-
-    // formData.pindetails.id = Number(selectedOptionKey);
-    // formData.pindetails.username = 
     dispatch(registerCustomer(formData, navigate)).then((data) => {
       setLoading(false);
       if (data && data.status == 200) {
@@ -1099,15 +1095,17 @@ function Form() {
             </motion.div>
           )}
           {step === 6 &&
-            (successMsg ? (
-              <div className="p-10 text-center border border-green-600 flex text-green-600 flex justify-center items-center">
-                <h3>{successMsg} </h3>{" "}
-              </div>
-            ) : (
-              <div className="p-10 text-center border border-red-600 flex text-red-600 flex justify-center items-center">
-                <h3>{failedMsg}</h3>
-              </div>
-            ))}
+           (successMsg ? (
+            <div className="p-6 mx-auto text-center border border-green-600 bg-green-50 rounded-lg shadow-md flex justify-center items-center max-w-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+              <h3 className="text-green-600">{successMsg}</h3>
+            </div>
+          ) : (
+            <div className="p-6 mx-auto text-center border border-red-600 bg-red-50 rounded-lg shadow-md flex justify-center items-center max-w-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+              <h3 className="text-red-600">{failedMsg}</h3>
+            </div>
+          ))
+          
+            }
         </form>
         {/* {isSubmitted && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
