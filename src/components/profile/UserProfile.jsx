@@ -35,7 +35,7 @@ const UserInfo = () => {
   return (
     <div className="relative inline-block" ref={dropdownRef}>
       <div
-        className="flex items-center cursor-pointer"
+        className="flex items-center cursor-pointer px-4"
         onClick={handleToggle}
       >
         <img
@@ -43,7 +43,7 @@ const UserInfo = () => {
           alt="Profile"
           className="w-10 h-10 rounded-full"
         />
-        <span className="font-bold px-2">Unileveladdon</span>
+        <span className="font-bold px-2">Profile</span>
       </div>
       {isHovered && (
         <div
