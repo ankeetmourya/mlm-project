@@ -4,6 +4,8 @@ import { signout } from '../actions/auth';
 import { useNavigate } from 'react-router-dom';
 import { RiLogoutBoxRLine } from "react-icons/ri";
 import { FaBars } from "react-icons/fa";
+// import UserInfo from './profile/UpdateUserProfile';
+import UserProfile from './profile/UserProfile';
 
 const Header = ({ toggleMenu }) => {
   const dispatch = useDispatch();
@@ -23,13 +25,14 @@ const Header = ({ toggleMenu }) => {
             <img src="./assets/Designer.jpeg" alt="Logo" className="h-8 w-8 mr-4 rounded-full border border-gray-300" />
             <span className="text-xl text-zinc-800 dark:text-white font-bold">S1 Shoppy</span>
           </div>
-          <button
-            onClick={() => dispatch(signout(navigate))}
+          {/* <button
+            // onClick={() => dispatch(signout(navigate))}
             className="bg-red-500 text-white font-bold  px-3 py-2 rounded inline-flex items-center transition-all hover:bg-red-600 hover:text-white"
           >
             <RiLogoutBoxRLine />
-            {/* <span className="hidden md:inline-block">Logout</span> */}
-          </button>
+            
+          </button> */}
+          <UserProfile/>
         </div>
       </div>
     </div>

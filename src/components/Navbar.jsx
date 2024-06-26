@@ -10,6 +10,8 @@ import Header from "./Header";
 import OrderHistory from "./OrderHistory";
 import { useSelector } from "react-redux";
 import CustomerTransaction from "./CustomerTransaction";
+import UpdateUserprofile from "./profile/UpdateUserprofile";
+
 
 function Navbar({ component }) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,6 +36,8 @@ function Navbar({ component }) {
         return <OrderHistory />;
         case "customertransaction":
         return <CustomerTransaction />;
+        case "userprofile":
+          return <UpdateUserprofile/>
       default:
         return <Dashboard />;
     }
@@ -105,6 +109,15 @@ function Navbar({ component }) {
             >
               <span>E-Pin</span>
             </NavLink>
+            {/* <NavLink
+              to="/userprofile"
+              className={`flex items-center p-2 rounded-md ${getNavLinkClass(
+                "/userprofile"
+              )}`}
+              onClick={handleNavLinkClick}
+            >
+              <span>E-Pin</span>
+            </NavLink> */}
 
             {userRole && userRole == "customer" ? (
               <NavLink

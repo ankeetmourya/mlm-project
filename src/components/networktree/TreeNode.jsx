@@ -201,7 +201,7 @@ console.log("abccc",data);
   const containerStyles = {
     width: '100%',
     height: '100vh',
-    backgroundColor: '#f0f0f0',   
+    // backgroundColor: '#f0f0f0',   
   };
 
   return ( 

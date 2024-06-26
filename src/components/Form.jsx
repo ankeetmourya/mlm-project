@@ -346,7 +346,7 @@ function Form() {
         <form
           onSubmit={handleSubmit}
           className="md:w-4/5 mx-auto rounded-3xl"
-          style={{ backgroundColor: "#fff" }}
+          // style={{ backgroundColor: "#fff" }}
         >
           {step === 1 && (
             <motion.div

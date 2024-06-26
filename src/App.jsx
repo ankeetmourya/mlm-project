@@ -38,6 +38,10 @@ const App = () => {
             <Route path="/" element={<LandingPage />}></Route>
             {/* <Route path="/login" element={<Login />}></Route> */}
             <Route
+              path="/userprofile"
+              element={<Navbar component={"userprofile"} />}
+            ></Route>
+            <Route
               path="/"
               element={<Navbar component={"dashboard"} />}
             ></Route>

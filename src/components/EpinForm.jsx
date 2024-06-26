@@ -114,12 +114,13 @@ const EpinForm = () => {
           + Add E-pin
         </button>}
       </div>
-      {Object.keys(ePins).length> 0 ? 
-      <div className="overflow-x-auto max-h-[450px]">
-        <table className="min-w-full divide-y divide-gray-200">
+      {
+  Object.keys(ePins).length > 0 ? (
+    <div className="overflow-x-auto max-h-[450px]">
+      <table className="min-w-full divide-y divide-gray-200">
         <thead className="bg-gray-50">
           <tr>
-          <th
+            <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
@@ -131,12 +132,18 @@ const EpinForm = () => {
             >
               E-Pin Count
             </th>
-            {/* <th
+            <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
-              Pin
-            </th> */}
+              Pins
+            </th>
+            <th
+              scope="col"
+              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+            >
+              Used Pins
+            </th>
             <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
@@ -159,10 +166,16 @@ const EpinForm = () => {
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
           {ePins && ePins.length > 0 ? (
-             ePins.map((detail, index) => (
+            ePins.map((detail, index) => (
               <tr key={`row-${index}`} className="border-b border-zinc-200 dark:border-zinc-600">
                 <td className="px-6 py-4 text-sm">{detail.username}</td>
                 <td className="px-6 py-4 text-sm">{detail.count_of_pins}</td>
+                <td className="px-6 py-4 text-sm">
+                  {detail.pins.join(', ')}
+                </td>
+                <td className="px-6 py-4 text-sm text-red-500">
+                  {detail.used_pins.join(', ')}
+                </td>
                 <td className="px-6 py-4 text-sm">{detail.amount_received}</td>
                 <td className="px-6 py-4 text-sm">{new Date(detail.expiry_date).toLocaleDateString()}</td>
                 <td className="px-6 py-4 text-sm">{detail.Status}</td>
@@ -170,17 +183,19 @@ const EpinForm = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="3" className="px-6 py-4 text-center text-sm text-gray-500">
+              <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
                 No E-pins found
               </td>
             </tr>
           )}
         </tbody>
       </table>
-      </div>:
-      <Loader/>
-      // <h3>No Epins Available</h3>
-    }
+    </div>
+  ) : (
+    <Loader />
+  )
+}
+
       {isModalOpen && (
         <div
           id="epinModal"

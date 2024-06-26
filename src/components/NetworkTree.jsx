@@ -23,7 +23,7 @@ const NetworkTree = () => {
   
   return (
     Object.keys(network).length > 0 ?  
-    <div>
+    <div style={ {backgroundColor: '#f0f0f0'}}>
      <TreeNode network={network}/>
     </div>
     :
