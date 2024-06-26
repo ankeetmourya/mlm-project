@@ -245,20 +245,20 @@ function Form() {
     // if (!formData.pan_image_link) {
     //   newErrors.pan_image_link = "Pan Image is required";
     // }
-    if (!formData.bank_name.trim()) {
-      newErrors.bank_name = "Bank Name is required";
-    }
-    if (!formData.account_no.trim()) {
-      newErrors.account_no = "Account Number is required";
-    } else if (!/^\d+$/.test(formData.account_no)) {
-      newErrors.account_no = "Invalid Account Number format";
-    }
-    if (!formData.ifsc_code.trim()) {
-      newErrors.ifsc_code = "IFSC Code is required";
-    }
-    if (!formData.branch_name.trim()) {
-      newErrors.branch_name = "Branch Name is required";
-    }
+    // if (!formData.bank_name.trim()) {
+    //   newErrors.bank_name = "Bank Name is required";
+    // }
+    // if (!formData.account_no.trim()) {
+    //   newErrors.account_no = "Account Number is required";
+    // } else if (!/^\d+$/.test(formData.account_no)) {
+    //   newErrors.account_no = "Invalid Account Number format";
+    // }
+    // if (!formData.ifsc_code.trim()) {
+    //   newErrors.ifsc_code = "IFSC Code is required";
+    // }
+    // if (!formData.branch_name.trim()) {
+    //   newErrors.branch_name = "Branch Name is required";
+    // }
 
     setErrors(newErrors);
     return  Object.keys(newErrors).length === 0; // Returns true if no errors
