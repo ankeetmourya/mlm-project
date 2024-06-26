@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import PasswordResetModal from "../components/PasswordResetModal"; // Adjust the import path as needed
 import { useDispatch } from "react-redux";
 import { signin } from "../actions/auth";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const LoginAdmin = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,6 +12,7 @@ const LoginAdmin = () => {
   const [errors, setErrors] = useState({});
   const [authError, setAuthError] = useState(""); // State for authentication error
   const [loading, setLoading] = useState(false); // State for loading
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility toggle
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -45,6 +47,10 @@ const LoginAdmin = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <div className="flex absolute w-full items-center justify-between mb-1 bg-white dark:bg-white p-2 md:p-4 shadow-md">
@@ -58,14 +64,6 @@ const LoginAdmin = () => {
             S1 Shoppy
           </span>
         </div>
-        {/* <div className="flex items-center space-x-4">
-          <NavLink
-            to="/logincustomer"
-            className="flex text-sm items-center justify-center px-3 py-2 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50flex text-sm items-center justify-center px-3 py-2 text-white bg-gradient-to-r from-green-500 to-green-600 rounded-md shadow-md hover:shadow-lg focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-opacity-50"
-          >
-            <span>Customer Login</span>
-          </NavLink>
-        </div> */}
       </div>
       <div
         className="flex items-center justify-center h-screen bg-zinc-100 dark:bg-zinc-800 px-4 overflow-hidden"
@@ -99,15 +97,23 @@ const LoginAdmin = () => {
               >
                 Password
               </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200 leading-tight focus:outline-none focus:shadow-outline"
-                id="password"
-                type="password"
-                placeholder="**************"
-                name="password"
-                onChange={handleChange}
-                value={formData.password}
-              />
+              <div className="relative">
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200 leading-tight focus:outline-none focus:shadow-outline"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="**************"
+                  name="password"
+                  onChange={handleChange}
+                  value={formData.password}
+                />
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? <IoEyeOff /> : <IoEye />}
+                </div>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}

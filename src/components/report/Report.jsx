@@ -8,6 +8,8 @@ import { newMembers } from '../../actions/newMembers';
 import NewJoinedMember from './newJoinedMember';
 import { highPerforming } from '../../actions/highPerformingCustomer';
 import HighPerformingTeam from './HighPerformingTeam';
+import ProductReport from './ProductReport';
+import CommissionReport from './CommissionReport';
 
 
 const CombinedComponent = () => {
@@ -49,6 +51,8 @@ const dispatch = useDispatch()
           <DataExportComponent adminReports={adminReports} />
           <NewJoinedMember newMembers={newMembersReports} />
           <HighPerformingTeam highPerforming={highPerformanceReports} />
+          <ProductReport/>
+          <CommissionReport/>
         </>
       )}
     </div>

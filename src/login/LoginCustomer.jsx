@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import PasswordResetModal from "../components/PasswordResetModal"; // Adjust the import path as needed
 import { useDispatch } from "react-redux";
 import { signin } from "../actions/auth";
+import { IoEye, IoEyeOff } from "react-icons/io5";
 
 const LoginCustomer = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,6 +12,7 @@ const LoginCustomer = () => {
   const [errors, setErrors] = useState({});
   const [authError, setAuthError] = useState(""); // State for authentication error
   const [loading, setLoading] = useState(false); // State for loading
+  const [showPassword, setShowPassword] = useState(false); // State for password visibility toggle
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -44,6 +46,10 @@ const LoginCustomer = () => {
     }
   };
 
+  const togglePasswordVisibility = () => {
+    setShowPassword((prev) => !prev);
+  };
+
   return (
     <div className="flex flex-col h-screen">
       <div className="absolute w-full flex items-center justify-between mb-1 bg-white dark:bg-white p-2 md:p-4 shadow-md">
@@ -54,7 +60,7 @@ const LoginCustomer = () => {
             className="h-8 w-8 mr-2 rounded-full border border-gray-300"
           />
           <span className="text-xl text-zinc-800 dark:text-white font-bold">
-             S1 Shoppy
+            S1 Shoppy
           </span>
         </div>
         {/* <div className="flex items-center space-x-4">
@@ -66,7 +72,7 @@ const LoginCustomer = () => {
           </NavLink>
         </div> */}
       </div>
-      
+
       <div className="flex items-center justify-center h-screen bg-zinc-100 dark:bg-white px-4 overflow-hidden">
         <div className="flex flex-col items-center w-full max-w-md p-6 bg-white dark:bg-white shadow-md rounded">
           <form className="w-full" onSubmit={handleSubmit}>
@@ -97,15 +103,23 @@ const LoginCustomer = () => {
               >
                 Password
               </label>
-              <input
-                className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200 leading-tight focus:outline-none focus:shadow-outline"
-                id="password"
-                type="password"
-                placeholder="**************"
-                name="password"
-                onChange={handleChange}
-                value={formData.password}
-              />
+              <div className="relative">
+                <input
+                  className="shadow appearance-none border rounded w-full py-2 px-3 text-zinc-700 dark:bg-zinc-600 dark:text-zinc-200 leading-tight focus:outline-none focus:shadow-outline"
+                  id="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="**************"
+                  name="password"
+                  onChange={handleChange}
+                  value={formData.password}
+                />
+                <div
+                  className="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
+                  onClick={togglePasswordVisibility}
+                >
+                  {showPassword ? <IoEyeOff /> : <IoEye />}
+                </div>
+              </div>
               {errors.password && (
                 <p className="text-red-500 text-xs mt-1">{errors.password}</p>
               )}
@@ -120,11 +134,7 @@ const LoginCustomer = () => {
                 onClick={() => setRole("customer")}
                 disabled={loading} // Disable button when loading
               >
-                {loading ? (
-                  <span>Loading...</span>
-                ) : (
-                  "Login"
-                )}
+                {loading ? <span>Loading...</span> : "Login"}
               </button>
               {/* <a
                 className="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800"
