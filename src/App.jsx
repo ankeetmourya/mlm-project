@@ -78,6 +78,10 @@ const App = () => {
               path="/customertransaction"
               element={<Navbar component={"customertransaction"} />}
             ></Route>
+            <Route
+              path="/payout"
+              element={<Navbar component={"payout"} />}
+            ></Route>
               </>
             ) : (
               ""

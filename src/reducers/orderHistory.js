@@ -5,7 +5,7 @@ export default (state = [], action) => {
         return [...action?.data ];
         case "ORDER_UPDATE_HISTORY":
           console.log("ORDER_UPDATE_HISTORY",action?.data);
-          console.log("ssss",state);
+          // console.log("ssss",state);
           const updatedData = state.find(({purchase_id,customer_id})=>
             purchase_id == action.data.purchase_id && customer_id == action.data.customer_id )
           const filteredData = state.filter(({purchase_id,customer_id})=>

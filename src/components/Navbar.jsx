@@ -10,6 +10,7 @@ import Header from "./Header";
 import OrderHistory from "./OrderHistory";
 import { useSelector } from "react-redux";
 import CustomerTransaction from "./CustomerTransaction";
+import Payout from "./Payout";
 import UpdateUserprofile from "./profile/UpdateUserprofile";
 
 
@@ -38,6 +39,8 @@ function Navbar({ component }) {
         return <CustomerTransaction />;
         case "userprofile":
           return <UpdateUserprofile/>
+          case "payout":
+            return <Payout/>
       default:
         return <Dashboard />;
     }
@@ -163,6 +166,15 @@ function Navbar({ component }) {
                   <span>Reports</span>
                 </NavLink>
                 <NavLink
+                  to="/payout"
+                  className={`flex items-center p-2 rounded-md ${getNavLinkClass(
+                    "/payout"
+                  )}`}
+                  onClick={handleNavLinkClick}
+                >
+                  <span>Payout</span>
+                </NavLink>
+                <NavLink
                   to="/customertransaction"
                   className={`flex items-center p-2 rounded-md ${getNavLinkClass(
                     "/customertransaction"
@@ -171,6 +183,7 @@ function Navbar({ component }) {
                 >
                   <span>Customer Transaction</span>
                 </NavLink>
+               
               </>
             ) : (
               ""

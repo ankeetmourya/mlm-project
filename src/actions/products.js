@@ -19,6 +19,9 @@ export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
             selectedProduct.rclevel4,
             selectedProduct.rclevel5,
             selectedProduct.rclevel6,
+            selectedProduct.rclevel7,
+            selectedProduct.rclevel8,
+            selectedProduct.rclevel9,
           ];
           let productData = {...selectedProduct,'commission':cmLevelsArray,'repurchase_commission':rcLevelsArray}
           console.log(productData);

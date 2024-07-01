@@ -8,8 +8,8 @@ import { newMembers } from '../../actions/newMembers';
 import NewJoinedMember from './newJoinedMember';
 import { highPerforming } from '../../actions/highPerformingCustomer';
 import HighPerformingTeam from './HighPerformingTeam';
-import ProductReport from './ProductReport';
-import CommissionReport from './CommissionReport';
+import { pendingcommission } from '../../actions/pendingCommissionReport';
+import DataTableReport from './DataTableReport';
 
 
 const CombinedComponent = () => {
@@ -17,17 +17,15 @@ const dispatch = useDispatch()
   const adminId = useSelector((state)=> state.auth?.authData?.admin?.username)
   const adminReports = useSelector((state)=> state.reports.adminReports)
   const newMembersReports = useSelector((state) => state.newMembers);
-  const userRole = useSelector((state) => state.auth.userRole);
-    
-  const userName = userRole == 'admin' ?  useSelector(
-    (state) => state?.auth?.authData?.admin?.username ) : useSelector(
-      (state) => state?.auth?.authData?.customer?.username
-  );
-
+  
+  console.log("iddd",adminId);
   const highPerformanceReports = useSelector((state) => state.highPerformingCustomer);
+
   useEffect(() => {
-    dispatch(highPerforming(userName));
-  }, [dispatch]);
+    if (adminId) {
+      dispatch(highPerforming(adminId));
+    }
+  }, [dispatch, adminId]);
 
 
       useEffect(() => {
@@ -37,9 +35,15 @@ const dispatch = useDispatch()
 
   useEffect(() => {
     dispatch(getAdminReports(adminId))
-  }, [])
+  }, [adminId])
+
+
+
+
   const isEmpty = (obj) => Object.keys(obj).length === 0;
-  const isLoading = isEmpty(adminReports) || isEmpty(newMembersReports) || isEmpty(highPerformanceReports);
+  const isLoading = isEmpty(adminReports) || isEmpty(newMembersReports) //|| isEmpty(highPerformanceReports);
+
+  console.log("adminRepo", adminReports);
 
   return (
     <div className="flex space-x-4 p-4">
@@ -49,10 +53,13 @@ const dispatch = useDispatch()
       ) : (
         <>
           <DataExportComponent adminReports={adminReports} />
+          <DataTableReport data = {adminReports?.RegistrationPin["Registration pin report"]} header = "Registration Pin Report"/>
+          <DataTableReport data = {adminReports?.["Product Sale"]["Product report"]} header = "Product Sale Report"/>
+          <DataTableReport data = {adminReports?.["commission report"]["commission Report"]} header = "Commission Report"/>
+          
           <NewJoinedMember newMembers={newMembersReports} />
           <HighPerformingTeam highPerforming={highPerformanceReports} />
-          <ProductReport/>
-          <CommissionReport/>
+          
         </>
       )}
     </div>

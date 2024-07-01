@@ -32,6 +32,9 @@ const Product = () => {
     rclevel4: "",
     rclevel5: "",
     rclevel6: "",
+    rclevel7: "",
+    rclevel8: "",
+    rclevel9: "",
   };
   const editInitialState = {
     name: "",
@@ -55,6 +58,9 @@ const Product = () => {
     rclevel4: "",
     rclevel5: "",
     rclevel6: "",
+    rclevel7: "",
+    rclevel8: "",
+    rclevel9: "",
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -76,7 +82,7 @@ const Product = () => {
     console.log("1 prod", product);
     let [cmlevel1, cmlevel2, cmlevel3, cmlevel4, cmlevel5, cmlevel6] =
       product.commission;
-    let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6] =
+    let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6,rclevel7,rclevel8,rclevel9] =
       product.repurchase_commission;
     setEditProduct({
       ...editProduct,
@@ -93,6 +99,9 @@ const Product = () => {
       rclevel4,
       rclevel5,
       rclevel6,
+      rclevel7, 
+      rclevel8, 
+      rclevel9 
     });
   };
 
@@ -102,7 +111,7 @@ const Product = () => {
     console.log("1 prod", product);
     let [cmlevel1, cmlevel2, cmlevel3, cmlevel4, cmlevel5, cmlevel6] =
       product.commission;
-    let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6] =
+    let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6,rclevel7,rclevel8,rclevel9] =
       product.repurchase_commission;
     setEditProduct({
       ...product,
@@ -195,7 +204,7 @@ const Product = () => {
 
   const handleEditProduct = (e)=>{
     e.preventDefault();
-    dispatch(editProductAction(editProduct, navigate));
+    // dispatch(editProductAction(editProduct, navigate));
 
     console.log("Form Submitted", editProduct);
     setEditProduct(initialState);
@@ -457,6 +466,33 @@ const Product = () => {
                         name="rclevel6"
                         placeholder="Level 6"
                         value={selectedProduct.rclevel6}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel7"
+                        name="rclevel7"
+                        placeholder="Level 7"
+                        value={selectedProduct.rclevel7}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel8"
+                        name="rclevel8"
+                        placeholder="Level 8"
+                        value={selectedProduct.rclevel8}
+                        onChange={handleChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel9"
+                        name="rclevel9"
+                        placeholder="Level 9"
+                        value={selectedProduct.rclevel9}
                         onChange={handleChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />
@@ -772,6 +808,33 @@ const Product = () => {
                         name="rclevel6"
                         placeholder="Level 6"
                         value={editProduct.rclevel6}
+                        onChange={handleEditChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel7"
+                        name="rclevel7"
+                        placeholder="Level 7"
+                        value={editProduct.rclevel7}
+                        onChange={handleEditChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel8"
+                        name="rclevel8"
+                        placeholder="Level 8"
+                        value={editProduct.rclevel8}
+                        onChange={handleEditChange}
+                        className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                      />
+                      <input
+                        type="text"
+                        id="rclevel9"
+                        name="rclevel9"
+                        placeholder="Level 9"
+                        value={editProduct.rclevel9}
                         onChange={handleEditChange}
                         className="mt-1 block w-full px-3 py-2 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                       />

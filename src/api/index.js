@@ -42,9 +42,15 @@ export const fetchRegistrationPins = (username) => API.get(`/fetchregistrationpi
 export const addEPins = (body) => API.post(`/provideregistrationpins`, body);
 export const orderHistory = () => API.get(`/productpurchase/all`);
 export const networkTree = (username) => API.get(`/customer/network/${username}`);
-export const highPerformingCustomer = (username) => API.get(`highPerformingCustomer/${username}`);
+export const highPerformingCustomer = (username) => API.get(`/highPerformingCustomer/${username}`);
 export const getNewJoinedMembers = () => API.get(`/getnewjoinedcustomer`);
 export const getAllCustomers = () => API.get(`/allcustomers`);
+export const pendindCommissionReport = (username) => API.post(`/admin/pendingcommission`,username);
+export const updateProfile = (userData) => API.post(`/updatecustomer`,userData);
+
+
+
+// export const getCustomerDetails = (id) => API.get(`/customer/${id}`);  
 
 export const validate = async(payload) => {
   try {

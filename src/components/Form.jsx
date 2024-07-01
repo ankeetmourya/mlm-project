@@ -267,9 +267,9 @@ function Form() {
   const validateFourth = () => {
     const newErrors = {};
 
-    if (!formData.username.trim()) {
-      newErrors.username = "Username is required";
-    }
+    // if (!formData.username.trim()) {
+    //   newErrors.username = "Username is required";
+    // }
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
     }
