@@ -181,7 +181,7 @@ function Navbar({ component }) {
                   )}`}
                   onClick={handleNavLinkClick}
                 >
-                  <span>Customer Transaction</span>
+                  <span>Customer Details</span>
                 </NavLink>
                
               </>

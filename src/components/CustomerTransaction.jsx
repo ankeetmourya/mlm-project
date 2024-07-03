@@ -13,7 +13,6 @@ const CustomerTransaction = () => {
 
   return (
     <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-6 text-center">Customer Transactions</h2>
       <div className="overflow-x-auto max-h-[430px]">
         <table className="min-w-full bg-white shadow-md rounded-lg overflow-hidden">
           <thead className="bg-gray-100">
