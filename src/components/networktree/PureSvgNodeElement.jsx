@@ -59,10 +59,6 @@ const PureSvgNodeElement = ({ nodeDatum, orientation, toggleNode, onNodeClick })
   const imageUrl = './assets/person_icon.jpg'; // Replace with your image URL
   const imageUrlBW = './assets/bw_person.jpg'; // Replace with your image URL
 
-  console.log(nodeDatum,"nodeDatum")
-  console.log(orientation,"orientation")
-  console.log(toggleNode,"toggleNode")
-  console.log(onNodeClick,"onNodeClick")
 
   return (
     <>

@@ -3,6 +3,7 @@ import { exportToExcel } from '../report/exportToExcel';
 import { useDispatch, useSelector } from 'react-redux';
 import { pendingcommission } from '../../actions/pendingCommissionReport';
 import { updateCommission } from '../../actions/updateCommission';
+import Loader from '../report/Loader';
 
 
 const CommissionReport = () => {
@@ -71,20 +72,17 @@ const CommissionReport = () => {
             </tr>
           </thead>
           <tbody className="text-center">
-            {combinedData &&
+            {combinedData && combinedData.length > 0 ? (
               combinedData.map(
                 ({ username, data }) =>
-                  data &&
-                  data.map((item) => (
+                  data && data.map((item) => (
                     <tr key={item.id}>
                       <td className="py-2 border px-4">{item.id}</td>
                       <td className="py-2 border px-4">{username}</td>
-                      <td className="py-2 border px-4">
-                        {item.transactionsrequest}
-                      </td>
+                      <td className="py-2 border px-4">{item.transactionsrequest}</td>
                       <td className="py-2 border px-4">{item.state}</td>
                       <td className="py-2 border px-4">
-                        <button
+                      <button
                           onClick={() => openModal(username)}
                           className="mt-4 bg-purple-600 text-white p-2 rounded-sm w-full"
                           style={{ background: "#3AA6B9" }}
@@ -94,7 +92,14 @@ const CommissionReport = () => {
                       </td>
                     </tr>
                   ))
-              )}
+              )
+            ) :(
+              <tr>
+                <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
+                  <Loader/>
+                </td>
+              </tr>
+            )}
           </tbody>
         </table>
       </div>
