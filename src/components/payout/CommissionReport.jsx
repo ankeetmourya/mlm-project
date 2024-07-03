@@ -106,7 +106,7 @@ const CommissionReport = () => {
                           className="mt-4 bg-purple-600 text-white p-2 rounded-sm w-full"
                           style={{ background: "#3AA6B9" }}
                         >
-                          Pay
+                          Paid
                         </button>
                       </td>
                     </tr>

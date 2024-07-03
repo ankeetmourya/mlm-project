@@ -161,12 +161,12 @@ const EpinForm = () => {
             >
               Expiry Date
             </th>
-            <th
+            {/* <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               Status
-            </th>
+            </th> */}
           </tr>
         </thead>
         <tbody className="bg-white divide-y divide-gray-200">
@@ -181,7 +181,7 @@ const EpinForm = () => {
                       <td className="px-6 py-4 text-sm text-red-500">{detail.used_pins[pinIndex] || ""}</td>
                       <td className="px-6 py-4 text-sm">{detail.amount_received}</td>
                       <td className="px-6 py-4 text-sm">{new Date(detail.expiry_date).toLocaleDateString()}</td>
-                      <td className="px-6 py-4 text-sm">{detail.Status}</td>
+                      {/* <td className="px-6 py-4 text-sm">{detail.Status}</td> */}
                     </tr>
                   ));
                 })

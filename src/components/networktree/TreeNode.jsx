@@ -208,7 +208,7 @@ console.log("abccc",data);
     Object.keys(network).length>0 && 
     <div className={`relative ${smallScreen ? "mobileTree" : "desktopTree"} `} style={containerStyles} ref={treeContainerRef}>
          <div className="p-4 ">
-              Total nodes in tree: {treeProps.totalNodeCount}
+              Total Members: {treeProps.totalNodeCount}
             </div>
            <Tree
                 hasInteractiveNodes
