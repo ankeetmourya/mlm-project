@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { newMembers } from '../../actions/newMembers';
+import Loader from "../report/Loader";
 
 const MemberChart = () => {
   const dispatch = useDispatch();
@@ -33,7 +34,7 @@ const MemberChart = () => {
               ))
             ) : (
               <tr>
-                <td colSpan="3" className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100">No members found.</td>
+                <td colSpan="3" className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100"><Loader/></td>
               </tr>
             )}
           </tbody>

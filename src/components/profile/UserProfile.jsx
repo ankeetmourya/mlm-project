@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { signout } from "../../actions/auth";
 import { useNavigate } from "react-router-dom";
 import { LiaSignOutAltSolid } from "react-icons/lia";
@@ -10,6 +10,7 @@ const UserInfo = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const dropdownRef = useRef(null);
+  const userRole = useSelector((state) => state.auth.userRole);
 
   const handleProfileClick = () => {
     navigate('/userprofile');
@@ -48,31 +49,63 @@ const UserInfo = () => {
       {isHovered && (
         <div
           className="absolute top-full left-0 mt-2 p-4 bg-white border border-gray-300 shadow-lg rounded w-48"
+          style={{"zIndex":"9999999"}}
           onClick={handleToggle} // Added to close the dropdown on click
         >
-          <div className="py-1 cursor-pointer hover:bg-gray-100 w-full block">
-            <button
-              className="rounded inline-flex items-center w-full"
-              onClick={handleProfileClick}
-            >
-              <span className="px-2">
-                <IoPersonSharp />
-              </span>
-              Profile
-            </button>
-          </div>
-          <hr className="my-2 border-gray-300" />
-          <div className="py-1 cursor-pointer hover:bg-gray-100 w-full block">
-            <button
-              onClick={() => dispatch(signout(navigate))}
-              className="text-red-500 font-bold cursor-pointer rounded inline-flex items-center w-full"
-            >
-              <span className="px-2">
-                <LiaSignOutAltSolid />
-              </span>
-              Logout
-            </button>
-          </div>
+          {userRole === "admin" && (
+            <>
+              {/* <div className="py-1 cursor-pointer hover:bg-gray-100 w-full block">
+                <button
+                  className="rounded inline-flex items-center w-full"
+                  onClick={handleProfileClick}
+                >
+                  <span className="px-2">
+                    <IoPersonSharp />
+                  </span>
+                  Profile
+                </button>
+              </div>
+              <hr className="my-2 border-gray-300" /> */}
+              <div className="py-1 cursor-pointer hover:bg-gray-100 w-full block">
+                <button
+                  onClick={() => dispatch(signout(navigate))}
+                  className="text-red-500 font-bold cursor-pointer rounded inline-flex items-center w-full"
+                >
+                  <span className="px-2">
+                    <LiaSignOutAltSolid />
+                  </span>
+                  Logout
+                </button>
+              </div>
+            </>
+          )}
+          {userRole === "customer" && (
+            <>
+              <div className="py-1 cursor-pointer hover:bg-gray-100 w-full block">
+                <button
+                  className="rounded inline-flex items-center w-full"
+                  onClick={handleProfileClick}
+                >
+                  <span className="px-2">
+                    <IoPersonSharp />
+                  </span>
+                  Profile
+                </button>
+              </div>
+              <hr className="my-2 border-gray-300" />
+              <div className="py-1 cursor-pointer hover:bg-gray-100 w-full block">
+                <button
+                  onClick={() => dispatch(signout(navigate))}
+                  className="text-red-500 font-bold cursor-pointer rounded inline-flex items-center w-full"
+                >
+                  <span className="px-2">
+                    <LiaSignOutAltSolid />
+                  </span>
+                  Logout
+                </button>
+              </div>
+            </>
+          )}
         </div>
       )}
     </div>

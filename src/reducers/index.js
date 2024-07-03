@@ -10,4 +10,15 @@ import highPerformingCustomer from './highPerformingCustomer';
 import allCustomers from './allCustomers';
 import pendingCommissionReport from './pendingCommissionReport';
 
-export default combineReducers({ auth,products, reports, epins, orderHistory, networkTree ,newMembers, highPerformingCustomer, allCustomers,pendingCommissionReport});
+export default combineReducers({
+  auth,
+  products,
+  reports,
+  epins,
+  orderHistory,
+  networkTree,
+  newMembers,
+  highPerformingCustomer,
+  allCustomers,
+  pendingCommissionReport,
+});

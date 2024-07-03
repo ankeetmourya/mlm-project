@@ -16,7 +16,7 @@ const UpdateUserprofile = () => {
   };
 
 
-  console.log("dataaaMan",adminData);
+  console.log("dataaaMan",customerData);
   const [formData, setFormData] = useState(getInitialData());
   
   const handleChange = (e) => {
@@ -45,8 +45,8 @@ const UpdateUserprofile = () => {
     console.log('Form Data:', formData);
   };
 
-  return (
-    <form onSubmit={handleSubmit} className="p-4 space-y-4 bg-white rounded shadow-md">
+  return (   
+<form onSubmit={handleSubmit} className="p-4 space-y-4 bg-white rounded shadow-md">
       <div>
         <h2 className="text-xl font-bold">Personal Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
@@ -60,7 +60,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="first_name"
-              value={formData.first_name}
+              value={formData?.first_name}
               onChange={handleChange}
               placeholder="First Name"
               className="p-2 border rounded w-full mt-2"
@@ -77,7 +77,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="last_name"
-              value={formData.last_name}
+              value={formData?.last_name}
               onChange={handleChange}
               placeholder="Last Name"
               className="p-2 border rounded w-full mt-2"
@@ -99,7 +99,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="bank_name"
-              value={formData.bank_name}
+              value={formData?.bank_name}
               onChange={handleChange}
               placeholder="Bank Name"
               className="p-2 border rounded w-full mt-2"
@@ -116,7 +116,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="account_no"
-              value={formData.account_no}
+              value={formData?.account_no}
               onChange={handleChange}
               placeholder="Account Number"
               className="p-2 border rounded w-full mt-2"
@@ -133,7 +133,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="ifsc_code"
-              value={formData.ifsc_code}
+              value={formData?.ifsc_code}
               onChange={handleChange}
               placeholder="Account Number"
               className="p-2 border rounded w-full mt-2"
@@ -150,7 +150,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="branch_name"
-              value={formData.branch_name}
+              value={formData?.branch_name}
               onChange={handleChange}
               placeholder="Account Number"
               className="p-2 border rounded w-full mt-2"
@@ -162,7 +162,7 @@ const UpdateUserprofile = () => {
       <div>
         <h2 className="text-xl font-bold ">Contact Details</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-          {/* <div className="flex flex-col">
+          <div className="flex flex-col">
             <label
               htmlFor="address"
               className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -172,12 +172,12 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="address"
-              value={formData.address}
+              value={formData?.address}
               onChange={handleChange}
               placeholder="Address"
               className="p-2 border rounded w-full m-2"
             />
-          </div>  */}
+          </div> 
           <div className="flex flex-col">
             <label
               htmlFor="email"
@@ -188,7 +188,7 @@ const UpdateUserprofile = () => {
             <input
               type="email"
               name="email"
-              value={formData.email}
+              value={formData?.email}
               onChange={handleChange}
               placeholder="Email"
               className="p-2 border rounded w-full mt-2"
@@ -205,7 +205,7 @@ const UpdateUserprofile = () => {
             <input
               type="text"
               name="mobileNo"
-              value={formData.mobileNo}
+              value={formData?.mobileNo}
               onChange={handleChange}
               placeholder="Mobile Number"
               className="p-2 border rounded w-full mt-2"

@@ -1,6 +1,7 @@
 import React, { useEffect } from "react";
 import { highPerforming } from "../../actions/highPerformingCustomer";
 import { useDispatch, useSelector } from "react-redux";
+import Loader from "../report/Loader";
 
 const TopPerformerChart = () => {
   const dispatch = useDispatch();
@@ -29,25 +30,32 @@ const TopPerformerChart = () => {
             </tr>
           </thead>
           <tbody className="bg-white dark:bg-zinc-800 divide-y divide-gray-200 dark:divide-gray-700">
-            {highPerformance.map((customer) => (
-              <tr key={customer.customer}>
-                <td className="px-6 py-4 whitespace-nowrap flex items-center">
-                  <img
-                    className="w-10 h-10 rounded-full"
-                    src="./assets/person_icon.jpg"
-                    alt="Profile"
-                  />
-                  <div className="ml-4">
-                    <div className="text-zinc-800 dark:text-zinc-200 font-semibold">
-                      {customer.customer}
+           {
+            highPerformance && highPerformance.length > 0 ? (
+              highPerformance.map((customer) => (
+                <tr key={customer.customer}>
+                  <td className="px-6 py-4 whitespace-nowrap flex items-center">
+                    <img
+                      className="w-10 h-10 rounded-full"
+                      src="./assets/person_icon.jpg"
+                      alt="Profile"
+                    />
+                    <div className="ml-4">
+                      <div className="text-zinc-800 dark:text-zinc-200 font-semibold">
+                        {customer.customer}
+                      </div>
                     </div>
-                  </div>
-                </td>
-                <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100 text-center">
-                  {customer.count}
-                </td>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100 text-center">
+                    {customer.count}
+                  </td>
+                </tr>
+              ))
+            ) : 
+            <tr>
+                <td colSpan="3" className="px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100"><Loader/></td>
               </tr>
-            ))}
+           } 
           </tbody>
         </table>
       </div>

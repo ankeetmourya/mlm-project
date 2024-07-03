@@ -216,12 +216,7 @@ function Form() {
 
   const validateThird = async() => {
     const newErrors = {};
-    const payloadAadhar = {type:"aadhar_card_no",value:formData.aadhar_card_no}
-    const payloadPan = {type:"pan_card_no",value:formData.pan_card_no}
-    const dataAadhar  = await api.validate(payloadAadhar); 
-    const dataPan  = await api.validate(payloadPan); 
-
-    console.log("Adhar Pan data:", dataAadhar,dataPan);
+   
 
 
 
@@ -229,8 +224,6 @@ function Form() {
       newErrors.aadhar_card_no = "Aadhar Number is required";
     } else if (!/^\d{12}$/.test(formData.aadhar_card_no)) {
       newErrors.aadhar_card_no = "Aadhar Number must be 12 digits";
-    }else if(dataAadhar?.message !== 'aadhar_card_no number is unique.'){
-      newErrors.aadhar_card_no = 'Aadhar already registered'
     }
     // if (!formData.aadhar_image_link) {
     //   newErrors.aadhar_image_link = "Adhar Image is required";
@@ -239,8 +232,6 @@ function Form() {
       newErrors.pan_card_no = "Pan Number is required";
     } else if (!/^[A-Z]{5}[0-9]{4}[A-Z]{1}$/.test(formData.pan_card_no)) {
       newErrors.pan_card_no = "Invalid Pan Number format";
-    }else if(dataPan?.message !== "pan_card_no number is unique."){
-      newErrors.pan_card_no = "Pan already registered "
     }
     // if (!formData.pan_image_link) {
     //   newErrors.pan_image_link = "Pan Image is required";
@@ -267,9 +258,7 @@ function Form() {
   const validateFourth = () => {
     const newErrors = {};
 
-    // if (!formData.username.trim()) {
-    //   newErrors.username = "Username is required";
-    // }
+ 
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
     }

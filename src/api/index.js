@@ -45,8 +45,8 @@ export const networkTree = (username) => API.get(`/customer/network/${username}`
 export const highPerformingCustomer = (username) => API.get(`/highPerformingCustomer/${username}`);
 export const getNewJoinedMembers = () => API.get(`/getnewjoinedcustomer`);
 export const getAllCustomers = () => API.get(`/allcustomers`);
-export const pendindCommissionReport = (username) => API.post(`/admin/pendingcommission`,username);
-export const updateProfile = (userData) => API.post(`/updatecustomer`,userData);
+export const pendingCommissionReport = (username) => API.post(`/admin/pendingcommission`,username);
+export const updateProfile = (userData) => API.put(`/updatecustomer`,userData);
 
 
 

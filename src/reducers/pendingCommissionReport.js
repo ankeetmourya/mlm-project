@@ -1,4 +1,4 @@
-export default function reducer(state = { commisionPayout: [[]] }, action) {
+export default function reducer(state = { commisionPayout: [{}] }, action) {
   switch (action.type) {
     case "COMMISSION_REPORT":
       return {

@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import TreeNode from './networktree/TreeNode'
 import { useDispatch, useSelector } from 'react-redux';
 import { networkTree } from "../actions/networkTree";
+import Loader from "./report/Loader"
+
 
 const NetworkTree = () => {
   
@@ -28,7 +30,7 @@ const NetworkTree = () => {
     </div>
     :
     <div className='p-4 flex justify-center text-center mt-10'>
-      <p className='text-red-500 text-lg font-semibold'> No Network</p>
+      <p className='px-6 py-4 whitespace-nowrap text-sm text-zinc-900 dark:text-zinc-100'><Loader/></p>
     </div>
   )
 }
