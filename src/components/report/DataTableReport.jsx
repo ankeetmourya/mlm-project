@@ -33,7 +33,7 @@ const DataTableReport = ({ data,header }) => {
             <tr>
               <th className="text-start py-2 px-4 border-b border-gray-300">Transaction Request</th>
               <th className="text-start py-2 px-4 border-b border-gray-300">Customer Username</th>
-              <th className="text-start py-2 px-4 border-b border-gray-300">State</th>
+              <th className="text-start py-2 px-4 border-b border-gray-300">Status</th>
               <th className="text-start py-2 px-4 border-b border-gray-300">Created At</th>
             </tr>
           </thead>

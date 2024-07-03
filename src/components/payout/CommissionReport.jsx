@@ -1,12 +1,17 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { exportToExcel } from '../report/exportToExcel';
 import { useDispatch, useSelector } from 'react-redux';
 import { pendingcommission } from '../../actions/pendingCommissionReport';
+import { updateCommission } from '../../actions/updateCommission';
+
 
 const CommissionReport = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
   const combinedData = useSelector((state) => state.pendingCommissionReport?.commisionPayout?.commisionPayout);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalData, setModalData] = useState({ username: '', amount: '' });
 
   let username = "";
   if (userRole === "admin") {
@@ -16,62 +21,39 @@ const CommissionReport = () => {
   }
 
   const payload = {
-    "admin_username":username
-}
+    "admin_username": username
+  }
 
-
-  console.log("usernAmeeee",payload);
   useEffect(() => {
-      dispatch(pendingcommission(payload));
+    dispatch(pendingcommission(payload));
   }, [dispatch]);
-
-  // Dummy data
-  const dummyData = {
-    "message": "Commission pending transaction fetched",
-    "body": {
-      "commisionPayout": [
-        {
-          "username": "SM465390",
-          "data": [
-            { "id": 6, "customer_username": "SM465390", "transactionsrequest": "0", "state": "Pending" },
-            { "id": 9, "customer_username": "SM465390", "transactionsrequest": "0", "state": "Pending" },
-            { "id": 11, "customer_username": "SM465390", "transactionsrequest": "0", "state": "Pending" },
-            { "id": 13, "customer_username": "SM465390", "transactionsrequest": "0", "state": "Pending" },
-            { "id": 16, "customer_username": "SM465390", "transactionsrequest": "0", "state": "Pending" },
-            { "id": 21, "customer_username": "SM465390", "transactionsrequest": "150", "state": "Pending" },
-            { "id": 25, "customer_username": "SM465390", "transactionsrequest": "150", "state": "Pending" }
-          ]
-        },
-        {
-          "username": "SM929868",
-          "data": [
-            { "id": 8, "customer_username": "SM929868", "transactionsrequest": "0", "state": "Pending" },
-            { "id": 20, "customer_username": "SM929868", "transactionsrequest": "250", "state": "Pending" },
-            { "id": 24, "customer_username": "SM929868", "transactionsrequest": "250", "state": "Pending" }
-          ]
-        },
-        {
-          "username": "SM063142",
-          "data": [
-            { "id": 15, "customer_username": "SM063142", "transactionsrequest": "0", "state": "Pending" }
-          ]
-        },
-        {
-          "username": "SM524853",
-          "data": [
-            { "id": 19, "customer_username": "SM524853", "transactionsrequest": "325", "state": "Pending" },
-            { "id": 23, "customer_username": "SM524853", "transactionsrequest": "325", "state": "Pending" }
-          ]
-        }
-      ]
-    }
-  };
-
-  // Combine dummy data with fetched data if available
-  // const combinedData = commissionData.body.commisionPayout;
 
   const handleExport = () => {
     exportToExcel(combinedData, 'CommissionReport.xlsx');
+  };
+
+  const openModal = (username) => {
+    setModalData({ username, amount: '' });
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    setModalData((prevData) => ({
+      ...prevData,
+      [name]: value
+    }));
+  };
+
+  const handleAdd = () => {
+    
+    dispatch(updateCommission(modalData));
+    console.log('Modal data:', modalData);
+    closeModal();
   };
 
   return (
@@ -103,6 +85,7 @@ const CommissionReport = () => {
                       <td className="py-2 border px-4">{item.state}</td>
                       <td className="py-2 border px-4">
                         <button
+                          onClick={() => openModal(username)}
                           className="mt-4 bg-purple-600 text-white p-2 rounded-sm w-full"
                           style={{ background: "#3AA6B9" }}
                         >
@@ -122,6 +105,58 @@ const CommissionReport = () => {
       >
         Export to Excel
       </button>
+
+      {isModalOpen && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
+          <div className="bg-white p-8 rounded shadow-lg w-1/3">
+            <button
+              onClick={closeModal}
+              className="absolute top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-700"
+            >
+              &#x2715;
+            </button>
+            <h2 className="text-xl font-bold mb-4">Add Commission</h2>
+            <div>
+              <label className="block mb-2">
+                Username
+                <input
+                  type="text"
+                  name="username"
+                  value={modalData.username}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full p-2 border rounded"
+                  readOnly
+                />
+              </label>
+              <label className="block mb-2">
+                Amount
+                <input
+                  type="number"
+                  name="amount"
+                  value={modalData.amount}
+                  onChange={handleInputChange}
+                  className="mt-1 block w-full p-2 border rounded"
+                />
+              </label>
+              <div className="flex justify-end space-x-2">
+                <button
+                  onClick={closeModal}
+                  className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={handleAdd}
+                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                  style={{ background: "#3AA6B9" }}
+                >
+                  Add
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

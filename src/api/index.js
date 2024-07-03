@@ -32,39 +32,56 @@ export const signin = (userData, role) => {
     return API.post(`/logincustomer`, userData);
   }
 };
-export const registerCustomer = (userData) => API.post(`/addcustomer`, userData);
-export const addProduct = (productData) => API.post(`/addproducts`, productData);
+export const registerCustomer = (userData) =>
+  API.post(`/addcustomer`, userData);
+export const addProduct = (productData) =>
+  API.post(`/addproducts`, productData);
 export const editProduct = (productData) => API.put(`/products`, productData);
 export const getProduct = () => API.get(`/products`);
 export const getUsername = () => API.get(`/getusername`);
 export const getAdminReports = (id) => API.get(`/admin/report/${id}`);
-export const fetchRegistrationPins = (username) => API.get(`/fetchregistrationpins/${username}`);
+export const fetchRegistrationPins = (username) =>
+  API.get(`/fetchregistrationpins/${username}`);
 export const addEPins = (body) => API.post(`/provideregistrationpins`, body);
 export const orderHistory = () => API.get(`/productpurchase/all`);
-export const networkTree = (username) => API.get(`/customer/network/${username}`);
-export const highPerformingCustomer = (username) => API.get(`/highPerformingCustomer/${username}`);
+export const networkTree = (username) =>
+  API.get(`/customer/network/${username}`);
+export const highPerformingCustomer = (username) =>
+  API.get(`/highPerformingCustomer/${username}`);
 export const getNewJoinedMembers = () => API.get(`/getnewjoinedcustomer`);
 export const getAllCustomers = () => API.get(`/allcustomers`);
-export const pendingCommissionReport = (username) => API.post(`/admin/pendingcommission`,username);
-export const updateProfile = (userData) => API.put(`/updatecustomer`,userData);
+export const pendingCommissionReport = (username) =>
+  API.post(`/admin/pendingcommission`, username);
+export const updateProfile = (userData) => API.put(`/updatecustomer`, userData);
+export const updateCommission = (payload) => API.post(`/update/commission`,payload)
+  
 
+// export const getCustomerDetails = (id) => API.get(`/customer/${id}`);
 
-
-// export const getCustomerDetails = (id) => API.get(`/customer/${id}`);  
-
-export const validate = async(payload) => {
+export const validate = async (payload) => {
   try {
     const response = await API.post(`/check-unique-identifier`, payload);
-    return response.data; 
+    return response.data;
   } catch (error) {
     if (error.response && error.response.status === 409) {
-      console.error('Conflict error: The identifier is not unique.', error.response.data);
-      return { status: 409, message: 'Conflict error: The identifier is not unique.', details: error.response.data };
+      console.error(
+        "Conflict error: The identifier is not unique.",
+        error.response.data
+      );
+      return {
+        status: 409,
+        message: "Conflict error: The identifier is not unique.",
+        details: error.response.data,
+      };
     } else {
-      console.error('An error occurred:', error.message);
-      return { status: error.response ? error.response.status : 500, message: error.message };
+      console.error("An error occurred:", error.message);
+      return {
+        status: error.response ? error.response.status : 500,
+        message: error.message,
+      };
     }
   }
 };
 
-export const updateOrderHistory = (payload) => API.put('/productpurchase/update',payload);
+export const updateOrderHistory = (payload) =>
+  API.put("/productpurchase/update", payload);

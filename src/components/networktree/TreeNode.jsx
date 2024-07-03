@@ -4,6 +4,7 @@ import { FaPlus, FaSearchPlus, FaSearchMinus } from 'react-icons/fa';
 import MixedNodeInputElement from './MixedNodeInputElement';
 import MixedNodeElement from './MixedNodeElement';
 import PureSvgNodeElement from './PureSvgNodeElement';
+import { useSelector } from 'react-redux';
 
 const TreeNode = ({ network }) => {
   const [data, setData] = useState(null);
@@ -11,6 +12,7 @@ const TreeNode = ({ network }) => {
   const [clickedNode, setClickedNode] = useState(null);
   const [scale, setScale] = useState(1);
   const treeContainerRef = useRef();
+  const userRole = useSelector((state) => state.auth.userRole);
 
   useEffect(() => {
     const transformedData = transformNetworkData(network);
@@ -90,7 +92,7 @@ const TreeNode = ({ network }) => {
     },
   };
 
-console.log("abccc",data);
+
   let treeProps = {
     data: data,
    totalNodeCount: data && Object.keys(data).length>0 && countNodes(data),
@@ -102,7 +104,7 @@ console.log("abccc",data);
     translateY: smallScreen ? 140 : 115,
     collapsible: true,
     shouldCollapseNeighborNodes: false,
-    initialDepth: 1,
+    initialDepth: userRole == 'admin' ? 100 : 6,
     depthFactor: undefined,
     zoomable: true,
     draggable: true,
@@ -175,7 +177,7 @@ console.log("abccc",data);
       <circle
         r={20}
         onClick={() => handleNodeClick(nodeDatum)}
-        className={`cursor-pointer ${
+        className={`cursor-pointer nodeImg ${
           clickedNode && clickedNode.name === nodeDatum.name ? 'stroke-blue-500' : 'stroke-black'
         }`}
         fill="#fff"
