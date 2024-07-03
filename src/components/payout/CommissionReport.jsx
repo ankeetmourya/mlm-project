@@ -1,18 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { exportToExcel } from '../report/exportToExcel';
-import { useDispatch, useSelector } from 'react-redux';
-import { pendingcommission } from '../../actions/pendingCommissionReport';
-import { updateCommission } from '../../actions/updateCommission';
-import Loader from '../report/Loader';
-
+import React, { useEffect, useState } from "react";
+import { exportToExcel } from "../report/exportToExcel";
+import { useDispatch, useSelector } from "react-redux";
+import { pendingcommission } from "../../actions/pendingCommissionReport";
+import { updateCommission } from "../../actions/updateCommission";
+import Loader from "../report/Loader";
 
 const CommissionReport = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
-  const combinedData = useSelector((state) => state.pendingCommissionReport?.commisionPayout?.commisionPayout);
+  const combinedData = useSelector(
+    (state) => state.pendingCommissionReport?.commisionPayout?.commisionPayout
+  );
 
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState({ username: '', amount: '' });
+  const [modalData, setModalData] = useState({ username: "", amount: "" });
 
   let username = "";
   if (userRole === "admin") {
@@ -22,19 +23,19 @@ const CommissionReport = () => {
   }
 
   const payload = {
-    "admin_username": username
-  }
+    admin_username: username,
+  };
 
   useEffect(() => {
     dispatch(pendingcommission(payload));
   }, [dispatch]);
 
   const handleExport = () => {
-    exportToExcel(combinedData, 'CommissionReport.xlsx');
+    exportToExcel(combinedData, "CommissionReport.xlsx");
   };
 
   const openModal = (username) => {
-    setModalData({ username, amount: '' });
+    setModalData({ username, amount: "" });
     setIsModalOpen(true);
   };
 
@@ -46,14 +47,13 @@ const CommissionReport = () => {
     const { name, value } = e.target;
     setModalData((prevData) => ({
       ...prevData,
-      [name]: value
+      [name]: value,
     }));
   };
 
   const handleAdd = () => {
-    
     dispatch(updateCommission(modalData));
-    console.log('Modal data:', modalData);
+    console.log("Modal data:", modalData);
     closeModal();
   };
 
@@ -75,14 +75,17 @@ const CommissionReport = () => {
             {combinedData && combinedData.length > 0 ? (
               combinedData.map(
                 ({ username, data }) =>
-                  data && data.map((item) => (
+                  data &&
+                  data.map((item) => (
                     <tr key={item.id}>
                       <td className="py-2 border px-4">{item.id}</td>
                       <td className="py-2 border px-4">{username}</td>
-                      <td className="py-2 border px-4">{item.transactionsrequest}</td>
+                      <td className="py-2 border px-4">
+                        {item.transactionsrequest}
+                      </td>
                       <td className="py-2 border px-4">{item.state}</td>
                       <td className="py-2 border px-4">
-                      <button
+                        <button
                           onClick={() => openModal(username)}
                           className="mt-4 bg-purple-600 text-white p-2 rounded-sm w-full"
                           style={{ background: "#3AA6B9" }}
@@ -93,10 +96,13 @@ const CommissionReport = () => {
                     </tr>
                   ))
               )
-            ) :(
+            ) : (
               <tr>
-                <td colSpan="8" className="px-6 py-4 text-center text-sm text-gray-500">
-                  <Loader/>
+                <td
+                  colSpan="8"
+                  className="px-6 py-4 text-center text-sm text-gray-500"
+                >
+                  <Loader />
                 </td>
               </tr>
             )}
@@ -113,7 +119,7 @@ const CommissionReport = () => {
 
       {isModalOpen && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded shadow-lg w-1/3">
+          <div className="bg-white p-8 rounded shadow-lg w-full max-w-md mx-4">
             <button
               onClick={closeModal}
               className="absolute top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-700"
