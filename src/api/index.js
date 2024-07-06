@@ -40,8 +40,7 @@ export const editProduct = (productData) => API.put(`/products`, productData);
 export const getProduct = () => API.get(`/products`);
 export const getUsername = () => API.get(`/getusername`);
 export const getAdminReports = (id) => API.get(`/admin/report/${id}`);
-export const fetchRegistrationPins = (username) =>
-  API.get(`/fetchregistrationpins/${username}`);
+export const fetchRegistrationPins = (username) => API.get(`/fetchregistrationpins/${username}`);
 export const addEPins = (body) => API.post(`/provideregistrationpins`, body);
 export const orderHistory = () => API.get(`/productpurchase/all`);
 export const networkTree = (username) =>
@@ -53,10 +52,11 @@ export const getAllCustomers = () => API.get(`/allcustomers`);
 export const pendingCommissionReport = (username) =>
   API.post(`/admin/pendingcommission`, username);
 export const updateProfile = (userData) => API.put(`/updatecustomer`, userData);
-export const updateCommission = (payload) => API.post(`/update/commission`,payload)
+export const updateCommission = (payload) => API.post(`/update/commission`,payload);
+export const customerGraph = (payload) => API.post(`/statics/customerjoining`,payload);
+export const finance = (username) => API.get(`/customer-finance/${username}`);
+export const financeAdmin = (username) => API.get(`/admin-finance/${username}`);
   
-
-// export const getCustomerDetails = (id) => API.get(`/customer/${id}`);
 
 export const validate = async (payload) => {
   try {

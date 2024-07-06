@@ -9,6 +9,9 @@ import newMembers from './newMembers';
 import highPerformingCustomer from './highPerformingCustomer';
 import allCustomers from './allCustomers';
 import pendingCommissionReport from './pendingCommissionReport';
+import customerGraph from './customerGraph';
+import FinanceData from './FinanceData';
+import FinanceDataAdmin from './FinanceDataAdmin';
 
 export default combineReducers({
   auth,
@@ -21,4 +24,7 @@ export default combineReducers({
   highPerformingCustomer,
   allCustomers,
   pendingCommissionReport,
+  customerGraph,
+  FinanceData,
+  FinanceDataAdmin
 });

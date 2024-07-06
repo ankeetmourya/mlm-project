@@ -17,3 +17,8 @@ height: 88% !important;
 .desktopTree{
 height: 500px;
 }
+.chart-mobile{
+  width: 125px !important;
+  margin-right: 125px !important;
+  right: -125px !important;
+}

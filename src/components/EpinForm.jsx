@@ -102,110 +102,126 @@ const EpinForm = () => {
 
   return (
     <div className="p-4 bg-zinc-50 dark:bg-zinc-800">
-      
       <div className="flex justify-between items-center mb-4">
         <h1 className="text-xl font-semibold">E-PIN</h1>
-        {userRole && userRole == 'admin' &&<button
-          className="bg-purple-500 hover:bg-purple-800 text-white py-2 px-4 rounded-lg"
-          onClick={openModal}
-          style={{ background: "#3AA6B9" }}
-        >
-          + Add E-pin
-        </button>}
+        {userRole && userRole == "admin" && (
+          <button
+            className="bg-purple-500 hover:bg-purple-800 text-white py-2 px-4 rounded-lg"
+            onClick={openModal}
+            style={{ background: "#3AA6B9" }}
+          >
+            + Add E-pin
+          </button>
+        )}
       </div>
-      {
-  Object.keys(ePins).length > 0 ? (
-    <div className="overflow-x-auto max-h-[450px]">
-      <table className="min-w-full divide-y divide-gray-200">
-        <thead className="bg-gray-50">
-          <tr>
-          {/* <th
+      {Object.keys(ePins).length > 0 ? (
+        <div className="overflow-x-auto max-h-[450px]">
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                {/* <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               ID
             </th> */}
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Username
-            </th>
-            {/* <th
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Username
+                </th>
+                {/* <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               E-Pin Count
             </th> */}
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Pins
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Used Pins
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Amount
-            </th>
-            <th
-              scope="col"
-              className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
-            >
-              Expiry Date
-            </th>
-            {/* <th
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Pins
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Used Pins
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Amount
+                </th>
+                <th
+                  scope="col"
+                  className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
+                >
+                  Expiry Date
+                </th>
+                {/* <th
               scope="col"
               className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider"
             >
               Status
             </th> */}
-          </tr>
-        </thead>
-        <tbody className="bg-white divide-y divide-gray-200">
-        { ePins && ePins.length > 0 ? (
-                ePins.map((detail, index) =>  {
-                  const maxPins = Math.max(detail.pins.length, detail.used_pins.length);
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {ePins && ePins.length > 0 ? (
+                ePins.map((detail, index) => {
+                  const maxPins = Math.max(
+                    detail.pins.length,
+                    detail.used_pins.length
+                  );
                   return Array.from({ length: maxPins }).map((_, pinIndex) => (
-                    <tr key={`row-${index}-pin-${pinIndex}`} className="border-b border-zinc-200 dark:border-zinc-600">
+                    <tr
+                      key={`row-${index}-pin-${pinIndex}`}
+                      className="border-b border-zinc-200 dark:border-zinc-600"
+                    >
                       <td className="px-6 py-4 text-sm">{detail.username}</td>
                       {/* <td className="px-6 py-4 text-sm">{detail.count_of_pins}</td> */}
-                      <td className="px-6 py-4 text-sm">{detail.pins[pinIndex] || ""}</td>
-                      <td className="px-6 py-4 text-sm text-red-500">{detail.used_pins[pinIndex] || ""}</td>
-                      <td className="px-6 py-4 text-sm">{detail.amount_received}</td>
-                      <td className="px-6 py-4 text-sm">{new Date(detail.expiry_date).toLocaleDateString()}</td>
+                      <td className="px-6 py-4 text-sm">
+                        {detail.pins[pinIndex] || ""}
+                      </td>
+                      <td className="px-6 py-4 text-sm text-red-500">
+                        {detail.used_pins[pinIndex] || ""}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        {detail.amount_received}
+                      </td>
+                      <td className="px-6 py-4 text-sm">
+                        {new Date(detail.expiry_date).toLocaleDateString()}
+                      </td>
                       {/* <td className="px-6 py-4 text-sm">{detail.Status}</td> */}
                     </tr>
                   ));
                 })
-          ) : (
-            <tr>
-              <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
-                No E-pins found
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
-  )   : (
-    <Loader />
-  )
-}
+              ) : (
+                <tr>
+                  <td
+                    colSpan="7"
+                    className="px-6 py-4 text-center text-sm text-gray-500"
+                  >
+                    No E-pins found
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      ) : (
+        <Loader />
+      )}
 
       {isModalOpen && (
         <div
           id="epinModal"
           className="fixed inset-0 bg-zinc-600 bg-opacity-50 flex items-center justify-center"
         >
-          <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-lg max-w-md w-full md:max-w-sm">
+          <div className="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-lg max-w-md w-full mx-4 sm:max-w-lg md:max-w-sm">
             <div className="flex justify-between items-center mb-2">
               <h2 className="text-lg font-bold">Add New E-Pin</h2>
               <button
@@ -217,43 +233,40 @@ const EpinForm = () => {
               </button>
             </div>
             <form className="text-sm" onSubmit={handleSubmit}>
-            <div className="mb-2">
-      <label
-        htmlFor="username"
-        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
-      >
-        Username <span className="text-red-500">*</span>
-      </label>
-      <div className="relative mt-1">
-        <input
-          type="text"
-          id="username"
-          name="username"
-          placeholder="Username"
-          className="block w-full p-2 border border-zinc-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white"
-          required
-          value={formData.username}
-          onChange={handleInputChange}
-          onFocus={() => setShowDropdown(true)}
-        />
-        <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-          {/* <SearchIcon className="h-5 w-5 text-gray-400" aria-hidden="true" /> */}
-        </div>
-        {showDropdown && filteredUsernames.length > 0 && (
-          <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none sm:text-sm">
-            {filteredUsernames.map((user) => (
-              <li
-                key={user.id}
-                className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white"
-                onClick={() => handleSelect(user.username)}
-              >
-                {user.username}
-              </li>
-            ))}
-          </ul>
-        )}
-      </div>
-    </div>
+              <div className="mb-2">
+                <label
+                  htmlFor="username"
+                  className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                >
+                  Username <span className="text-red-500">*</span>
+                </label>
+                <div className="relative mt-1">
+                  <input
+                    type="text"
+                    id="username"
+                    name="username"
+                    placeholder="Username"
+                    className="block w-full p-2 border border-zinc-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500 dark:bg-zinc-700 dark:border-zinc-600 dark:placeholder-zinc-400 dark:text-white"
+                    required
+                    value={formData.username}
+                    onChange={handleInputChange}
+                    onFocus={() => setShowDropdown(true)}
+                  />
+                  {showDropdown && filteredUsernames.length > 0 && (
+                    <ul className="absolute z-10 w-full mt-1 bg-white dark:bg-zinc-700 border border-zinc-300 dark:border-zinc-600 rounded-md shadow-lg max-h-60 overflow-auto focus:outline-none sm:text-sm">
+                      {filteredUsernames.map((user) => (
+                        <li
+                          key={user.id}
+                          className="cursor-pointer select-none relative py-2 pl-3 pr-9 hover:bg-indigo-600 hover:text-white dark:hover:bg-indigo-600 dark:hover:text-white"
+                          onClick={() => handleSelect(user.username)}
+                        >
+                          {user.username}
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                </div>
+              </div>
               <div className="mb-2">
                 <label
                   className="block text-zinc-700 dark:text-zinc-300 mb-1"
@@ -365,6 +378,7 @@ const EpinForm = () => {
           </div>
         </div>
       )}
+
       {/* Popup for multiple selection */}
       {isPopupVisible && (
         <div className="fixed bottom-4 left-1/2 transform -translate-x-1/2 bg-zinc-800 text-white rounded-lg p-4 flex items-center space-x-4 shadow-lg">

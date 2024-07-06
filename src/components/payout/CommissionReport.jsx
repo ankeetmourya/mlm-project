@@ -14,6 +14,8 @@ const CommissionReport = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalData, setModalData] = useState({ username: "", amount: "" });
+  const [modalMessage, setModalMessage] = useState("");
+  const [modalError, setModalError] = useState("");
 
   let username = "";
   if (userRole === "admin") {
@@ -41,6 +43,8 @@ const CommissionReport = () => {
 
   const closeModal = () => {
     setIsModalOpen(false);
+    setModalMessage("");
+    setModalError("");
   };
 
   const handleInputChange = (e) => {
@@ -52,9 +56,24 @@ const CommissionReport = () => {
   };
 
   const handleAdd = () => {
-    dispatch(updateCommission(modalData));
-    console.log("Modal data:", modalData);
-    closeModal();
+    dispatch(updateCommission(modalData))
+      .then((res) => {
+        setModalMessage("Successfully paid.");
+        setIsModalOpen(true); // Open modal on success
+        setTimeout(() => {
+          setIsModalOpen(false); // Close modal after 3 seconds
+          setModalMessage("");
+        }, 3000);
+      })
+      .catch((error) => {
+        console.error("Error paying commission:", error);
+        setModalError("Failed to pay commission. Please try again."); // Set error message on failure
+        setIsModalOpen(true); // Open modal on error
+        setTimeout(() => {
+          setIsModalOpen(false); // Close modal after 3 seconds
+          setModalError("");
+        }, 3000);
+      });
   };
 
   return (
@@ -164,6 +183,12 @@ const CommissionReport = () => {
                   Add
                 </button>
               </div>
+              {modalError && (
+                <p className="text-red-500 mt-2">{modalError}</p>
+              )}
+              {modalMessage && (
+                <p className="text-green-500 mt-2">{modalMessage}</p>
+              )}
             </div>
           </div>
         </div>
