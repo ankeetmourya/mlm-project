@@ -50,8 +50,8 @@ const CommissionReport = () => {
   };
 
   const handleConfirm = () => {
-    dispatch(updateCommission(selectedData.username, selectedData));
-    console.log(selectedData.username, selectedData,"updateeeeed Datas")
+    dispatch(updateCommission(selectedData.username, selectedData.amount));
+    console.log(selectedData.username, selectedData.amount,"updateeeeed Datas")
     setIsModalOpen(false);
   };
 
