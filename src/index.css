@@ -18,7 +18,15 @@ height: 88% !important;
 height: 500px;
 }
 .chart-mobile{
-  width: 125px !important;
+  width: 155px !important;
   margin-right: 125px !important;
   right: -125px !important;
+}
+.chart-container > canvas{
+  width: 100% !important;
+  height: 85% !important;
+}
+.income-chart > canvas{
+  width: 100% !important;
+  height: 100% !important;
 }

@@ -12,6 +12,7 @@ import pendingCommissionReport from './pendingCommissionReport';
 import customerGraph from './customerGraph';
 import FinanceData from './FinanceData';
 import FinanceDataAdmin from './FinanceDataAdmin';
+import incomeCommissionGraph from './incomeCommissionGraph';
 
 export default combineReducers({
   auth,
@@ -26,5 +27,6 @@ export default combineReducers({
   pendingCommissionReport,
   customerGraph,
   FinanceData,
-  FinanceDataAdmin
+  FinanceDataAdmin,
+  incomeCommissionGraph
 });

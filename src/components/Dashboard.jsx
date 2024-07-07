@@ -6,20 +6,34 @@ import MemberChart from "./charts/MemberChart";
 import IncomeCard from "./charts/IncomeCard";
 import CustomerJoiningGraph from "./charts/CustomerJoiningGraph";
 import FinanceData from "./charts/FinanceData";
+import IncomeVsCommissionChart from "./charts/IncomeVsCommissionChart";
 
 const Dashboard = () => {
+  let windowWidth = window.innerWidth;
+  let smallScreen = windowWidth <= 768;
+  
   return (
     <>
+    <div className="bg-slate-100">
         <FinanceData />
-      <div className="flex flex-wrap justify-between gap-4 p-4">
-        {/* <IncomeCard /> */}
+        </div>
+        {smallScreen ? 
+        
+        <div className="space-x-18 py-4">
+        <CustomerJoiningGraph isMobile={true}/>
+        <IncomeVsCommissionChart isMobile={true}/>
+      </div> : 
+        
+        <div className="flex flex-wrap space-x-18 py-4 gap-2">
         <CustomerJoiningGraph />
-      </div>
-      <div className="flex flex-wrap justify-center gap-8 p-6">
+        <IncomeVsCommissionChart/>
+      </div>}
+      
+      <div className="flex flex-wrap justify-center gap-8 p-6 bg-slate-100">
         <TopPerformer />
         <MemberChart />
       </div>
-      <div className="flex flex-wrap justify-center gap-4 p-4">
+      <div className="flex justify-center gap-4 p-4">
         <PayoutChart />
       </div>
     </>

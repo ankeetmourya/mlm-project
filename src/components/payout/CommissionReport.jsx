@@ -1,21 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { exportToExcel } from "../report/exportToExcel";
-import { useDispatch, useSelector } from "react-redux";
-import { pendingcommission } from "../../actions/pendingCommissionReport";
-import { updateCommission } from "../../actions/updateCommission";
-import Loader from "../report/Loader";
+import React, { useEffect, useState } from 'react';
+import { exportToExcel } from '../report/exportToExcel';
+import { useDispatch, useSelector } from 'react-redux';
+import { pendingcommission } from '../../actions/pendingCommissionReport';
+import { updateCommission } from '../../actions/updateCommission';
+import Loader from '../report/Loader';
+import { MdFileDownloadDone } from "react-icons/md";
+import ConfirmationModal from './ConfirmationModal';
 
 const CommissionReport = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
-  const combinedData = useSelector(
-    (state) => state.pendingCommissionReport?.commisionPayout?.commisionPayout
-  );
-
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [modalData, setModalData] = useState({ username: "", amount: "" });
-  const [modalMessage, setModalMessage] = useState("");
-  const [modalError, setModalError] = useState("");
+  const combinedData = useSelector((state) => state.pendingCommissionReport?.commisionPayout?.commisionPayout);
 
   let username = "";
   if (userRole === "admin") {
@@ -25,55 +20,43 @@ const CommissionReport = () => {
   }
 
   const payload = {
-    admin_username: username,
+    admin_username: username
   };
 
   useEffect(() => {
     dispatch(pendingcommission(payload));
   }, [dispatch]);
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedData, setSelectedData] = useState({});
+
   const handleExport = () => {
-    exportToExcel(combinedData, "CommissionReport.xlsx");
+    if (combinedData && combinedData.length > 0) {
+      const exportData = combinedData.map(item => ({
+        CustomerName: item.name,
+        Amount: item.amount,
+        Commission: item.commssion,
+        Mobile: item.mobile,
+        AccountNo: item.account_no,
+        Details: item.details,
+      }));
+      exportToExcel(exportData, 'CommissionReport.xlsx');
+    }
   };
 
-  const openModal = (username) => {
-    setModalData({ username, amount: "" });
+  const handleInputChange = (username, amount) => {
+    setSelectedData({ username, amount });
     setIsModalOpen(true);
   };
 
-  const closeModal = () => {
+  const handleConfirm = () => {
+    dispatch(updateCommission(selectedData.username, selectedData));
+    console.log(selectedData.username, selectedData,"updateeeeed Datas")
     setIsModalOpen(false);
-    setModalMessage("");
-    setModalError("");
   };
 
-  const handleInputChange = (e) => {
-    const { name, value } = e.target;
-    setModalData((prevData) => ({
-      ...prevData,
-      [name]: value,
-    }));
-  };
-
-  const handleAdd = () => {
-    dispatch(updateCommission(modalData))
-      .then((res) => {
-        setModalMessage("Successfully paid.");
-        setIsModalOpen(true); // Open modal on success
-        setTimeout(() => {
-          setIsModalOpen(false); // Close modal after 3 seconds
-          setModalMessage("");
-        }, 3000);
-      })
-      .catch((error) => {
-        console.error("Error paying commission:", error);
-        setModalError("Failed to pay commission. Please try again."); // Set error message on failure
-        setIsModalOpen(true); // Open modal on error
-        setTimeout(() => {
-          setIsModalOpen(false); // Close modal after 3 seconds
-          setModalError("");
-        }, 3000);
-      });
+  const handleCancel = () => {
+    setIsModalOpen(false);
   };
 
   return (
@@ -83,44 +66,40 @@ const CommissionReport = () => {
         <table className="min-w-full bg-white border">
           <thead>
             <tr>
-              <th className="py-2 border">ID</th>
-              <th className="py-2 border">Customer Username</th>
-              <th className="py-2 border">Commission Requested</th>
-              <th className="py-2 border">Status</th>
-              <th className="py-2 border">Action</th>
+              <th className="py-2 border">NAME</th>
+              <th className="py-2 border">AMOUNT</th>
+              <th className="py-2 border">COMMISSION</th>
+              <th className="py-2 border">MOBILE</th>
+              <th className="py-2 border">ACCOUNT NO</th>
+              <th className="py-2 border">DETAILS</th>
+              <th className="py-2 border">ACTION</th>
             </tr>
           </thead>
           <tbody className="text-center">
             {combinedData && combinedData.length > 0 ? (
-              combinedData.map(
-                ({ username, data }) =>
-                  data &&
-                  data.map((item) => (
-                    <tr key={item.id}>
-                      <td className="py-2 border px-4">{item.id}</td>
-                      <td className="py-2 border px-4">{username}</td>
-                      <td className="py-2 border px-4">
-                        {item.transactionsrequest}
-                      </td>
-                      <td className="py-2 border px-4">{item.state}</td>
-                      <td className="py-2 border px-4">
-                        <button
-                          onClick={() => openModal(username)}
-                          className="mt-4 bg-purple-600 text-white p-2 rounded-sm w-full"
-                          style={{ background: "#3AA6B9" }}
-                        >
-                          Paid
-                        </button>
-                      </td>
-                    </tr>
-                  ))
-              )
+              combinedData.map((item) => (
+                <tr key={item.username}>
+                  <td className="py-2 border px-4">{item.name}</td>
+                  <td className="py-2 border px-4">{item.amount}</td>
+                  <td className="py-2 border px-4">{item.commssion}</td>
+                  <td className="py-2 border px-4">{item.mobile}</td>
+                  <td className="py-2 border px-4">{item.account_no}</td>
+                  <td className="py-2 border px-4">{item.details}</td>
+                  {userRole === "admin" && (
+                    <td className="px-3 sm:px-6 py-3 border whitespace-nowrap text-gray-500 text-center">
+                      <button
+                        onClick={() => handleInputChange(item.username, item.amount)}
+                        className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                      >
+                        <MdFileDownloadDone className="text-2xl" />
+                      </button>
+                    </td>
+                  )}
+                </tr>
+              ))
             ) : (
               <tr>
-                <td
-                  colSpan="8"
-                  className="px-6 py-4 text-center text-sm text-gray-500"
-                >
+                <td colSpan="7" className="px-6 py-4 text-center text-sm text-gray-500">
                   <Loader />
                 </td>
               </tr>
@@ -135,63 +114,13 @@ const CommissionReport = () => {
       >
         Export to Excel
       </button>
-
       {isModalOpen && (
-        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50 z-50">
-          <div className="bg-white p-8 rounded shadow-lg w-full max-w-md mx-4">
-            <button
-              onClick={closeModal}
-              className="absolute top-0 right-0 mt-4 mr-4 text-gray-500 hover:text-gray-700"
-            >
-              &#x2715;
-            </button>
-            <h2 className="text-xl font-bold mb-4">Add Commission</h2>
-            <div>
-              <label className="block mb-2">
-                Username
-                <input
-                  type="text"
-                  name="username"
-                  value={modalData.username}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border rounded"
-                  readOnly
-                />
-              </label>
-              <label className="block mb-2">
-                Amount
-                <input
-                  type="number"
-                  name="amount"
-                  value={modalData.amount}
-                  onChange={handleInputChange}
-                  className="mt-1 block w-full p-2 border rounded"
-                />
-              </label>
-              <div className="flex justify-end space-x-2">
-                <button
-                  onClick={closeModal}
-                  className="mt-4 bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 rounded"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleAdd}
-                  className="mt-4 bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                  style={{ background: "#3AA6B9" }}
-                >
-                  Add
-                </button>
-              </div>
-              {modalError && (
-                <p className="text-red-500 mt-2">{modalError}</p>
-              )}
-              {modalMessage && (
-                <p className="text-green-500 mt-2">{modalMessage}</p>
-              )}
-            </div>
-          </div>
-        </div>
+        <ConfirmationModal
+          username={selectedData.username}
+          amount={selectedData.amount}
+          onConfirm={handleConfirm}
+          onCancel={handleCancel}
+        />
       )}
     </div>
   );

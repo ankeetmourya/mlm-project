@@ -1,9 +1,12 @@
 import * as api from "../api";
 
-export const updateCommission = (userData) => async (dispatch) => {
+export const updateCommission = (username,amount) => async (dispatch) => {
   try {
     let payload = {
-      customer_details: userData
+      customer_details: {
+        username: username,
+        amount_paid: amount,
+      },
     };
 
     // Call API to update commission

@@ -56,6 +56,8 @@ export const updateCommission = (payload) => API.post(`/update/commission`,paylo
 export const customerGraph = (payload) => API.post(`/statics/customerjoining`,payload);
 export const finance = (username) => API.get(`/customer-finance/${username}`);
 export const financeAdmin = (username) => API.get(`/admin-finance/${username}`);
+export const incomeCommissionGraph = (payload) => API.post(`/statics/commissionandearning`,payload);
+
   
 
 export const validate = async (payload) => {

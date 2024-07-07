@@ -37,14 +37,14 @@ const FinanceData = () => {
     <div className="flex flex-wrap p-4">
       {userRole === "customer" ? (
         <>
-          <div className="w-full sm:w-1/2 p-2">
+          <div className="w-mid  p-2">
             <CardComponent
               title="Commission Earned"
               amount={totalCommission ? totalCommission : <Loader />}
               tooltip="Total amount earned from commissions, including all service charges and tax."
             />
           </div>
-          <div className="w-full sm:w-1/2 p-2">
+          <div className="w-mid  p-2">
             <CardComponent
               title="Pending Commission"
               amount={pendingCommission ? pendingCommission : <Loader />}

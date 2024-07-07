@@ -5,7 +5,7 @@ import 'chart.js/auto';
 import { customerGraph } from '../../actions/customerGraph';
 import { useDispatch, useSelector } from 'react-redux';
 
-const CustomerJoiningGraph = () => {
+const CustomerJoiningGraph = ({isMobile}) => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
   const dataDay = useSelector((state) => state.customerGraph?.["daywise:"]);
@@ -45,7 +45,7 @@ const CustomerJoiningGraph = () => {
           datasets: [
             {
               label: 'Daywise',
-              data: dataDay && dataDay.map((item) => item.transaction_count),
+              data: dataDay && dataDay.map((item) => item.data),
               backgroundColor: 'rgba(75, 192, 192, 0.2)',
               borderColor: 'rgba(75, 192, 192, 1)',
               borderWidth: 1,
@@ -58,7 +58,7 @@ const CustomerJoiningGraph = () => {
           datasets: [
             {
               label: 'Yearwise',
-              data:dataYear && dataYear.map((item) => item.transaction_count),
+              data:dataYear && dataYear.map((item) => item.data),
               backgroundColor: 'rgba(255, 159, 64, 0.2)',
               borderColor: 'rgba(255, 159, 64, 1)',
               borderWidth: 1,
@@ -72,7 +72,7 @@ const CustomerJoiningGraph = () => {
           datasets: [
             {
               label: 'Monthwise',
-              data:dataMonth && dataMonth.map((item) => item.transaction_count),
+              data:dataMonth && dataMonth.map((item) => item.data),
               backgroundColor: 'rgba(153, 102, 255, 0.2)',
               borderColor: 'rgba(153, 102, 255, 1)',
               borderWidth: 1,
@@ -92,14 +92,15 @@ const CustomerJoiningGraph = () => {
 
   return (
     <>
-    <div className="container mx-auto border-2 border-gray-300 p-4 w-full md:w-1/2">
-      <div className="flex md:flex-row items-center justify-between mb-4">
-        <h2 className="py-1 md:py-0">JOININGS</h2>
-        <div className="relative md:ml-2">
+    <div className={`${isMobile ? "" : "w-[48%]"} border-2 border-gray-300 p-2 h-[350px]`}>
+      <div className="flex md:flex-row min-w-full items-center justify-between">
+        <h2 className="text-xl font-bold mt-2 px-2">JOININGS</h2>
+        <div className="relative md:ml-2 pe-6 mt-4">
           <BsThreeDotsVertical
-            className="cursor-pointer"
+            className="cursor-pointer text-2xl"
             onClick={toggleDropdown}
           />
+
           {showDropdown && (
             <div className={`${smallScreen ? "chart-mobile" : "right-0 w-full" } absolute mt-2 md:mt-4 md:w-48 rounded-md shadow-lg bg-white ring-1 ring-black ring-opacity-5 z-10`}>
               <div className="py-1">
@@ -124,8 +125,8 @@ const CustomerJoiningGraph = () => {
         </div>
       </div>
 
-      <div className="chart-container">
-        <Line data={getChartData()} options={options} />
+      <div className="chart-container w-full h-full">
+        <Line data={getChartData()} options={options} height="100%" width="100%"/>
       </div>
     </div>
     </>
