@@ -314,7 +314,7 @@ function Form() {
       } else {
         setFailedMsg("Registration Failed: please try again in some time...");
       }
-      console.log("dataaa", data);
+    
       setStep(6);
       setTimeout(() => {
         setSuccessMsg("");
@@ -322,6 +322,7 @@ function Form() {
         setStep(1);
       }, 3000);
     });
+    console.log("dataaa", formData);
     setIsSubmitted(true);
     setFormData(initialState);
   };

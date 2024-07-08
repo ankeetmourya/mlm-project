@@ -57,7 +57,7 @@ const LandingPage = () => {
             business today.
           </p>
           <button
-            className="mt-6 bg-red-500 text-white py-2 px-4 rounded"
+            className="mt-2 mb-6 bg-red-500 text-white py-2 px-4 rounded"
             onClick={handleButtonClick}
           >
             GET STARTED

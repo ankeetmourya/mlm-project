@@ -13,6 +13,7 @@ import customerGraph from './customerGraph';
 import FinanceData from './FinanceData';
 import FinanceDataAdmin from './FinanceDataAdmin';
 import incomeCommissionGraph from './incomeCommissionGraph';
+import paidCommission from './paidCommission';
 
 export default combineReducers({
   auth,
@@ -28,5 +29,6 @@ export default combineReducers({
   customerGraph,
   FinanceData,
   FinanceDataAdmin,
-  incomeCommissionGraph
+  incomeCommissionGraph,
+  paidCommission
 });

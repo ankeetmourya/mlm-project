@@ -1,12 +1,16 @@
 import React from 'react';
 
-const ConfirmationModal = ({ username, amount, onConfirm, onCancel }) => {
+const ConfirmationModal = ({ username, onConfirm, onCancel }) => {
   return (
     <div className="fixed inset-0 flex items-center justify-center z-50">
       <div className="fixed inset-0 bg-black opacity-50 z-40"></div>
       <div className="bg-white p-8 rounded shadow-lg max-w-md w-full mx-4 sm:mx-0 z-50">
         <h3 className="text-lg sm:text-xl font-bold mb-4">Confirm Update</h3>
-        <p className="mb-4 text-sm sm:text-base">Are you sure you want to update the status for {username} to paid?</p>
+        <p className="mb-4 text-sm sm:text-base">
+          {username
+            ? `Are you sure you want to update the status for ${username} to paid?`
+            : 'Are you sure you want to update the status for all selected items to paid?'}
+        </p>
         <div className="flex flex-col sm:flex-row justify-end">
           <button
             onClick={onCancel}
