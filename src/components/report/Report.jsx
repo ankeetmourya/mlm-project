@@ -10,6 +10,7 @@ import { highPerforming } from '../../actions/highPerformingCustomer';
 import HighPerformingTeam from './HighPerformingTeam';
 import { pendingcommission } from '../../actions/pendingCommissionReport';
 import DataTableReport from './DataTableReport';
+import CommissionPaid from './CommissionPaid';
 
 
 const CombinedComponent = () => {
@@ -55,11 +56,11 @@ const dispatch = useDispatch()
           <DataExportComponent adminReports={adminReports} />
           <DataTableReport data = {adminReports?.RegistrationPin["Registration pin report"]} header = "Registration Pin Report"/>
           <DataTableReport data = {adminReports?.["Product Sale"]["Product report"]} header = "Product Sale Report"/>
-          <DataTableReport data = {adminReports?.["commission report"]["commission Report"]} header = "Commission Report"/>
-          
+          <DataTableReport data = {adminReports?.["commission report"]["commission Report"]} header = "Commission Pending Report"/>
+          <CommissionPaid/>
           <NewJoinedMember newMembers={newMembersReports} />
           <HighPerformingTeam highPerforming={highPerformanceReports} />
-          
+         
         </>
       )}
     </div>

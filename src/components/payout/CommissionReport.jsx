@@ -5,7 +5,6 @@ import { pendingcommission } from '../../actions/pendingCommissionReport';
 import { updateCommission } from '../../actions/updateCommission';
 import Loader from '../report/Loader';
 import ConfirmationModal from './ConfirmationModal';
-import { paidCommission } from '../../actions/paidCommission';
 
 const CommissionReport = () => {
   const dispatch = useDispatch();
@@ -25,7 +24,6 @@ const CommissionReport = () => {
 
   useEffect(() => {
     dispatch(pendingcommission(payload));
-    dispatch(paidCommission(payload));
   }, [dispatch]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
