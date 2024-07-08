@@ -93,7 +93,7 @@ function Form() {
   const { pins, amount_received, expiry_date, status } = ePins;
   // const [pinId, setPinId] = useState("");
   let pinId = ePins[0]?.id;
-  console.log("pinnnnn", pinId);
+  // console.log("pinnnnn", pinId);
   // setPinId(ePins.id);
 
   const [selectedOptionKey, setSelectedOptionKey] = useState("");
@@ -314,7 +314,7 @@ function Form() {
       } else {
         setFailedMsg("Registration Failed: please try again in some time...");
       }
-    
+      console.log("dataaa", data);
       setStep(6);
       setTimeout(() => {
         setSuccessMsg("");
@@ -394,7 +394,6 @@ function Form() {
                   </div>
                 )}
               </div>
-
               <div>
                 <select
                   name="product_id"
@@ -407,8 +406,13 @@ function Form() {
                   <option value="">Select New Product</option>
                   {allProducts &&
                     allProducts.map((product) => (
-                      <option key={product.id} value={product.id}>
-                        {product.name}
+                      <option
+                        key={product.id}
+                        value={product.id}
+                        disabled={product.available_quantity === 0}
+                      >
+                        {product.name}{" "}
+                        {product.available_quantity === 0 && "(Unavailable)"}
                       </option>
                     ))}
                 </select>
@@ -418,6 +422,7 @@ function Form() {
                   </div>
                 )}
               </div>
+
               <div className="flex justify-end">
                 <button
                   type="button"
@@ -1015,48 +1020,48 @@ function Form() {
 
                   {userRole == "customer" && (
                     <>
-                    <div>
-                      <input
-                        type="E-Pin"
-                        placeholder="Epin Id"
-                        // required
-                        name="pindetails.id"
-                        className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-                        value={formData.pindetails.id}
-                        onChange={handleChange}
-                      />
-                       {/* {errors.username && (
+                      <div>
+                        <input
+                          type="E-Pin"
+                          placeholder="Epin Id"
+                          // required
+                          name="pindetails.id"
+                          className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                          value={formData.pindetails.id}
+                          onChange={handleChange}
+                        />
+                        {/* {errors.username && (
                         <span className="text-red-500">{errors.username}</span>
                       )}  */}
-                    </div>
-                    <div>
-                      <input
-                        type="E-Pin"
-                        placeholder="Epin"
-                        // required
-                        name="pindetails.registrationpin"
-                        className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-                        value={formData.pindetails.registrationpin}
-                        onChange={handleChange}
-                      />
-                       {/* {errors.username && (
+                      </div>
+                      <div>
+                        <input
+                          type="E-Pin"
+                          placeholder="Epin"
+                          // required
+                          name="pindetails.registrationpin"
+                          className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                          value={formData.pindetails.registrationpin}
+                          onChange={handleChange}
+                        />
+                        {/* {errors.username && (
                         <span className="text-red-500">{errors.username}</span>
                       )}  */}
-                    </div>
-                    <div>
-                      <input
-                        type="E-Pin"
-                        placeholder="Epin Username"
-                        // required
-                        name="pindetails.username"
-                        className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
-                        value={formData.pindetails.username}
-                        onChange={handleChange}
-                      />
-                       {/* {errors.username && (
+                      </div>
+                      <div>
+                        <input
+                          type="E-Pin"
+                          placeholder="Epin Username"
+                          // required
+                          name="pindetails.username"
+                          className="mt-4 w-full border border-gray-300 rounded p-2 focus:outline-none"
+                          value={formData.pindetails.username}
+                          onChange={handleChange}
+                        />
+                        {/* {errors.username && (
                         <span className="text-red-500">{errors.username}</span>
                       )}  */}
-                    </div>
+                      </div>
                     </>
                   )}
                   <div className="flex justify-center mt-12">
@@ -1071,9 +1076,7 @@ function Form() {
                       type="submit"
                       // onClick={redoStep}
                       className={`${
-                        formData.pindetails.username
-                          ? ""
-                          : "disabled-btn"
+                        formData.pindetails.username ? "" : "disabled-btn"
                       } bg-purple-500 hover:bg-purple-800 text-white font-bold py-2 px-4 rounded`}
                       style={{ backgroundColor: "#3AA6B9" }}
                     >
@@ -1085,17 +1088,15 @@ function Form() {
             </motion.div>
           )}
           {step === 6 &&
-           (successMsg ? (
-            <div className="p-6 mx-auto text-center border border-green-600 bg-green-50 rounded-lg shadow-md flex justify-center items-center max-w-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
-              <h3 className="text-green-600">{successMsg}</h3>
-            </div>
-          ) : (
-            <div className="p-6 mx-auto text-center border border-red-600 bg-red-50 rounded-lg shadow-md flex justify-center items-center max-w-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
-              <h3 className="text-red-600">{failedMsg}</h3>
-            </div>
-          ))
-          
-            }
+            (successMsg ? (
+              <div className="p-6 mx-auto text-center border border-green-600 bg-green-50 rounded-lg shadow-md flex justify-center items-center max-w-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+                <h3 className="text-green-600">{successMsg}</h3>
+              </div>
+            ) : (
+              <div className="p-6 mx-auto text-center border border-red-600 bg-red-50 rounded-lg shadow-md flex justify-center items-center max-w-lg w-full sm:w-3/4 md:w-2/3 lg:w-1/2">
+                <h3 className="text-red-600">{failedMsg}</h3>
+              </div>
+            ))}
         </form>
         {/* {isSubmitted && (
           <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">

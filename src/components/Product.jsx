@@ -20,21 +20,21 @@ const Product = () => {
     description: "",
     available_quantity: "",
     product_image_link: "",
-    cmlevel1: "",
-    cmlevel2: "",
-    cmlevel3: "",
-    cmlevel4: "",
-    cmlevel5: "",
-    cmlevel6: "",
-    rclevel1: "",
-    rclevel2: "",
-    rclevel3: "",
-    rclevel4: "",
-    rclevel5: "",
-    rclevel6: "",
-    rclevel7: "",
-    rclevel8: "",
-    rclevel9: "",
+    cmlevel1: 0,
+    cmlevel2: 0,
+    cmlevel3: 0,
+    cmlevel4: 0,
+    cmlevel5: 0,
+    cmlevel6: 0,
+    rclevel1: 0,
+    rclevel2: 0,
+    rclevel3: 0,
+    rclevel4: 0,
+    rclevel5: 0,
+    rclevel6: 0,
+    rclevel7: 0,
+    rclevel8: 0,
+    rclevel9: 0,
   };
   const editInitialState = {
     name: "",
@@ -46,21 +46,21 @@ const Product = () => {
     description: "",
     available_quantity: "",
     product_image_link: "",
-    cmlevel1: "",
-    cmlevel2: "",
-    cmlevel3: "",
-    cmlevel4: "",
-    cmlevel5: "",
-    cmlevel6: "",
-    rclevel1: "",
-    rclevel2: "",
-    rclevel3: "",
-    rclevel4: "",
-    rclevel5: "",
-    rclevel6: "",
-    rclevel7: "",
-    rclevel8: "",
-    rclevel9: "",
+    cmlevel1: 0,
+    cmlevel2: 0,
+    cmlevel3: 0,
+    cmlevel4: 0,
+    cmlevel5: 0,
+    cmlevel6: 0,
+    rclevel1: 0,
+    rclevel2: 0,
+    rclevel3: 0,
+    rclevel4: 0,
+    rclevel5: 0,
+    rclevel6: 0,
+    rclevel7: 0,
+    rclevel8: 0,
+    rclevel9: 0,
   };
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -204,8 +204,7 @@ const Product = () => {
 
   const handleEditProduct = (e)=>{
     e.preventDefault();
-    // dispatch(editProductAction(editProduct, navigate));
-
+    dispatch(editProductAction(editProduct, navigate));
     console.log("Form Submitted", editProduct);
     setEditProduct(initialState);
     setIsEditModalOpen(false);
@@ -213,22 +212,32 @@ const Product = () => {
 
   const handleSave = (e) => {
     e.preventDefault();
-
+  
+    // Set default values for cmlevel and rclevel fields if they are empty
+    const updatedProduct = { ...selectedProduct };
+    ["cmlevel1", "cmlevel2", "cmlevel3", "cmlevel4", "cmlevel5", "cmlevel6", 
+     "rclevel1", "rclevel2", "rclevel3", "rclevel4", "rclevel5", "rclevel6", 
+     "rclevel7", "rclevel8", "rclevel9"].forEach((key) => {
+      if (!updatedProduct[key]) {
+        updatedProduct[key] = 0;
+      }
+    });
+  
     const newErrors = {};
-    Object.keys(selectedProduct).forEach((key) => {
-      validateInput(key, selectedProduct[key]);
+    Object.keys(updatedProduct).forEach((key) => {
+      validateInput(key, updatedProduct[key]);
       if (errors[key]) newErrors[key] = errors[key];
     });
-
+  
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-
-    dispatch(addProduct(selectedProduct, navigate));
-
+  
+    dispatch(addProduct(updatedProduct, navigate));
+  
     // Proceed with form submission if no errors
-    console.log("Form Submitted", selectedProduct);
+    console.log("Form Submitted", updatedProduct);
     setSelectedProduct(initialState);
     setIsModalOpen(false);
     // Add your form submission logic here
@@ -583,7 +592,7 @@ const Product = () => {
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
                 style={{ background: "#3AA6B9" }}
               >
-                Save
+                Add
               </button>
               <button
                 type="button"
@@ -924,7 +933,7 @@ const Product = () => {
                 className="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-purple-600 text-base font-medium text-white hover:bg-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 sm:ml-3 sm:w-auto sm:text-sm"
                 style={{ background: "#3AA6B9" }}
               >
-                Save
+                Add
               </button>
               <button
                 type="button"
@@ -937,6 +946,7 @@ const Product = () => {
           </form>
         </div>
       )}
+      
 
       {deleteModalOpen && (
          <div className="fixed inset-0 flex items-center justify-center z-50">
