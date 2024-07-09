@@ -8,9 +8,12 @@ import Loader from "./report/Loader";
 
 const Product = () => {
 
+  const adminId = useSelector((state) => state.auth.authData.admin.adminid);
+  console.log(adminId,"adminnnn id")
+  
   
   const initialState = {
-    adminid: "",
+    adminid: adminId,
     name: "",
     price: "",
     validity_in_months: "",
@@ -119,10 +122,7 @@ const Product = () => {
     });
   };
 
-  const deleteProduct= ()=>{
-    dispatch(deleteProductAction(editProduct, navigate)); 
-    deleteCloseModal();
-  }
+ 
 
   const editCloseModal = () => setIsEditModalOpen(false);
   const deleteCloseModal = () => setDeleteModalOpen(false);
@@ -242,6 +242,10 @@ const Product = () => {
     setIsModalOpen(false);
     // Add your form submission logic here
   };
+  const deleteProduct= ()=>{
+    dispatch(deleteProductAction(editProduct, navigate)); 
+    deleteCloseModal();
+  }
   
   return (
     <div className="p-4">
@@ -282,7 +286,24 @@ const Product = () => {
                     Product Information
                   </h3>
                   <div className="mt-2">
-                    <div>
+                  <div>
+                      <label
+                        htmlFor="adminid"
+                        className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+                      >
+                        Admin ID
+                      </label>
+                      <input
+                        type="text"
+                        id="adminid"
+                        name="adminid"
+                        readOnly
+                        value={selectedProduct.adminid}
+                        onChange={handleChange}
+                        className={`mt-1 block w-full px-3 py-2 border dark:border-zinc-600 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm`}
+                      />
+                    </div>
+                    <div className="mt-1">
                       <label
                         htmlFor="name"
                         className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -306,6 +327,7 @@ const Product = () => {
                         </p>
                       )}
                     </div>
+                    
                     <div className="mt-1">
                       <label
                         htmlFor="price"
