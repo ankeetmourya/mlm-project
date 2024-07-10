@@ -2,7 +2,6 @@ import React from "react";
 import { useSelector } from "react-redux";
 
 const ProductTable = ({ products, editModal,deleteModal }) => {
-  console.log(products);
 
   const userRole = useSelector((state) => state.auth.userRole);
 

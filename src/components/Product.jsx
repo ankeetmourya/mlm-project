@@ -9,8 +9,6 @@ import Loader from "./report/Loader";
 const Product = () => {
 
   const adminId = useSelector((state) => state.auth.authData.admin.adminid);
-  console.log(adminId,"adminnnn id")
-  
   
   const initialState = {
     adminid: adminId,

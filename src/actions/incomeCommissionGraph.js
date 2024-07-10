@@ -7,8 +7,6 @@ export const incomeCommissionGraph = (username) => async (dispatch) => {
       };
       const { data } = await api.incomeCommissionGraph(payload);
       dispatch({ type: "INCOME_COMMISSION_GRAPH", data: data.combinedData?.body});
-      console.log(data.body);
-      console.log("heyyyy");
     } catch (error) {
       if (error?.response?.data?.message == "Invalid token") {
         dispatch({ type: "SIGNOUT" });

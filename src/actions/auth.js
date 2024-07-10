@@ -17,7 +17,6 @@ export const signin = (userData,role, navigate) => async (dispatch) => {
     const reqBody = {logindetails:userData}
     const { data } = await api.signin(reqBody,role); //API CALL
     dispatch({ type: 'AUTH', data: data.body});
-    console.log(data.body)
     navigate('/dashboard');
   } catch (error) {
     console.log(error);

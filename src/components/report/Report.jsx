@@ -19,7 +19,6 @@ const dispatch = useDispatch()
   const adminReports = useSelector((state)=> state.reports.adminReports)
   const newMembersReports = useSelector((state) => state.newMembers);
   
-  console.log("iddd",adminId);
   const highPerformanceReports = useSelector((state) => state.highPerformingCustomer);
 
   useEffect(() => {
@@ -43,8 +42,6 @@ const dispatch = useDispatch()
 
   const isEmpty = (obj) => Object.keys(obj).length === 0;
   const isLoading = isEmpty(adminReports) || isEmpty(newMembersReports) //|| isEmpty(highPerformanceReports);
-
-  console.log("adminRepo", adminReports);
 
   return (
     <div className="flex space-x-4 p-4">

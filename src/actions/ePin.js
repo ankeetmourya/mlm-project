@@ -29,7 +29,7 @@ export const fetchPins = (username) => async (dispatch) => {
     try {
       const { data } = await api.fetchRegistrationPins(username); //API CALL
       dispatch({ type: 'FETCH_EPINS', data: data.body.pindetails});
-      console.log(data.body)
+      
     } catch (error) {
       if( error?.response?.data?.message == 'Invalid token'){
         dispatch({ type: 'SIGNOUT'});

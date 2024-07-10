@@ -7,7 +7,6 @@ export const paidCommission = (username) => async (dispatch) => {
       };
       const { data } = await api.paidCommission(payload);
       dispatch({ type: "PAID_COMMISSION", data: data.body});
-      console.log("PAID_COMMISSION Data",data.body);
     } catch (error) {
       if (error?.response?.data?.message == "Invalid token") {
         dispatch({ type: "SIGNOUT" });

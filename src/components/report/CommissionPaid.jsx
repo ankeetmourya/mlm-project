@@ -15,7 +15,6 @@ const CommissionPaid = () => {
   }
 
   const data = useSelector((state) => state.paidCommission?.Transactions);
-  console.log(data, 'paidCommission Data');
 
   useEffect(() => {
     if (username) {

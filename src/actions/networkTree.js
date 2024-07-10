@@ -3,7 +3,6 @@ import * as api from '../api';
 export const networkTree = (username) => async (dispatch) =>{
     try{
        const { data } = await api.networkTree(username); //API CALL
-       console.log('networkTree', data);
        if( data?.response?.data?.message == 'Invalid token'){
          dispatch({ type: 'SIGNOUT'});     
        }else{

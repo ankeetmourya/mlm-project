@@ -3,7 +3,6 @@ import * as api from '../api';
 export const highPerforming = (username) => async (dispatch) =>{
     try{
        const { data } = await api.highPerformingCustomer(username); //API CALL
-       console.log('highPerformingCustomer', data);
        if( data?.response?.data?.message == 'Invalid token'){
          dispatch({ type: 'SIGNOUT'});     
        }else{

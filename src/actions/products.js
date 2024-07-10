@@ -24,7 +24,6 @@ export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
             selectedProduct.rclevel9,
           ];
           let productData = {...selectedProduct,'commission':cmLevelsArray,'repurchase_commission':rcLevelsArray}
-          console.log(productData);
       let reqBody = {productData:productData}
       const { data } = await api.addProduct(reqBody); //API CALL
       
@@ -69,10 +68,8 @@ export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
             product.rclevel9,
           ];
           let productData = {...product,'commission':cmLevelsArray,'repurchase_commission':rcLevelsArray}
-          console.log(productData);
       let reqBody = {product:productData}
       const { data } = await api.editProduct(reqBody); //API CALL
-      console.log('res edit', data);
       if( data?.response?.data?.message == 'Invalid token'){
         dispatch({ type: 'SIGNOUT'});
 
@@ -90,16 +87,12 @@ export const addProduct = (selectedProduct, navigate) => async (dispatch) => {
   };
 export const productList = (navigate) => async (dispatch) =>{
      try{
-        // let reqBody = {productData:productData}
         const { data } = await api.getProduct(); //API CALL
-        console.log('prodts', data);
         if( data?.response?.data?.message == 'Invalid token'){
           dispatch({ type: 'SIGNOUT'});
           
         }else{
         dispatch({ type: 'ALL_PRODUCTS', data: data?.body?.productslist});
-        console.log('vt',data.body.productslist);
-
         }
      }catch(error){
         console.log(error);
@@ -113,10 +106,8 @@ export const productList = (navigate) => async (dispatch) =>{
 export const deleteProductAction = (product, navigate) => async (dispatch) => {
   try {
         let productData = {...product}
-        console.log("data product", productData);
     let reqBody = {product:productData}
     const { data } = await api.editProduct(reqBody); //API CALL
-    console.log('delete data', data);
     if( data?.response?.data?.message == 'Invalid token'){
       dispatch({ type: 'SIGNOUT'});
     }else{
