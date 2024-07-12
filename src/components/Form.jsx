@@ -10,6 +10,7 @@ import "../App.css";
 import "../index.css";
 import { fetchPins } from "../actions/ePin";
 import Loader from "./report/Loader";
+import { sendEmail } from "../actions/sendEmail";
 
 function Form() {
   let user = JSON.parse(localStorage.getItem("user"));
@@ -307,6 +308,7 @@ function Form() {
   const handleSubmit = (e) => {
     e.preventDefault();
     setLoading(true);
+
     dispatch(registerCustomer(formData, navigate)).then((data) => {
       setLoading(false);
       if (data && data.status == 200) {
@@ -322,6 +324,7 @@ function Form() {
         setStep(1);
       }, 3000);
     });
+    dispatch(sendEmail(formData.first_name,formData.email,formData.name));
     console.log("dataaa", formData);
     setIsSubmitted(true);
     setFormData(initialState);
