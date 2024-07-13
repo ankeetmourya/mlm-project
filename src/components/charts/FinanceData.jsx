@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import CardComponent from "./CardComponent";
 import { useDispatch, useSelector } from "react-redux";
 import { financeData } from "../../actions/financeData";
@@ -15,15 +15,52 @@ const FinanceData = () => {
   } else if (userRole === "customer") {
     username = useSelector((state) => state.auth.authData.customer?.username);
   }
+  const [totalSum, setTotalSum] = useState(0);
+  const [pendingSum, setPendingSum] = useState(0);
+  const [totalChunksArray, setTotalChunksArray] = useState([]);
+  const [pendingChunksArray, setPendingChunksArray] = useState([]);
+  const fData = useSelector((state) => state.FinanceData);
+  const adminFData = useSelector((state)=> state.FinanceDataAdmin);
   
-  const pendingCommission = useSelector((state) => state.FinanceData?.pending_commission);
-  const totalCommission = useSelector((state) => state.FinanceData?.total_commission);
+
   const adminCommissionEarned = useSelector((state) => state.FinanceDataAdmin?.commission_earned);
   const adminPendingCommission = useSelector((state) => state.FinanceDataAdmin?.pending_amount_to_pay);
   const adminAmountPaid = useSelector((state) => state.FinanceDataAdmin?.paid_amount);
   const adminPendingAmount = useSelector((state) => state.FinanceDataAdmin?.pending_amount_to_pay);
   const adminProductPurchase = useSelector((state) => state.FinanceDataAdmin?.product_purchase_tds);
  
+  // console.log(fData,"total comission");
+
+  useEffect(() => {
+    if (fData && fData.total_commission) {
+      const { total_commission, pending_commission } = fData;
+
+      const processNumber = (num) => {
+        const numString = num.toString();
+        let chunks = [];
+        for (let i = 0; i < numString.length; i += 3) {
+          let chunk = numString.slice(i, i + 3);
+          chunks.push(parseInt(chunk, 10));
+        }
+        return chunks;
+      };
+      if (total_commission !== undefined && total_commission !== null) {
+        const totalChunks = processNumber(total_commission);
+        setTotalChunksArray(totalChunks);
+        const totalSum = totalChunks.reduce((acc, chunk) => acc + chunk, 0);
+        setTotalSum(totalSum);
+      }
+
+      if (pending_commission !== undefined && pending_commission !== null) {
+        const pendingChunks = processNumber(pending_commission);
+        setPendingChunksArray(pendingChunks);
+        const pendingSum = pendingChunks.reduce((acc, chunk) => acc + chunk, 0);
+        setPendingSum(pendingSum);
+      }
+    }
+  }, [fData]);
+
+  
 
   useEffect(() => {
     if (userRole === "admin") {
@@ -40,14 +77,14 @@ const FinanceData = () => {
           <div className="w-mid  p-2">
             <CardComponent
               title="Commission Earned"
-              amount={totalCommission ? totalCommission : <Loader />}
+              amount={totalSum ? totalSum : <Loader />}
               tooltip="Total amount earned from commissions, including all service charges and tax."
             />
           </div>
           <div className="w-mid  p-2">
             <CardComponent
               title="Pending Commission"
-              amount={pendingCommission ? pendingCommission : <Loader />}
+              amount={pendingSum ? pendingSum : <Loader />}
               tooltip="Commission amount that is pending for this month."
             />
           </div>
