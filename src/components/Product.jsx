@@ -200,13 +200,42 @@ const Product = () => {
     }
   };
 
-  const handleEditProduct = (e)=>{
+  // const handleEditProduct = (e)=>{
+  //   e.preventDefault();
+  //   dispatch(editProductAction(editProduct, navigate));
+  //   console.log("Form Submitted", editProduct);
+  //   setEditProduct(initialState);
+  //   setIsEditModalOpen(false);
+  // }
+  const handleEditProduct = (e) => {
     e.preventDefault();
-    dispatch(editProductAction(editProduct, navigate));
-    console.log("Form Submitted", editProduct);
+  
+    const convertFieldsToInt = (product) => {
+      const fieldsToConvert = [
+        "cmlevel1", "cmlevel2", "cmlevel3", "cmlevel4", "cmlevel5", "cmlevel6",
+        "rclevel1", "rclevel2", "rclevel3", "rclevel4", "rclevel5", "rclevel6",
+        "rclevel7", "rclevel8", "rclevel9","available_quantity"
+      ];
+      
+      const convertedProduct = { ...product };
+      
+      fieldsToConvert.forEach(field => {
+        if (product[field] !== undefined) {
+          convertedProduct[field] = parseInt(product[field], 10);
+        }
+      });
+  
+      return convertedProduct;
+    };
+  
+    const convertedProduct = convertFieldsToInt(editProduct);
+  
+    dispatch(editProductAction(convertedProduct, navigate)); 
+    console.log("Form Submitted", convertedProduct);
     setEditProduct(initialState);
     setIsEditModalOpen(false);
-  }
+  };
+  
 
   const handleSave = (e) => {
     e.preventDefault();
