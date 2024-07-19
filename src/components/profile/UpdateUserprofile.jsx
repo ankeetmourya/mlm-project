@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import * as api from "../../api";
+import { updateProfile } from "../../actions/updateProfile";
 const UpdateUserprofile = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
@@ -18,7 +19,20 @@ const UpdateUserprofile = () => {
   const [formData, setFormData] = useState(getInitialData());
   const [showModal, setShowModal] = useState(false);
   const [modalMessage, setModalMessage] = useState("");
+  const [imageFile, setImageFile] = useState({
+    aadhar_image_link: null,
+    pan_image_link: null,
+  });
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const { name } = event.target;
+      setImageFile({...imageFile,[name]:file})
+    }
+  };
+  
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({
@@ -27,16 +41,44 @@ const UpdateUserprofile = () => {
     }));
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    let updatedFormData = { ...formData };
+
+    if (imageFile.aadhar_image_link) {
+      const fileData = new FormData();
+      fileData.append("file", imageFile.aadhar_image_link);
+      try {
+        const { data } = await api.imageUpload(fileData);
+        updatedFormData = {
+          ...updatedFormData,
+          aadhar_image_link: data.body.file, 
+        };
+      } catch (error) {
+        console.error("Aadhar image upload failed", error);
+      }
+    }
+    if (imageFile.pan_image_link) {
+      const fileData = new FormData();
+      fileData.append("file", imageFile.pan_image_link);
+      try {
+        const { data } = await api.imageUpload(fileData);
+        updatedFormData = {
+          ...updatedFormData,
+          pan_image_link: data.body.file, 
+        };
+      } catch (error) {
+        console.error("PAN image upload failed", error);
+      }
+    }
     let payload = {
-      customer: formData,
+      customer: updatedFormData,
     };
 
     api
       .updateProfile(payload)
       .then((res) => {
-        console.log(res);
+        dispatch(updateProfile(res.data.body));
         setModalMessage("Profile updated successfully.");
         setShowModal(true);
         setTimeout(() => {
@@ -100,6 +142,76 @@ const UpdateUserprofile = () => {
                 required
               />
             </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="aadhar_no"
+                className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
+                Aadhar Number
+              </label>
+              <input
+                type="number"
+                name="aadhar_card_no"
+                value={formData?.aadhar_card_no}
+                onChange={handleChange}
+                placeholder="Aadhar Number"
+                className="p-2 border rounded w-full mt-2"
+                required
+              />
+            </div>
+            <div className="flex flex-col">
+              <label
+                htmlFor="pan_no"
+                className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+              >
+                Pan Number
+              </label>
+              <input
+                type="text"
+                name="pan_card_no"
+                value={formData?.pan_card_no}
+                onChange={handleChange}
+                placeholder="Pan Number"
+                required
+                className="p-2 border rounded w-full mt-2"  
+              />
+            </div>
+            {formData?.aadhar_image_link == "HARDCODED" ? 
+             <div className="flex flex-col">
+             <label
+               htmlFor="aadhar_image"
+               className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+             >
+               Aadhar Image
+             </label>
+             <input
+               type="file"
+               name="aadhar_image_link"
+              //  value={formData?.aadhar_image_link}
+               onChange={handleFileChange}
+               
+               className="p-2 border rounded w-full mt-2"  
+             />
+           </div>
+            : <img src={formData.aadhar_image_link}></img>}
+            {formData?.pan_image_link == "HARDCODED" ? 
+             <div className="flex flex-col">
+             <label
+               htmlFor="pan_image"
+               className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
+             >
+               Pan Image
+             </label>
+             <input
+               type="file"
+               name="pan_image_link"
+              //  value={formData?.aadhar_image_link}
+               onChange={handleFileChange}
+               
+               className="p-2 border rounded w-full mt-2"  
+             />
+           </div>
+            : ""}
           </div>
         </div>
         <div>

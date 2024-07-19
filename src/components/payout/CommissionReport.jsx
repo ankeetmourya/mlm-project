@@ -48,13 +48,11 @@ const CommissionReport = () => {
   const handleConfirm = () => {
     if (modalContent.username) {
       dispatch(updateCommission(modalContent.username, modalContent.amount));
-      console.log(modalContent.username, modalContent.amount, "updated data");
     } else {
       selectedItems.forEach(username => {
         const item = combinedData.find(item => item.username === username);
         if (item) {
           dispatch(updateCommission(username, item.amount));
-          console.log(username, item.amount, "updated data");
         }
       });
     }

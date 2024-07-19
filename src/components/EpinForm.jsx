@@ -72,7 +72,6 @@ const EpinForm = () => {
     e.preventDefault();
     try {
        let a = dispatch(addEPins(formData, navigate));
-       console.log('dis res', a);
       //  dispatch(signin(formData, role, navigate));
       setFormData({
         // Reset form fields

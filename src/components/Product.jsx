@@ -5,6 +5,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
 import ProductTable from "./ProductTable";
 import Loader from "./report/Loader";
+import * as api from "../api";
 
 const Product = () => {
 
@@ -80,7 +81,6 @@ const Product = () => {
   const editModal = (pid) => {
     setIsEditModalOpen(true);
     let product = allProducts.find(({ id }) => id == pid);
-    console.log("1 prod", product);
     let [cmlevel1, cmlevel2, cmlevel3, cmlevel4, cmlevel5, cmlevel6] =
       product.commission;
     let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6,rclevel7,rclevel8,rclevel9] =
@@ -109,7 +109,6 @@ const Product = () => {
   const deleteModal = (pid) => {
     setDeleteModalOpen(true);
     let product = allProducts.find(({ id }) => id == pid);
-    console.log("1 prod", product);
     let [cmlevel1, cmlevel2, cmlevel3, cmlevel4, cmlevel5, cmlevel6] =
       product.commission;
     let [rclevel1, rclevel2, rclevel3, rclevel4, rclevel5, rclevel6,rclevel7,rclevel8,rclevel9] =
@@ -127,6 +126,7 @@ const Product = () => {
   const [selectedProduct, setSelectedProduct] = useState(initialState);
   const [errors, setErrors] = useState({});
   const [editProduct, setEditProduct] = useState(editInitialState);
+  const [imageFile, setImageFile] = useState(null);
 
   const handleChange = (e) => {
     const { name, value, files } = e.target;
@@ -180,36 +180,17 @@ const Product = () => {
     }
     setErrors((prevErrors) => ({ ...prevErrors, [name]: error }));
   };
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
 
     if (file) {
-      const reader = new FileReader();
-
-      reader.onloadend = () => {
-        const base64String = reader.result.split(',')[1]; // Removing the 'data:image/jpeg;base64,' part if needed
-        console.log('not passing base64String');
-        setSelectedProduct((prevProduct) => ({
-          ...prevProduct,
-          // Below line should be ----  product_image_link: base64String,
-          product_image_link: "base64String",
-        }));
-      };
-
-      reader.readAsDataURL(file);
+      // const { name } = event.target;
+      setImageFile(file);
     }
   };
 
-  // const handleEditProduct = (e)=>{
-  //   e.preventDefault();
-  //   dispatch(editProductAction(editProduct, navigate));
-  //   console.log("Form Submitted", editProduct);
-  //   setEditProduct(initialState);
-  //   setIsEditModalOpen(false);
-  // }
-  const handleEditProduct = (e) => {
+  const handleEditProduct = async(e) => {
     e.preventDefault();
-  
     const convertFieldsToInt = (product) => {
       const fieldsToConvert = [
         "cmlevel1", "cmlevel2", "cmlevel3", "cmlevel4", "cmlevel5", "cmlevel6",
@@ -227,21 +208,32 @@ const Product = () => {
   
       return convertedProduct;
     };
-  
-    const convertedProduct = convertFieldsToInt(editProduct);
-  
+    let convertedProduct = convertFieldsToInt(editProduct);
+   if (imageFile) {
+      const fileData = new FormData();
+      fileData.append("file", imageFile);
+      
+        const { data } = await api.imageUpload(fileData);
+        convertedProduct = { ...convertedProduct,product_image_link:data.body.file };
+    }
     dispatch(editProductAction(convertedProduct, navigate)); 
-    console.log("Form Submitted", convertedProduct);
     setEditProduct(initialState);
     setIsEditModalOpen(false);
   };
   
 
-  const handleSave = (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
-  
-    // Set default values for cmlevel and rclevel fields if they are empty
-    const updatedProduct = { ...selectedProduct };
+    let updatedProduct = {};
+    if (imageFile) {
+      const fileData = new FormData();
+      fileData.append("file", imageFile);
+      
+        const { data } = await api.imageUpload(fileData);
+        updatedProduct = { ...selectedProduct,product_image_link:data.body.file };
+    }else{
+         updatedProduct = { ...selectedProduct};
+    }
     ["cmlevel1", "cmlevel2", "cmlevel3", "cmlevel4", "cmlevel5", "cmlevel6", 
      "rclevel1", "rclevel2", "rclevel3", "rclevel4", "rclevel5", "rclevel6", 
      "rclevel7", "rclevel8", "rclevel9"].forEach((key) => {
@@ -262,9 +254,6 @@ const Product = () => {
     }
   
     dispatch(addProduct(updatedProduct, navigate));
-  
-    // Proceed with form submission if no errors
-    console.log("Form Submitted", updatedProduct);
     setSelectedProduct(initialState);
     setIsModalOpen(false);
     // Add your form submission logic here
@@ -910,7 +899,7 @@ const Product = () => {
                         id="product_image_link"
                         name="product_image_link"
                         accept="image/*"
-                        onChange={handleEditChange}
+                        onChange={handleFileChange}
                         className={`mt-1 block w-full px-3 py-2 border ${
                           errors.product_image_link
                             ? "border-red-500"

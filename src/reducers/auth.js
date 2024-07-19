@@ -14,6 +14,9 @@ export default (state = { authData: null }, action) => {
           case "SET_ROLE":
             localStorage.setItem("userRole", JSON.stringify(action?.data));
           return { ...state, userRole: action?.data };
+          case "UPDATE_PROFILE":
+            localStorage.setItem("user", JSON.stringify({...state.authData ,...action.data}));
+            return { ...state, authData: {...state.authData ,...action.data} };
           
       default:
         return state;

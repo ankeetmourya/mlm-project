@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { motion, useAnimation } from "framer-motion";
 import { useDispatch, useSelector } from "react-redux";
-import { registerCustomer } from "../actions/auth";
+import { imageUpload, registerCustomer } from "../actions/auth";
 import products from "../reducers/products";
 import { useNavigate } from "react-router-dom";
 import { addProduct, productList } from "../actions/products";
@@ -11,6 +11,7 @@ import "../index.css";
 import { fetchPins } from "../actions/ePin";
 import Loader from "./report/Loader";
 import { sendEmail } from "../actions/sendEmail";
+import { getUploadImageDetails } from "../actions/imageDetails";
 
 function Form() {
   let user = JSON.parse(localStorage.getItem("user"));
@@ -56,8 +57,8 @@ function Form() {
     email: "",
     mobileNo: "",
     aadhar_card_no: "",
-    aadhar_image_link: "HARDCODED",
     pan_card_no: "",
+    aadhar_image_link: "HARDCODED",
     pan_image_link: "HARDCODED",
     bank_name: "",
     account_no: "",
@@ -73,7 +74,12 @@ function Form() {
     },
     address: "",
   };
+
   const [formData, setFormData] = useState(initialState);
+  const [imageFile, setImageFile] = useState({
+    aadhar_image_link: null,
+    pan_image_link: null,
+  });
   const [errors, setErrors] = useState({});
   const [step, setStep] = useState(1);
   const [isValid, setIsValid] = useState(false);
@@ -92,13 +98,10 @@ function Form() {
     (state) => state.auth.authData.customer?.username
   );
   const { pins, amount_received, expiry_date, status } = ePins;
-  // const [pinId, setPinId] = useState("");
   let pinId = ePins[0]?.id;
-  // console.log("pinnnnn", pinId);
-  // setPinId(ePins.id);
+
 
   const [selectedOptionKey, setSelectedOptionKey] = useState("");
-  // const [selectedUsernameKey, setSelectedUsernameKey] = useState("");
 
   const handleSelectChange = (event) => {
     const selectedOption = event.target.options[event.target.selectedIndex];
@@ -116,7 +119,6 @@ function Form() {
       },
     }));
   };
-  
 
   useEffect(() => {
     dispatch(fetchPins(sponserUsername));
@@ -126,10 +128,22 @@ function Form() {
     dispatch(productList(navigate));
   }, [dispatch]);
 
+  const handleFileChange = (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const { name } = event.target;
+      setImageFile((prevFormData) => ({
+        ...prevFormData,
+        [name]: file,
+      }));
+    }
+  };
   const handleChange = (e) => {
     e.preventDefault();
+
     const { name, value } = e.target;
-    const [section, key] = name.split('.');
+    const [section, key] = name.split(".");
 
     setTimeout(() => {
       setIsSubmitted(false);
@@ -157,10 +171,8 @@ function Form() {
     }));
   };
 
-
   const validateFirst = () => {
     const newErrors = {};
-
     if (!formData.sponserer_name.trim()) {
       newErrors.sponserer_name = "Sponsor Full Name is required";
     }
@@ -215,12 +227,8 @@ function Form() {
     return Object.keys(newErrors).length === 0; // Returns true if no errors
   };
 
-  const validateThird = async() => {
+  const validateThird = async () => {
     const newErrors = {};
-   
-
-
-
     if (!formData.aadhar_card_no.trim()) {
       newErrors.aadhar_card_no = "Aadhar Number is required";
     } else if (!/^\d{12}$/.test(formData.aadhar_card_no)) {
@@ -253,13 +261,12 @@ function Form() {
     // }
 
     setErrors(newErrors);
-    return  Object.keys(newErrors).length === 0; // Returns true if no errors
+    return Object.keys(newErrors).length === 0; // Returns true if no errors
   };
 
   const validateFourth = () => {
     const newErrors = {};
 
- 
     if (!formData.password.trim()) {
       newErrors.password = "Password is required";
     }
@@ -279,7 +286,7 @@ function Form() {
       nextStep();
     } else if (step === 2 && validateSecond()) {
       nextStep();
-    } else if (step === 3 && await validateThird()) {
+    } else if (step === 3 && (await validateThird())) {
       nextStep();
       let { data } = await api.getUsername();
       let userName = data.body.username;
@@ -305,18 +312,45 @@ function Form() {
     setStep(1);
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
+    let updatedFormData = { ...formData };
 
-    dispatch(registerCustomer(formData, navigate)).then((data) => {
+    if (imageFile.aadhar_image_link) {
+      const fileData = new FormData();
+      fileData.append("file", imageFile.aadhar_image_link);
+      try {
+        const { data } = await api.imageUpload(fileData);
+        updatedFormData = {
+          ...updatedFormData,
+          aadhar_image_link: data.body.file, 
+        };
+      } catch (error) {
+        console.error("Aadhar image upload failed", error);
+      }
+    }
+    if (imageFile.pan_image_link) {
+      const fileData = new FormData();
+      fileData.append("file", imageFile.pan_image_link);
+      try {
+        const { data } = await api.imageUpload(fileData);
+        updatedFormData = {
+          ...updatedFormData,
+          pan_image_link: data.body.file, 
+        };
+      } catch (error) {
+        console.error("PAN image upload failed", error);
+      }
+    }
+    
+    dispatch(registerCustomer(updatedFormData, navigate)).then((data) => {
       setLoading(false);
       if (data && data.status == 200) {
         setSuccessMsg("Customer Registered Successfully...");
       } else {
         setFailedMsg("Registration Failed: please try again in some time...");
       }
-      console.log("dataaa", data);
       setStep(6);
       setTimeout(() => {
         setSuccessMsg("");
@@ -324,8 +358,9 @@ function Form() {
         setStep(1);
       }, 3000);
     });
-    dispatch(sendEmail(formData.first_name,formData.email,formData.name));
-    console.log("dataaa", formData);
+
+    dispatch(sendEmail(updatedFormData.first_name, updatedFormData.email, updatedFormData.name));
+
     setIsSubmitted(true);
     setFormData(initialState);
   };
@@ -669,7 +704,7 @@ function Form() {
                     </span>
                   )}
                 </div>
-                {/* <div className="mt-2">
+                <div className="mt-2">
                   <label
                     htmlFor="aadhar_image_link"
                     className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -680,16 +715,16 @@ function Form() {
                     type="file"
                     id="aadhar_image_link"
                     name="aadhar_image_link"
-                    accept="image/*"
+                    accept="image/*,application/pdf"
                     className="w-full mt-2 px-3 py-2 border rounded-md"
-                    onChange={(e) => {
-                      setFormData({ ...formData, aadhar_image_link: e.target.files[0] });
-                    }}
+                    onChange={handleFileChange}
                   />
                   {errors.aadhar_image_link && (
-                    <span className="text-red-500">{errors.aadhar_image_link}</span>
+                    <span className="text-red-500">
+                      {errors.aadhar_image_link}
+                    </span>
                   )}
-                </div> */}
+                </div>
                 <div className="mt-2">
                   <label
                     htmlFor="pan_card_no"
@@ -710,7 +745,7 @@ function Form() {
                     <span className="text-red-500">{errors.pan_card_no}</span>
                   )}
                 </div>
-                {/* <div className="mt-2">
+                <div className="mt-2">
                   <label
                     htmlFor="pan_image_link"
                     className="block text-sm font-medium text-zinc-700 dark:text-zinc-300"
@@ -721,16 +756,16 @@ function Form() {
                     type="file"
                     id="pan_image_link"
                     name="pan_image_link"
-                    accept="image/*"
+                    accept="image/*,application/pdf"
                     className="w-full mt-1 px-3 py-2 border rounded-md"
-                    onChange={(e) => {
-                      setFormData({ ...formData, pan_image_link: e.target.files[0] });
-                    }}
+                    onChange={handleFileChange}
                   />
                   {errors.pan_image_link && (
-                    <span className="text-red-500">{errors.pan_image_link}</span>
+                    <span className="text-red-500">
+                      {errors.pan_image_link}
+                    </span>
                   )}
-                </div> */}
+                </div>
                 <div className="mt-4">
                   <label
                     htmlFor="bank_name"

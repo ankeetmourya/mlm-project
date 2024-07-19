@@ -7,7 +7,6 @@ export const networkTree = (username) => async (dispatch) =>{
          dispatch({ type: 'SIGNOUT'});     
        }else{
        dispatch({ type: 'NETWORK_TREE', data: data?.body["network:"]});
-      //  console.log('networktree1',data.body.network);
 
        }
     }catch(error){

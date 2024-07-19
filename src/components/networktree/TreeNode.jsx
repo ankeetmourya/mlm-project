@@ -240,7 +240,6 @@ const TreeNode = ({ network }) => {
                 depthFactor={treeProps.depthFactor}
                 styles={treeProps.styles}
                 shouldCollapseNeighborNodes={treeProps.shouldCollapseNeighborNodes}
-                // onUpdate={(...args) => {console.log(args)}}
                 onNodeClick={(node, evt) => {
                   console.log('onNodeClick', node, evt);
                 }}

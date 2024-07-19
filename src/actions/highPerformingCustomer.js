@@ -7,7 +7,6 @@ export const highPerforming = (username) => async (dispatch) =>{
          dispatch({ type: 'SIGNOUT'});     
        }else{
        dispatch({ type: 'HIGH_PERFORMING_CUSTOMER', data: data?.body?.customerlist});
-      //  console.log('networktree1',data.body.network);
 
        }
     }catch(error){

@@ -37,8 +37,6 @@ const PayoutChart = () => {
     if (fData && fData.total_commission) {
       const { total_commission, pending_commission } = fData;
 
-      console.log(fData,'data finances')
-
       const processNumber = (num) => {
         const numString = num.toString();
         let chunks = [];
@@ -74,7 +72,6 @@ const PayoutChart = () => {
   
   if (typeof totalCommission === 'number' && typeof pendingCommission === 'number' && totalCommission !== 0) {
   adminPercentage = ((totalCommission/pendingCommission) * 100).toFixed(2);
-  console.log('adminPercentage:', adminPercentage);
 } else {
   console.error('Invalid data: totalCommission or pendingCommission is not a number or totalCommission is zero');
 }

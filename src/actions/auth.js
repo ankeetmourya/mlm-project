@@ -63,7 +63,6 @@ export const registerCustomer = (userData, navigate) => async (dispatch) => {
     }else{
       dispatch({ type: 'REGISTERCUSTOMER', data: data.data});
     }
-    console.log("hiii ", data)
     return data;
     
   } catch (error) {
@@ -75,4 +74,23 @@ export const registerCustomer = (userData, navigate) => async (dispatch) => {
   }
 };
 
+export const imageUpload = (imageData, navigate) => async (dispatch) => {
+  try {
+    const  data  = await api.imageUpload(imageData); //API CALL
+    if( data?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
 
+    }else{
+      dispatch({ type: 'UPLOAD_IMAGE', data: data.data});
+    }
+    console.log("UPLOAD_IMAGE data ", data)
+    return data;
+    
+  } catch (error) {
+    if( error?.response?.data?.message == 'Invalid token'){
+      dispatch({ type: 'SIGNOUT'});
+
+    }
+    console.log(error);
+  }
+};

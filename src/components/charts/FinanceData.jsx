@@ -28,8 +28,6 @@ const FinanceData = () => {
   const adminAmountPaid = useSelector((state) => state.FinanceDataAdmin?.paid_amount);
   const adminPendingAmount = useSelector((state) => state.FinanceDataAdmin?.pending_amount_to_pay);
   const adminProductPurchase = useSelector((state) => state.FinanceDataAdmin?.product_purchase_tds);
- 
-  // console.log(fData,"total comission");
 
   useEffect(() => {
     if (fData && fData.total_commission) {

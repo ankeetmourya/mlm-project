@@ -28,7 +28,6 @@ export const signin = (userData, role) => {
   if (role === "admin") {
     return API.post(`/login`, userData);
   } else if (role === "customer") {
-    console.log("cs data ", userData);
     return API.post(`/logincustomer`, userData);
   }
 };
@@ -59,6 +58,8 @@ export const financeAdmin = (username) => API.get(`/admin-finance/${username}`);
 export const incomeCommissionGraph = (payload) => API.post(`/statics/commissionandearning`,payload);
 export const paidCommission = (payload) => API.post(`/paidcommission-transactions`,payload);
 export const sendEmail = (payload) => API.post(`/send-email`,payload);
+export const imageUpload = (imageData) => API.post('/upload',imageData);
+export const getUploadImageDetails = (imageId) => API.get(`/files/${imageId}`);
 
   
 
