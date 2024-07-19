@@ -70,11 +70,14 @@ const PayoutChart = () => {
   const totalCommission = adminFData?.commission_earned;
   const pendingCommission = adminFData?.pending_amount_to_pay;
   
-  if (typeof totalCommission === 'number' && typeof pendingCommission === 'number' && totalCommission !== 0) {
-  adminPercentage = ((totalCommission/pendingCommission) * 100).toFixed(2);
-} else {
-  console.error('Invalid data: totalCommission or pendingCommission is not a number or totalCommission is zero');
-}
+  if(userRole == 'admin'){
+    if (typeof totalCommission === 'number' && typeof pendingCommission === 'number' && totalCommission !== 0) {
+      adminPercentage = ((totalCommission/pendingCommission) * 100).toFixed(2);
+    } else {
+      console.error('Invalid data: totalCommission or pendingCommission is not a number or totalCommission is zero');
+    }
+  }
+  
 
 
   if(userRole == 'admin'){
