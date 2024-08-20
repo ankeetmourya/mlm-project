@@ -15,13 +15,14 @@ const FinanceData = () => {
   } else if (userRole === "customer") {
     username = useSelector((state) => state.auth.authData.customer?.username);
   }
-  const [totalSum, setTotalSum] = useState(0);
-  const [pendingSum, setPendingSum] = useState(0);
+  // const [totalSum, setTotalSum] = useState(0);
+  // const [pendingSum, setPendingSum] = useState(0);
   const [totalChunksArray, setTotalChunksArray] = useState([]);
   const [pendingChunksArray, setPendingChunksArray] = useState([]);
   const fData = useSelector((state) => state.FinanceData);
   const adminFData = useSelector((state)=> state.FinanceDataAdmin);
-  
+  const totalSum = useSelector((state)=> state.FinanceData.total_commission)
+  const pendingSum = useSelector((state)=> state.FinanceData.pending_commission)
 
   const adminCommissionEarned = useSelector((state) => state.FinanceDataAdmin?.commission_earned);
   const adminPendingCommission = useSelector((state) => state.FinanceDataAdmin?.pending_amount_to_pay);
@@ -29,34 +30,34 @@ const FinanceData = () => {
   const adminPendingAmount = useSelector((state) => state.FinanceDataAdmin?.pending_amount_to_pay);
   const adminProductPurchase = useSelector((state) => state.FinanceDataAdmin?.product_purchase_tds);
 
-  useEffect(() => {
-    if (fData && fData.total_commission) {
-      const { total_commission, pending_commission } = fData;
+  // useEffect(() => {
+  //   if (fData && fData.total_commission) {
+  //     const { total_commission, pending_commission } = fData;
 
-      const processNumber = (num) => {
-        const numString = num.toString();
-        let chunks = [];
-        for (let i = 0; i < numString.length; i += 3) {
-          let chunk = numString.slice(i, i + 3);
-          chunks.push(parseInt(chunk, 10));
-        }
-        return chunks;
-      };
-      if (total_commission !== undefined && total_commission !== null) {
-        const totalChunks = processNumber(total_commission);
-        setTotalChunksArray(totalChunks);
-        const totalSum = totalChunks.reduce((acc, chunk) => acc + chunk, 0);
-        setTotalSum(totalSum);
-      }
+  //     const processNumber = (num) => {
+  //       const numString = num.toString();
+  //       let chunks = [];
+  //       for (let i = 0; i < numString.length; i += 3) {
+  //         let chunk = numString.slice(i, i + 3);
+  //         chunks.push(parseInt(chunk, 10));
+  //       }
+  //       return chunks;
+  //     };
+  //     if (total_commission !== undefined && total_commission !== null) {
+  //       const totalChunks = processNumber(total_commission);
+  //       setTotalChunksArray(totalChunks);
+  //       const totalSum = totalChunks.reduce((acc, chunk) => acc + chunk, 0);
+  //       setTotalSum(totalSum);
+  //     }
 
-      if (pending_commission !== undefined && pending_commission !== null) {
-        const pendingChunks = processNumber(pending_commission);
-        setPendingChunksArray(pendingChunks);
-        const pendingSum = pendingChunks.reduce((acc, chunk) => acc + chunk, 0);
-        setPendingSum(pendingSum);
-      }
-    }
-  }, [fData]);
+  //     if (pending_commission !== undefined && pending_commission !== null) {
+  //       const pendingChunks = processNumber(pending_commission);
+  //       setPendingChunksArray(pendingChunks);
+  //       const pendingSum = pendingChunks.reduce((acc, chunk) => acc + chunk, 0);
+  //       setPendingSum(pendingSum);
+  //     }
+  //   }
+  // }, [fData]);
 
   
 
