@@ -9,8 +9,8 @@ const PayoutChart = () => {
   const dispatch = useDispatch();
   const userRole = useSelector((state) => state.auth.userRole);
   const [activeSegment, setActiveSegment] = useState(null);
-  const [totalSum, setTotalSum] = useState(0);
-  const [pendingSum, setPendingSum] = useState(0);
+  // const [totalSum, setTotalSum] = useState(0);
+  // const [pendingSum, setPendingSum] = useState(0);
   const [totalChunksArray, setTotalChunksArray] = useState([]);
   const [pendingChunksArray, setPendingChunksArray] = useState([]);
   let fData = '';
@@ -24,6 +24,9 @@ const PayoutChart = () => {
     username = useSelector((state) => state.auth.authData.customer?.username);
     fData = useSelector((state) => state.FinanceData);
   }
+
+  const totalSum = useSelector((state)=> state.FinanceData.total_commission);
+  const pendingSum = useSelector((state)=> state.FinanceData.pending_commission);
   
   useEffect(() => {
     if (userRole === "admin") {
@@ -33,34 +36,34 @@ const PayoutChart = () => {
     }
   }, [dispatch, userRole, username]);
 
-  useEffect(() => {
-    if (fData && fData.total_commission) {
-      const { total_commission, pending_commission } = fData;
+  // useEffect(() => {
+  //   if (fData && fData.total_commission) {
+  //     const { total_commission, pending_commission } = fData;
 
-      const processNumber = (num) => {
-        const numString = num.toString();
-        let chunks = [];
-        for (let i = 0; i < numString.length; i += 3) {
-          let chunk = numString.slice(i, i + 3);
-          chunks.push(parseInt(chunk, 10));
-        }
-        return chunks;
-      };
-      if (total_commission !== undefined && total_commission !== null) {
-        const totalChunks = processNumber(total_commission);
-        setTotalChunksArray(totalChunks);
-        const totalSum = totalChunks.reduce((acc, chunk) => acc + chunk, 0);
-        setTotalSum(totalSum);
-      }
+  //     const processNumber = (num) => {
+  //       const numString = num.toString();
+  //       let chunks = [];
+  //       for (let i = 0; i < numString.length; i += 3) {
+  //         let chunk = numString.slice(i, i + 3);
+  //         chunks.push(parseInt(chunk, 10));
+  //       }
+  //       return chunks;
+  //     };
+  //     if (total_commission !== undefined && total_commission !== null) {
+  //       const totalChunks = processNumber(total_commission);
+  //       setTotalChunksArray(totalChunks);
+  //       const totalSum = totalChunks.reduce((acc, chunk) => acc + chunk, 0);
+  //       setTotalSum(totalSum);
+  //     }
 
-      if (pending_commission !== undefined && pending_commission !== null) {
-        const pendingChunks = processNumber(pending_commission);
-        setPendingChunksArray(pendingChunks);
-        const pendingSum = pendingChunks.reduce((acc, chunk) => acc + chunk, 0);
-        setPendingSum(pendingSum);
-      }
-    }
-  }, [fData]);
+  //     if (pending_commission !== undefined && pending_commission !== null) {
+  //       const pendingChunks = processNumber(pending_commission);
+  //       setPendingChunksArray(pendingChunks);
+  //       const pendingSum = pendingChunks.reduce((acc, chunk) => acc + chunk, 0);
+  //       setPendingSum(pendingSum);
+  //     }
+  //   }
+  // }, [fData]);
 
   
 
